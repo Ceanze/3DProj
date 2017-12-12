@@ -9,6 +9,8 @@ int main()
 
 	std::cout << "Hi Jonathan" << std::endl;
 
+	std::cout << "One Two Three" << std::endl;
+
 	getchar();
 
 	return 0;
