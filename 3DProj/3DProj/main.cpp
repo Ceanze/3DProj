@@ -1,42 +1,22 @@
 #include <iostream>
 #include <Windows.h>
 
-#include <gl\GL.h>
-#include <glfw3.h>
-#include <glm.hpp>
+#include "Display.h"
 
 int main(void)
 {
-	GLFWwindow* window;
-
-	/* Initialize the library */
-	if (!glfwInit())
-		return -1;
-
-	/* Create a windowed mode window and its OpenGL context */
-	window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
-	if (!window)
+	Display display("Test window");
+	
+	glfwSetInputMode(display.getWindowPtr(), GLFW_STICKY_KEYS, GL_TRUE);
+	while (glfwGetKey(display.getWindowPtr(), GLFW_KEY_ESCAPE) != GLFW_PRESS && glfwWindowShouldClose(display.getWindowPtr()) == 0)
 	{
-		glfwTerminate();
-		return -1;
-	}
+		// Draw
+		glClearColor(0, 0, 0, 1);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	/* Make the window's context current */
-	glfwMakeContextCurrent(window);
-
-	/* Loop until the user closes the window */
-	while (!glfwWindowShouldClose(window))
-	{
-		/* Render here */
-		glClear(GL_COLOR_BUFFER_BIT);
-
-		/* Swap front and back buffers */
-		glfwSwapBuffers(window);
-
-		/* Poll for and process events */
+		// Swap buffers
+		glfwSwapBuffers(display.getWindowPtr());
 		glfwPollEvents();
 	}
-
-	glfwTerminate();
 	return 0;
 }
