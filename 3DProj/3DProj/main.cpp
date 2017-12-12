@@ -9,5 +9,7 @@ int main(void)
 
 	engine.init();
 
+
+	std::cout << "Hej" << std::endl;
 	return 0;
 }
