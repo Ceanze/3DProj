@@ -17,7 +17,7 @@ public:
 
 	void push(State* state);
 	
-	unsigned int size() const;
+	const unsigned int size() const;
 
 private:
 	std::stack<State*> stateStack;

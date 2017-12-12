@@ -32,7 +32,7 @@ void StateManager::push(State * state)
 	this->stateStack.push(state);
 }
 
-unsigned int StateManager::size() const
+const unsigned int StateManager::size() const
 {
 	return this->stateStack.size();
 }
