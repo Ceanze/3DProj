@@ -7,6 +7,8 @@ int main()
 
 	std::cout << "This is a test!" << std::endl;
 
+	std::cout << "Hi Jonathan" << std::endl;
+
 	getchar();
 
 	return 0;
