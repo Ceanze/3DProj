@@ -138,14 +138,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Display.cpp" />
-    <ClCompile Include="EngineCore.cpp" />
+    <ClCompile Include="Core\Display.cpp" />
+    <ClCompile Include="Core\EngineCore.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Config.h" />
-    <ClInclude Include="Display.h" />
-    <ClInclude Include="EngineCore.h" />
+    <ClInclude Include="Core\Config.h" />
+    <ClInclude Include="Core\Display.h" />
+    <ClInclude Include="Core\EngineCore.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

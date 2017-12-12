@@ -1,7 +1,7 @@
 #include <iostream>
 #include <Windows.h>
 
-#include "EngineCore.h"
+#include "Core\EngineCore.h"
 
 int main(void)
 {
@@ -9,7 +9,5 @@ int main(void)
 
 	engine.init();
 
-
-	std::cout << "Hej" << std::endl;
 	return 0;
 }
