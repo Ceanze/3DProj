@@ -1,9 +1,8 @@
 #ifndef ENGINECORE_H
 #define ENGINECORE_H
 
-
-#include <glfw3.h>
-#include <glm.hpp>
+#include "Display.h"
+#include "Config.h"
 
 class EngineCore
 {
@@ -17,7 +16,7 @@ private:
 	void update(const float& dt);
 	void render();
 
-	GLFWwindow* window;
+	Display display;
 };
 
 #endif // !ENGINECORE_H
