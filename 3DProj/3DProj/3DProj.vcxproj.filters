@@ -21,9 +21,18 @@
     <ClCompile Include="EngineCore.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Display.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EngineCore.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Config.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Display.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
