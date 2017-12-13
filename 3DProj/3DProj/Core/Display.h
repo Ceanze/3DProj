@@ -14,6 +14,8 @@ public:
 
 	void updateView(unsigned int width, unsigned int height);
 
+	void bindAsRenderTarget();
+
 	unsigned int getWidth() const;
 	unsigned int getHeight() const;
 	std::string getTitle() const;
