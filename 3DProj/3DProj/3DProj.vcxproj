@@ -140,16 +140,18 @@
   <ItemGroup>
     <ClCompile Include="Core\Display.cpp" />
     <ClCompile Include="Core\EngineCore.cpp" />
+    <ClCompile Include="Core\States\GameState.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Core\StateManager.cpp" />
-    <ClCompile Include="Core\State.cpp" />
+    <ClCompile Include="Core\States\StateManager.cpp" />
+    <ClCompile Include="Core\States\State.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\Config.h" />
     <ClInclude Include="Core\Display.h" />
     <ClInclude Include="Core\EngineCore.h" />
-    <ClInclude Include="Core\StateManager.h" />
-    <ClInclude Include="Core\State.h" />
+    <ClInclude Include="Core\States\StateManager.h" />
+    <ClInclude Include="Core\States\State.h" />
+    <ClInclude Include="Core\States\GameState.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
