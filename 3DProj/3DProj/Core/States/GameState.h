@@ -2,6 +2,7 @@
 #define GAMESTATE_H
 
 #include "State.h"
+#include "../../Entities/Entity.h"
 
 class GameState : public State
 {
