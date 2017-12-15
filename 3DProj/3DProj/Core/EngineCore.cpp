@@ -3,9 +3,8 @@
 EngineCore::EngineCore()
 	: display("test window")
 {
-	
-}
 
+}
 
 EngineCore::~EngineCore()
 {

@@ -31,7 +31,4 @@
   <ItemGroup>
     <None Include="Resources\Models\Cube\Cube.mtl" />
   </ItemGroup>
-  <ItemGroup>
-    <Object Include="Resources\Models\Cube\Cube.obj" />
-  </ItemGroup>
 </Project>
