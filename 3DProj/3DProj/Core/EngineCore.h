@@ -1,6 +1,7 @@
 #ifndef ENGINECORE_H
 #define ENGINECORE_H
 
+#include "States\StateManager.h"
 #include "Display.h"
 #include "Config.h"
 
@@ -17,6 +18,8 @@ private:
 	void render();
 
 	Display display;
+
+	StateManager states;
 };
 
 #endif // !ENGINECORE_H

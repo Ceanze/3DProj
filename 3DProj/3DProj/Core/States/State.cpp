@@ -6,6 +6,11 @@ State::State()
 {
 }
 
+State::State(Display * ptr)
+{
+	this->displayPtr;
+}
+
 
 State::~State()
 {
