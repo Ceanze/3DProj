@@ -1,8 +1,10 @@
 #ifndef ENTITY_H
 #define ENTITY_H
 
+#include <vector>
+#include <glm.hpp>
+
 #include "Models\Model.h"
-#include "../Loaders/ObjLoader.h"
 
 class Entity
 {
@@ -10,11 +12,13 @@ public:
 	Entity();
 	~Entity();
 
+	glm::mat4& getTransformation();
+
 private:
-	Model model;
+	std::vector<Model> models;
 	bool isDynamic;
 
-	static ObjLoader loader;
+	glm::mat4 worldMatrix;
 };
 
 #endif

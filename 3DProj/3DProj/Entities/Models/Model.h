@@ -11,8 +11,11 @@ public:
 	Model();
 	~Model();
 
+	glm::mat4& getTransformation();
+
 private:
 	std::vector<Mesh*> meshes;
+	glm::mat4 modelMatrix;
 };
 
 #endif

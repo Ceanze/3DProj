@@ -10,3 +10,8 @@ Model::~Model()
 	for (unsigned int i = 0; i < numMeshes; i++)
 		delete this->meshes[i];
 }
+
+glm::mat4& Model::getTransformation()
+{
+	return this->modelMatrix;
+}
