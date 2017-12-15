@@ -140,6 +140,9 @@
   <ItemGroup>
     <ClCompile Include="Core\Display.cpp" />
     <ClCompile Include="Core\EngineCore.cpp" />
+    <ClCompile Include="Core\States\GameState.cpp" />
+    <ClCompile Include="Core\States\State.cpp" />
+    <ClCompile Include="Core\States\StateManager.cpp" />
     <ClCompile Include="Entities\Entity.cpp" />
     <ClCompile Include="Entities\Models\Material.cpp" />
     <ClCompile Include="Entities\Models\Mesh.cpp" />
@@ -147,8 +150,6 @@
     <ClCompile Include="Loaders\MTLLoader.cpp" />
     <ClCompile Include="Loaders\ObjLoader.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Core\StateManager.cpp" />
-    <ClCompile Include="Core\State.cpp" />
     <ClCompile Include="StateLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -157,6 +158,9 @@
     <ClInclude Include="Core\EngineCore.h" />
     <ClInclude Include="Core\StateManager.h" />
     <ClInclude Include="Core\State.h" />
+    <ClInclude Include="Core\States\GameState.h" />
+    <ClInclude Include="Core\States\State.h" />
+    <ClInclude Include="Core\States\StateManager.h" />
     <ClInclude Include="Entities\Entity.h" />
     <ClInclude Include="Entities\Models\Material.h" />
     <ClInclude Include="Entities\Models\Mesh.h" />
@@ -164,9 +168,6 @@
     <ClInclude Include="Loaders\MTLLoader.h" />
     <ClInclude Include="Loaders\ObjLoader.h" />
     <ClInclude Include="StateLoader.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <Object Include="Resources\Models\Cube\Cube.obj" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

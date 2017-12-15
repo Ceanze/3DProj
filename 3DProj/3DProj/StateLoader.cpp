@@ -27,7 +27,8 @@ void StateLoader::readFile()
 			{
 				std::string c;
 				ss >> c;
+			}
 		}
-	}
 
+	}
 }
