@@ -37,6 +37,12 @@ void Display::updateView(unsigned int width, unsigned int height)
 	glViewport(0, 0, this->width, this->height);
 }
 
+void Display::bindAsRenderTarget()
+{
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+	glViewport(0, 0, getWidth(), getHeight());
+}
+
 unsigned int Display::getWidth() const
 {
 	return this->width;
