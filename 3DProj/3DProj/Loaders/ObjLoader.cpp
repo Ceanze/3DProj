@@ -100,8 +100,20 @@ void ObjLoader::load(Mesh * mesh, const std::string & name)
 						else
 							sscanf_s(str.c_str(), "%d/%d/%d", &indexGroup[0], &indexGroup[1], &indexGroup[2]);
 
-						addVertex(str, mesh, temp_vertices, temp_normals, temp_uvs, vertex, indexGroup);
+						vertex.position = temp_vertices[indexGroup[0] - 1];
+
+						if (hasNormal)
+							vertex.normal = temp_normals[indexGroup[2] - 1];
+
+						if (hasUvs)
+							vertex.uvs = temp_uvs[indexGroup[1] - 1];
+						else
+							vertex.uvs = { 0.0f, 0.0f };
+
+
+						mesh->vertices.push_back(vertex);
 						int vertIndex = mesh->vertices.size() - 1;
+						mesh->indices.push_back(vertIndex);
 						triangle[i] = vertIndex;
 					}
 
@@ -132,21 +144,4 @@ void ObjLoader::calculateNormal(Mesh * mesh, unsigned char triangle[3]) const
 	mesh->vertices[triangle[0]].normal = normal;
 	mesh->vertices[triangle[1]].normal = normal;
 	mesh->vertices[triangle[2]].normal = normal;
-}
-
-void ObjLoader::addVertex(Mesh * mesh, const std::vector<glm::vec3> &temp_positions, const std::vector<glm::vec3> &temp_normals, const std::vector<glm::vec2> &temp_uvs, Mesh::Vertex & vertex, unsigned char indexGroup[3]) const
-{
-	vertex.position = temp_positions[indexGroup[0] - 1];
-
-	if (hasNormal)
-		vertex.normal = temp_normals[indexGroup[2] - 1];
-
-	if (hasUvs)
-		vertex.uvs = temp_uvs[indexGroup[1] - 1];
-	else
-		vertex.uvs = { 0.0f, 0.0f };
-
-
-	mesh->vertices.push_back(vertex);
-	mesh->indices.push_back(mesh->vertices.size() - 1);
 }
