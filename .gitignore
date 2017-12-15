@@ -9,8 +9,6 @@
 *.userosscache
 *.sln.docstates
 *.sln
-*.vcxproj
-*.vcxproj.filters
 
 3DProj/3DProj/Debug
 
