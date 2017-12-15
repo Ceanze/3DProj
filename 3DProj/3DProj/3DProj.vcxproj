@@ -150,15 +150,11 @@
     <ClCompile Include="Loaders\MTLLoader.cpp" />
     <ClCompile Include="Loaders\ObjLoader.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Core\StateManager.cpp" />
-    <ClCompile Include="Core\State.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\Config.h" />
     <ClInclude Include="Core\Display.h" />
     <ClInclude Include="Core\EngineCore.h" />
-    <ClInclude Include="Core\StateManager.h" />
-    <ClInclude Include="Core\State.h" />
     <ClInclude Include="Core\States\GameState.h" />
     <ClInclude Include="Core\States\State.h" />
     <ClInclude Include="Core\States\StateManager.h" />
@@ -171,9 +167,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Models\Cube\Cube.mtl" />
-  </ItemGroup>
-  <ItemGroup>
-    <Object Include="Resources\Models\Cube\Cube.obj" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

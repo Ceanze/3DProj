@@ -27,7 +27,7 @@ void ObjLoader::load(Mesh * mesh, const std::string & name)
 		std::string line;
 
 		std::string str;
-		unsigned char indexGroup[3] = {0, 0, 0};
+		unsigned int indexGroup[3] = {0, 0, 0};
 		Mesh::Vertex vertex;
 		bool hasNormal = false;
 		bool hasUvs = false;
