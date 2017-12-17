@@ -14,4 +14,7 @@
 #define MODEL_PATH "./Resources/Models/"
 #define DEFAULT_MATERIAL_NAME "DefaultMTL"
 
+// ------------------ SHADER --------------------
+#define SHADER_PATH "./Resources/Shaders/"
+
 #endif

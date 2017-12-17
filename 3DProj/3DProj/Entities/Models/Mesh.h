@@ -13,6 +13,12 @@ public:
 	Mesh();
 	~Mesh();
 
+	void loadToGPU(GLuint shaderProgramID, GLenum usage = GL_STATIC_DRAW, bool useUvs = false);
+
+	void draw() const;
+
+	GLuint getVAO() const;
+
 public:
 	struct Vertex
 	{
@@ -25,6 +31,15 @@ public:
 	std::vector<GLuint> indices;
 
 	Material* material = nullptr;
+
+private:
+	GLuint vao;
+	GLuint vbo;
+	GLuint indexBufferID;
+
+	GLint vertexPosID;
+	GLint vertexNormalID;
+	GLint vertexUvsID;
 };
 
 #endif

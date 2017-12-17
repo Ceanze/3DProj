@@ -9,6 +9,8 @@
 #include "MTLLoader.h"
 #include "../Core/Config.h"
 
+#include "../Error.h"
+
 void ObjLoader::load(Mesh * mesh, const std::string & name)
 {
 	MTLLoader mtlLoader;
@@ -130,7 +132,7 @@ void ObjLoader::load(Mesh * mesh, const std::string & name)
 	}
 	else
 	{
-		fprintf(stderr, "Could not open obj file: %s", name.c_str());
+		Error::printError("Could not open obj file: " + name);
 	}
 }
 

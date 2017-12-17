@@ -104,6 +104,7 @@ void Display::init()
 
 	glViewport(0, 0, this->width, this->height);
 
+	glEnable(GL_DEPTH);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);

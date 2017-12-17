@@ -4,6 +4,7 @@
 #include <sstream>
 
 #include "../Core/Config.h"
+#include "../Error.h"
 
 MTLLoader::MTLLoader()
 {
@@ -59,6 +60,10 @@ std::map<std::string, Material*> MTLLoader::load(const std::string & name)
 			materials[mtlName] = material;
 
 		file.close();
+	}
+	else
+	{
+		Error::printError("Could not open mtl file: " + name);
 	}
 
 	// If the file could not be found or if there where no materials in the file, set the material to the default material.
