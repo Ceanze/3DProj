@@ -23,7 +23,7 @@
     <ProjectGuid>{E153C5BA-4A29-4DD9-B332-0C76B7F3E036}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>My3DProj</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -153,7 +153,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Shading\Shader.cpp" />
     <ClCompile Include="Shading\ShaderProgram.cpp" />
-    <ClCompile Include="StateLoader.cpp" />
+    <ClCompile Include="Loaders\StateLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\Config.h" />
@@ -173,7 +173,7 @@
     <ClInclude Include="Loaders\ObjLoader.h" />
     <ClInclude Include="Shading\Shader.h" />
     <ClInclude Include="Shading\ShaderProgram.h" />
-    <ClInclude Include="StateLoader.h" />
+    <ClInclude Include="Loaders\StateLoader.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

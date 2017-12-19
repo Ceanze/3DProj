@@ -26,7 +26,7 @@ EngineCore::EngineCore()
 	this->mesh2->loadToGPU(this->sp->getID());
 
 	// Create each model.
-	this->model = new Model(this->mesh, { 2.0f, 0.5f, 0.0f }, glm::normalize(glm::vec3(2.0f, 0.5f, -5.0f))); // Move cube1 to (2.0, 0.5, 0.0) and make it has the direction norm(2.0, 0.5, -5.0)
+	this->model = new Model(this->mesh, { 2.0f, 0.5f, 0.0f }, glm::normalize(glm::vec3(1.0f, 2.5f, -5.0f))); // Move cube1 to (2.0, 0.5, 0.0) and make it has the direction norm(2.0, 0.5, -5.0)
 	this->model2 = new Model(this->mesh, { -2.5f, -0.5f, 0.0f }, glm::normalize(glm::vec3(-2.5f, -0.5f, -5.0f)));// Move cube2 to (-2.5, -0.5, 0.0) and make it has the direction norm(-2.5, -0.5, -5.0)
 	this->model3 = new Model(this->mesh2, glm::scale(glm::mat4(1.0f), {0.5f, 0.5f, 0.5f})); // Scale down the bunny with a factor of 2.
 
