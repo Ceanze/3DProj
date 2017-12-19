@@ -1,7 +1,7 @@
 #ifndef STATELOADER_H
 #define STATELOADER_H
 
-#define OBJPATH "..\Models"
+#define OBJPATH "../Models/"
 
 #define STATEFILEPATH ""
 
@@ -17,6 +17,10 @@ class StateLoader
 public:
 	StateLoader(const std::string& fileName, Display * ptr);
 	~StateLoader();
+
+	std::vector<Entity*>* getEntities() { return &this->entities; };
+	std::vector<Model*>* getModels() { return &this->models; };
+	std::vector<Mesh*>* getMeshes() { return &this->meshes; };
 
 	void readFile();
 

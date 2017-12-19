@@ -7,6 +7,8 @@ StateLoader::StateLoader(const std::string & fileName, Display * ptr)
 {
 	this->fileName = fileName;
 	this->displayPtr = ptr;
+
+	this->readFile();
 }
 
 StateLoader::~StateLoader()
@@ -67,68 +69,62 @@ void StateLoader::readFile()
 					float scale;
 					unsigned selection;
 					std::getline(file, line);
-					ss << line;
 					int nrOf;
 					std::string objFile;
-
-					ss >> nrOf;
+					
+					nrOf = std::stoi(line);
 
 					for (int i = 0; i < nrOf; i++)
 					{
 						std::getline(file, line);
-						ss << line;
-						ss >> objFile;
+						std::stringstream xx(line);
+						xx >> objFile;
 						Mesh* temp = new Mesh();
-						this->objLoader.load(temp, OBJPATH + objFile);
+						this->objLoader.load(temp, objFile);
 						this->meshes.push_back(temp);
 					}
 
 					std::getline(file, line);
-					ss << line;
-					ss >> nrOf;
+					nrOf = std::stoi(line);
 
 					for (int i = 0; i < nrOf; i++)
 					{
-						
-						
-
 						std::getline(file, line);
-						ss << line;
-						ss >> selection >> pos.x >> pos.y >> pos.z >> scale >> dir.x >> dir.y >> dir.z;
+						std::stringstream xx(line);
+						xx >> selection >> pos.x >> pos.y >> pos.z >> scale >> dir.x >> dir.y >> dir.z;
 
 						Model* temp = new Model(this->meshes[selection], pos, dir);
 						this->models.push_back(temp);
 					}
 
 					std::getline(file, line);
-					ss << line;
-					ss >> nrOf;
+					nrOf = std::stoi(line);
 
 					for (int i = 0; i < nrOf; i++)
 					{
 						bool isDynamic;
 						std::getline(file, line);
-						ss << line;
+						std::stringstream xx(line);
 						unsigned nrOfModels = 0;
-						ss >> nrOfModels;
+						xx >> nrOfModels;
 
-						ss >> pos.x >> pos.y >> pos.z >> scale >> dir.x >> dir.y >> dir.z >> isDynamic;
-						ss >> selection;
+						xx >> pos.x >> pos.y >> pos.z >> scale >> dir.x >> dir.y >> dir.z >> isDynamic;
+						xx >> selection;
 						Entity* temp = new Entity(*this->models[selection], pos, dir, isDynamic);
-						for (int j = 0; j < nrOfModels; j++)
+						for (int j = 0; j < nrOfModels-1; j++)
 						{
-							ss >> selection;
+							xx >> selection;
 							temp->addModel(*this->models[selection]);
 						}	
-						this->entities.push_back[temp];
+						this->entities.push_back(temp);
 					}
 
 
 				}
 			}
-			this->deleteModels();
+			
 		}
-
+		this->deleteModels();
 	}
 }
 

@@ -1,6 +1,7 @@
 #ifndef ENGINECORE_H
 #define ENGINECORE_H
 
+#include "..\Loaders\StateLoader.h"
 #include "States\StateManager.h"
 #include "Display.h"
 #include "Config.h"
@@ -29,6 +30,7 @@ private:
 	Display display;
 
 	StateManager states;
+	StateLoader stateLoader;
 
 	/*---------------- TEMP --------------------*/
 	ObjLoader loader;
