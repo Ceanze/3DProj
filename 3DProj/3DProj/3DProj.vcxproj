@@ -157,7 +157,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Shading\Shader.cpp" />
     <ClCompile Include="Shading\ShaderProgram.cpp" />
-    <ClCompile Include="StateLoader.cpp" />
+    <ClCompile Include="Loaders\StateLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\Config.h" />
@@ -184,7 +184,7 @@
     <ClInclude Include="Loaders\ObjLoader.h" />
     <ClInclude Include="Shading\Shader.h" />
     <ClInclude Include="Shading\ShaderProgram.h" />
-    <ClInclude Include="StateLoader.h" />
+    <ClInclude Include="Loaders\StateLoader.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
