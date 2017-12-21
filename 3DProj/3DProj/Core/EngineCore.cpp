@@ -66,10 +66,13 @@ void EngineCore::update(const float & dt)
 	//this->entity->setLocalMatrix(glm::rotate(this->entity->getLocalMatrix(), -dt, {0.0f, 1.0f, 0.0f})); // Rotate Entity (rotate Cube 1 and Cube 2 around Bunny).
 	/*-------------- END TEMP ------------------*/
 
-	Entity * temp = (*this->stateLoader.getEntities())[0];
-	temp->getModel(0).setLocalMatrix(glm::rotate(temp->getModel(0).getLocalMatrix(), dt*3.0f, { 0.0f, 1.0f, 0.0f }));
-	temp->getModel(1).setLocalMatrix(glm::rotate(temp->getModel(1).getLocalMatrix(), dt*3.0f, { 0.0f, 1.0f, 0.0f }));
-	temp->setLocalMatrix(glm::rotate(temp->getLocalMatrix(), -dt, { 0.0f, 1.0f, 0.0f }));
+	if (this->stateLoader.getEntities()->size() > 0)
+	{
+		Entity * temp = (*this->stateLoader.getEntities())[0];
+		temp->getModel(0).setLocalMatrix(glm::rotate(temp->getModel(0).getLocalMatrix(), dt*3.0f, { 0.0f, 1.0f, 0.0f }));
+		temp->getModel(1).setLocalMatrix(glm::rotate(temp->getModel(1).getLocalMatrix(), dt*3.0f, { 0.0f, 1.0f, 0.0f }));
+		temp->setLocalMatrix(glm::rotate(temp->getLocalMatrix(), -dt, { 0.0f, 1.0f, 0.0f }));
+	}
 	
 }
 

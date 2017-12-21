@@ -59,6 +59,7 @@ void StateLoader::readFile()
 
 					for (int i = 0; i < nrOfStates; i++)
 					{
+						this->nrOfStates++;
 						ss >> c;
 						if (c == "gameState")
 						{
@@ -81,53 +82,54 @@ void StateLoader::readFile()
 					std::string objFile;
 					
 					nrOf = std::stoi(line);
-
-					for (int i = 0; i < nrOf; i++)
+					//If we load in 0 meshes skip loading in the rest of the file
+					if (nrOf > 0)
 					{
-						std::getline(file, line);
-						std::stringstream xx(line);
-						xx >> objFile;
-						Mesh* temp = new Mesh();
-						this->objLoader.load(temp, objFile);
-						this->meshes.push_back(temp);
-					}
-
-					std::getline(file, line);
-					nrOf = std::stoi(line);
-
-					for (int i = 0; i < nrOf; i++)
-					{
-						std::getline(file, line);
-						std::stringstream xx(line);
-						xx >> selection >> pos.x >> pos.y >> pos.z >> scale >> dir.x >> dir.y >> dir.z;
-
-						Model* temp = new Model(this->meshes[selection], pos, glm::normalize(dir), scale);
-						this->models.push_back(temp);
-					}
-
-					std::getline(file, line);
-					nrOf = std::stoi(line);
-
-					for (int i = 0; i < nrOf; i++)
-					{
-						bool isDynamic;
-						std::getline(file, line);
-						std::stringstream xx(line);
-						unsigned nrOfModels = 0;
-						xx >> nrOfModels;
-
-						xx >> pos.x >> pos.y >> pos.z >> scale >> dir.x >> dir.y >> dir.z >> isDynamic;
-						xx >> selection;
-						Entity* temp = new Entity(*this->models[selection], pos, glm::normalize(dir), isDynamic);
-						for (int j = 0; j < nrOfModels-1; j++)
+						for (int i = 0; i < nrOf; i++)
 						{
+							std::getline(file, line);
+							std::stringstream xx(line);
+							xx >> objFile;
+							Mesh* temp = new Mesh();
+							this->objLoader.load(temp, objFile);
+							this->meshes.push_back(temp);
+						}
+
+						std::getline(file, line);
+						nrOf = std::stoi(line);
+
+						for (int i = 0; i < nrOf; i++)
+						{
+							std::getline(file, line);
+							std::stringstream xx(line);
+							xx >> selection >> pos.x >> pos.y >> pos.z >> scale >> dir.x >> dir.y >> dir.z;
+
+							Model* temp = new Model(this->meshes[selection], pos, glm::normalize(dir), scale);
+							this->models.push_back(temp);
+						}
+
+						std::getline(file, line);
+						nrOf = std::stoi(line);
+
+						for (int i = 0; i < nrOf; i++)
+						{
+							bool isDynamic;
+							std::getline(file, line);
+							std::stringstream xx(line);
+							unsigned nrOfModels = 0;
+							xx >> nrOfModels;
+
+							xx >> pos.x >> pos.y >> pos.z >> scale >> dir.x >> dir.y >> dir.z >> isDynamic;
 							xx >> selection;
-							temp->addModel(*this->models[selection]);
-						}	
-						this->entities.push_back(temp);
+							Entity* temp = new Entity(*this->models[selection], pos, glm::normalize(dir), isDynamic);
+							for (int j = 0; j < nrOfModels - 1; j++)
+							{
+								xx >> selection;
+								temp->addModel(*this->models[selection]);
+							}
+							this->entities.push_back(temp);
+						}
 					}
-
-
 				}
 			}
 			
