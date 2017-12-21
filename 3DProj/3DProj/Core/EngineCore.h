@@ -33,16 +33,9 @@ private:
 	StateLoader stateLoader;
 
 	/*---------------- TEMP --------------------*/
-	ObjLoader loader;
-	Mesh* mesh = nullptr;
-	Mesh* mesh2 = nullptr;
 	Shader* vsShader = nullptr;
 	Shader* fsShader = nullptr;
 	ShaderProgram* sp = nullptr;
-	Model* model = nullptr;
-	Model* model2 = nullptr;
-	Model* model3 = nullptr;
-	Entity* entity = nullptr;
 	/*-------------- END TEMP ------------------*/
 };
 

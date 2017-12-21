@@ -1,8 +1,6 @@
 #ifndef STATELOADER_H
 #define STATELOADER_H
 
-#define OBJPATH "../Models/"
-
 #define STATEFILEPATH ""
 
 #include "..\Core\Display.h"
@@ -16,6 +14,7 @@ class StateLoader
 {
 public:
 	StateLoader(const std::string& fileName, Display * ptr);
+	StateLoader();
 	~StateLoader();
 
 	std::vector<Entity*>* getEntities() { return &this->entities; };

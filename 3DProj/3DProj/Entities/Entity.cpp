@@ -9,14 +9,24 @@ Entity::Entity(const Model & model, const glm::vec3 & position, const glm::vec3 
 {
 	this->models.push_back(model);
 	const glm::vec3 f = direction;
-	const glm::vec3 r = glm::normalize(glm::cross(f, glm::vec3(0.0f, 1.0f, 0.0f)));
+	glm::vec3 r;
+
+	if (f == glm::vec3(0.0f, 1.0f, 0.0f))
+	{
+		r = glm::normalize(glm::cross(f, glm::vec3(1.0f, 0.0f, 0.0f)));
+	}
+	else
+	{
+		r = glm::normalize(glm::cross(f, glm::vec3(0.0f, 1.0f, 0.0f)));
+	}
+
 	const glm::vec3 u = glm::cross(r, f);
 	this->worldMatrix = glm::mat4({ -r.x, -r.y, -r.z, 0.0f }, { u.x, u.y, u.z, 0.0f }, { f.x, f.y, f.z, 0.0f }, { position.x, position.y, position.z, 1.0f });
 	this->isDynamic = isDynamic;
 	this->localMatrix = glm::mat4(1.0f);
 }
 
-Entity::Entity(const Model &model, const glm::mat4 &matrix, bool isDynamic)
+Entity::Entity(const Model & model, const glm::mat4 &matrix, bool isDynamic)
 {
 	this->models.push_back(model);
 	this->worldMatrix = matrix;

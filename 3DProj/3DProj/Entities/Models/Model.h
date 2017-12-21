@@ -8,7 +8,7 @@
 class Model
 {
 public:
-	Model(Mesh *mesh, const glm::vec3 &position, const glm::vec3 &direction);
+	Model(Mesh *mesh, const glm::vec3 &position, const glm::vec3 &direction, const float & scale);
 	Model(Mesh *mesh, const glm::mat4 &matrix = glm::mat4(1.0f));
 	~Model();
 
@@ -24,6 +24,8 @@ public:
 
 	void setLocalMatrix(const glm::mat4& mat);
 	void setWorldMatrix(const glm::mat4& mat);
+
+	void setScale(const float & scale);
 
 private:
 	std::vector<Mesh*> meshes;

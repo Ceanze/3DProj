@@ -8,38 +8,18 @@
 
 EngineCore::EngineCore()
 	:	display("test window"),
-		stateLoader("./Resources/Scenes/scene1.txt", &this->display)
+		stateLoader("Resources/Scenes/scene1.txt", &this->display)
 {
 	/*---------------- TEMP --------------------*/
-	// Load and construct Meshes
-	/*this->mesh = new Mesh();
-	this->mesh2 = new Mesh();
-	this->loader.load(this->mesh, "Cube/Cube.obj");
-	this->loader.load(this->mesh2, "Bunny/bunny.obj");
-*/
 	// Load shader.
 	this->vsShader = new Shader("Phong/Phong.vs", GL_VERTEX_SHADER);
 	this->fsShader = new Shader("Phong/Phong.fs", GL_FRAGMENT_SHADER);
 	this->sp = new ShaderProgram(*this->vsShader, *this->fsShader);
 
-	//// Load data from mesh to GPU.
-	//this->mesh->loadToGPU(this->sp->getID());
-	//this->mesh2->loadToGPU(this->sp->getID());
-
 	for (int i = 0; i < this->stateLoader.getMeshes()->size(); i++)
 	{
 		(*this->stateLoader.getMeshes())[i]->loadToGPU(this->sp->getID());
 	}
-
-	//// Create each model.
-	//this->model = new Model(this->mesh, { 2.0f, 0.5f, 0.0f }, glm::normalize(glm::vec3(1.0f, 2.5f, -5.0f))); // Move cube1 to (2.0, 0.5, 0.0) and make it has the direction norm(2.0, 0.5, -5.0)
-	//this->model2 = new Model(this->mesh, { -2.5f, -0.5f, 0.0f }, glm::normalize(glm::vec3(-2.5f, -0.5f, -5.0f)));// Move cube2 to (-2.5, -0.5, 0.0) and make it has the direction norm(-2.5, -0.5, -5.0)
-	//this->model3 = new Model(this->mesh2, glm::scale(glm::mat4(1.0f), {0.5f, 0.5f, 0.5f})); // Scale down the bunny with a factor of 2.
-
-	//// Creat an entity which has all the models.
-	//this->entity = new Entity(*this->model);
-	//this->entity->addModel(*this->model2);
-	//this->entity->addModel(*this->model3);
 
 	// Construct a simple camera.
 	glUseProgram(sp->getID());
@@ -53,17 +33,7 @@ EngineCore::EngineCore()
 
 EngineCore::~EngineCore()
 {
-	/*---------------- TEMP --------------------*/
-	delete this->mesh;
-	delete this->mesh2;
-	delete this->sp;
-	delete this->model;
-	delete this->model2;
-	delete this->model3;
-	delete this->vsShader;
-	delete this->fsShader;
-	delete this->entity;
-	/*-------------- END TEMP ------------------*/
+
 }
 
 void EngineCore::init()
@@ -95,6 +65,12 @@ void EngineCore::update(const float & dt)
 	//this->entity->getModel(1).setLocalMatrix(glm::rotate(this->entity->getModel(1).getLocalMatrix(), dt*3.0f, { 0.0f, 1.0f, 0.0f })); // Rotate Cube 2
 	//this->entity->setLocalMatrix(glm::rotate(this->entity->getLocalMatrix(), -dt, {0.0f, 1.0f, 0.0f})); // Rotate Entity (rotate Cube 1 and Cube 2 around Bunny).
 	/*-------------- END TEMP ------------------*/
+
+	Entity * temp = (*this->stateLoader.getEntities())[0];
+	temp->getModel(0).setLocalMatrix(glm::rotate(temp->getModel(0).getLocalMatrix(), dt*3.0f, { 0.0f, 1.0f, 0.0f }));
+	temp->getModel(1).setLocalMatrix(glm::rotate(temp->getModel(1).getLocalMatrix(), dt*3.0f, { 0.0f, 1.0f, 0.0f }));
+	temp->setLocalMatrix(glm::rotate(temp->getLocalMatrix(), -dt, { 0.0f, 1.0f, 0.0f }));
+	
 }
 
 void EngineCore::render()
@@ -107,6 +83,8 @@ void EngineCore::render()
 	/*---------------- TEMP --------------------*/
 	glUseProgram(this->sp->getID());
 	
+	//this->entity->draw(this->sp->getID());
+
 	for (int i = 0; i < this->stateLoader.getEntities()->size(); i++)
 		(*this->stateLoader.getEntities())[i]->draw(this->sp->getID());
 

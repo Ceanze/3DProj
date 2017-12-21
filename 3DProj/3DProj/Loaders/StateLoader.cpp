@@ -3,20 +3,28 @@
 #include <fstream>
 #include <sstream>
 
+#include "../Error.h"
+
 StateLoader::StateLoader(const std::string & fileName, Display * ptr)
 {
+	this->nrOfStates = 0;
+
 	this->fileName = fileName;
 	this->displayPtr = ptr;
 
 	this->readFile();
 }
 
+StateLoader::StateLoader()
+{
+}
+
 StateLoader::~StateLoader()
 {
 	for (int i = 0; i < this->nrOfStates; i++)
 		delete states[i];
-
-	delete[] states;
+	if(this->nrOfStates > 0)
+		delete[] states;
 
 	for (int i = 0; i < this->entities.size(); i++)
 		delete this->entities[i];
@@ -93,7 +101,7 @@ void StateLoader::readFile()
 						std::stringstream xx(line);
 						xx >> selection >> pos.x >> pos.y >> pos.z >> scale >> dir.x >> dir.y >> dir.z;
 
-						Model* temp = new Model(this->meshes[selection], pos, dir);
+						Model* temp = new Model(this->meshes[selection], pos, glm::normalize(dir), scale);
 						this->models.push_back(temp);
 					}
 
@@ -110,7 +118,7 @@ void StateLoader::readFile()
 
 						xx >> pos.x >> pos.y >> pos.z >> scale >> dir.x >> dir.y >> dir.z >> isDynamic;
 						xx >> selection;
-						Entity* temp = new Entity(*this->models[selection], pos, dir, isDynamic);
+						Entity* temp = new Entity(*this->models[selection], pos, glm::normalize(dir), isDynamic);
 						for (int j = 0; j < nrOfModels-1; j++)
 						{
 							xx >> selection;
@@ -126,10 +134,16 @@ void StateLoader::readFile()
 		}
 		this->deleteModels();
 	}
+	else
+	{
+		Error::printError("no file found");
+	}
 }
 
 void StateLoader::deleteModels()
 {
 	for (int i = 0; i < this->models.size(); i++)
 		delete this->models[i];
+
+	this->models.resize(0);
 }

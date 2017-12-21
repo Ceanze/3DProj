@@ -9,8 +9,8 @@
 class Entity
 {
 public:
-	Entity(const Model &model, const glm::vec3 &position, const glm::vec3 &direction, bool isDynamic = false);
-	Entity(const Model &model, const glm::mat4 &matrix = glm::mat4(1.0f), bool isDynamic = false);
+	Entity(const Model & model, const glm::vec3 &position, const glm::vec3 &direction, bool isDynamic = false);
+	Entity(const Model & model, const glm::mat4 &matrix = glm::mat4(1.0f), bool isDynamic = false);
 	~Entity();
 
 	void draw(GLuint shaderProgramID);
