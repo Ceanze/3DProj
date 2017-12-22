@@ -2,6 +2,9 @@
 
 #include <chrono>
 
+#include "../ImGui/imgui.h"
+#include "../ImGui/imgui_impl_glfw_gl3.h"
+
 /*---------------- TEMP --------------------*/
 #include <gtc\matrix_transform.hpp>
 /*-------------- END TEMP ------------------*/
@@ -42,9 +45,47 @@ void EngineCore::init()
 	auto previousTime = currentTime;
 	float dt = 0.0f;
 
+	// ------------ GUI TEST VARIABLES --------------
+	bool show_test_window = true;
+	bool show_another_window = false;
+	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+	// ----------------------------------------------
+
 	glfwSetInputMode(display.getWindowPtr(), GLFW_STICKY_KEYS, GL_TRUE);
 	while (glfwGetKey(display.getWindowPtr(), GLFW_KEY_ESCAPE) != GLFW_PRESS && glfwWindowShouldClose(display.getWindowPtr()) == 0)
 	{
+		glfwPollEvents();
+		ImGui_ImplGlfwGL3_NewFrame();
+		
+		// ------------------------------- GUI TEST ---------------------------------
+		{
+			{
+				static float f = 0.0f;
+				ImGui::Text("Hello, world!");
+				ImGui::SliderFloat("float", &f, 0.0f, 1.0f);
+				ImGui::ColorEdit3("clear color", (float*)&clear_color);
+				if (ImGui::Button("Test Window")) show_test_window ^= 1;
+				if (ImGui::Button("Another Window")) show_another_window ^= 1;
+				ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+			}
+			// 2. Show another simple window. In most cases you will use an explicit Begin/End pair to name the window.
+			if (show_another_window)
+			{
+				ImGui::Begin("Another Window", &show_another_window);
+				ImGui::Text("Hello from another window!");
+				ImGui::End();
+			}
+
+			// 3. Show the ImGui test window. Most of the sample code is in ImGui::ShowTestWindow().
+			if (show_test_window)
+			{
+				ImGui::SetNextWindowPos(ImVec2(650, 20), ImGuiCond_FirstUseEver);
+				ImGui::ShowTestWindow(&show_test_window);
+			}
+		}
+		// ------------------------------------------------------------------------
+
+
 		// Compute deltat time (dt)
 		currentTime = std::chrono::high_resolution_clock::now();
 		float dt = std::chrono::duration<float>(currentTime-previousTime).count();
@@ -52,8 +93,6 @@ void EngineCore::init()
 
 		this->update(dt);
 		this->render();
-
-		glfwPollEvents();
 	}
 
 }
@@ -93,6 +132,8 @@ void EngineCore::render()
 
 	/*-------------- END TEMP ------------------*/
 
+	// Draw ImGui elements.
+	ImGui::Render();
 	// Swap buffers
 	glfwSwapBuffers(display.getWindowPtr());
 }

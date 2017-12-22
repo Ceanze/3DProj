@@ -7,8 +7,8 @@
 #include <glm.hpp>
 
 // -------------- DEFAULT SETTINGS --------------
-#define DEFAULT_WIDTH 640
-#define DEFAULT_HEIGHT 480
+#define DEFAULT_WIDTH 840
+#define DEFAULT_HEIGHT 680
 
 // ------------------- MODEL --------------------
 #define MODEL_PATH "./Resources/Models/"

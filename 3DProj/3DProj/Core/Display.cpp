@@ -1,5 +1,8 @@
 #include "Display.h"
 
+#include "../ImGui/imgui.h"
+#include "../ImGui/imgui_impl_glfw_gl3.h"
+
 Display* Display::displayPtr = nullptr;
 
 Display::Display(const std::string & title)
@@ -20,6 +23,7 @@ Display::Display(const std::string & title, unsigned int width, unsigned int hei
 
 Display::~Display()
 {
+	ImGui_ImplGlfwGL3_Shutdown();
 	glfwTerminate();
 	glfwDestroyWindow(this->window);
 }
@@ -81,8 +85,10 @@ void Display::init()
 	glfwWindowHint(GLFW_SAMPLES, 4);// 4x antialiasing
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3); // OpenGL 3.3
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // Make MacOS happy
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); // Modern opengl
+#ifdef __APPLE__
+	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // Make MacOS happy
+#endif
 
 	window = glfwCreateWindow(this->width, this->height, this->title.c_str(), NULL, NULL);
 	if (window == NULL)
@@ -110,5 +116,8 @@ void Display::init()
 	glCullFace(GL_BACK);
 
 	glfwSetWindowSizeCallback(this->window, resizeCallback);
+
+	// Setup ImGui binding
+	ImGui_ImplGlfwGL3_Init(window, true);
 }
 
