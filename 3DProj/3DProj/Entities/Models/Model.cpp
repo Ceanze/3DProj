@@ -47,17 +47,22 @@ void Model::addMesh(Mesh * mesh)
 	this->meshes.push_back(mesh);
 }
 
+std::vector<Mesh*>& Model::getMesh()
+{
+	return this->meshes;
+}
+
 glm::mat4 Model::getTransformation() const
 {
 	return this->worldMatrix*this->localMatrix;
 }
 
-glm::mat4 Model::getLocalMatrix() const
+glm::mat4& Model::getLocalMatrix()
 {
 	return this->localMatrix;
 }
 
-glm::mat4 Model::getWorldMatrix() const
+glm::mat4& Model::getWorldMatrix()
 {
 	return this->worldMatrix;
 }

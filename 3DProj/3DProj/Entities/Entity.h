@@ -19,11 +19,12 @@ public:
 	void updateMatrices(GLuint shaderProgramID, unsigned int modelIndex = 0);
 
 	Model& getModel(unsigned int index);
+	std::vector<Model>& getModels();
 
 	glm::mat4 getTransformation(unsigned int modelIndex = 0) const; // Get this entitie's matrices combined with its model's matrix.
 	glm::mat4 getEntityMatrix() const; // Get this class's matrices combined.
-	glm::mat4 getLocalMatrix() const; // Get this class's local matrix.
-	glm::mat4 getWorldMatrix() const; // Get this class's world matrix.
+	glm::mat4& getLocalMatrix(); // Get this class's local matrix.
+	glm::mat4& getWorldMatrix(); // Get this class's world matrix.
 
 	void setLocalMatrix(const glm::mat4& mat);
 	void setWorldMatrix(const glm::mat4& mat);

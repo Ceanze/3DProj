@@ -47,7 +47,7 @@ void EngineCore::init()
 
 	// ------------ GUI TEST VARIABLES --------------
 	bool show_test_window = true;
-	bool show_another_window = false;
+	bool show_entities_window = false;
 	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 	// ----------------------------------------------
 
@@ -65,14 +65,53 @@ void EngineCore::init()
 				ImGui::SliderFloat("float", &f, 0.0f, 1.0f);
 				ImGui::ColorEdit3("clear color", (float*)&clear_color);
 				if (ImGui::Button("Test Window")) show_test_window ^= 1;
-				if (ImGui::Button("Another Window")) show_another_window ^= 1;
+				if (ImGui::Button("Entities Window")) show_entities_window ^= 1;
 				ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 			}
 			// 2. Show another simple window. In most cases you will use an explicit Begin/End pair to name the window.
-			if (show_another_window)
+			if (show_entities_window)
 			{
-				ImGui::Begin("Another Window", &show_another_window);
-				ImGui::Text("Hello from another window!");
+				ImGui::Begin("Entities Window", &show_entities_window);
+				std::vector<Entity*> entites = *this->stateLoader.getEntities();
+				for (int i = 0; i < entites.size(); i++)
+				{
+					std::string entityName("Entity " + std::to_string(i));
+					if (ImGui::TreeNode(entityName.c_str()))
+					{
+						glm::mat4& wm = entites[i]->getWorldMatrix();
+						glm::vec3 pos = { wm[3][0], wm[3][1], wm[3][2] };
+						ImGui::DragFloat3("Position", &pos[0], 0.01f, -100.0f, 100.0f);
+						wm[3][0] = pos.x;
+						wm[3][1] = pos.y;
+						wm[3][2] = pos.z;
+						std::vector<Model>& models = entites[i]->getModels();
+						for (int j = 0; j < models.size(); j++)
+						{
+							std::string modelName("Model " + std::to_string(j));
+							if (ImGui::TreeNode(modelName.c_str()))
+							{
+								glm::mat4& wm2 = models[j].getWorldMatrix();
+								glm::vec3 pos2 = { wm2[3][0], wm2[3][1], wm2[3][2] };
+								ImGui::DragFloat3("Position", &pos2[0], 0.01f, -100.0f, 100.0f);
+								wm2[3][0] = pos2.x;
+								wm2[3][1] = pos2.y;
+								wm2[3][2] = pos2.z;
+								std::vector<Mesh*>& meshes = models[j].getMeshes();
+								for (int k = 0; k < meshes.size(); k++)
+								{
+									std::string meshName("Mesh " + std::to_string(k));
+									if (ImGui::TreeNode(meshName.c_str()))
+									{
+										ImGui::Text("This is a mesh!");
+										ImGui::TreePop();
+									}
+								}
+								ImGui::TreePop();
+							}
+						}
+						ImGui::TreePop();
+					}
+				}
 				ImGui::End();
 			}
 

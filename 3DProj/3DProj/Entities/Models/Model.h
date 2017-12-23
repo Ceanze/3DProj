@@ -18,9 +18,11 @@ public:
 
 	void addMesh(Mesh *mesh);
 
+	std::vector<Mesh*>& getMesh();
+
 	glm::mat4 getTransformation() const;
-	glm::mat4 getLocalMatrix() const;
-	glm::mat4 getWorldMatrix() const;
+	glm::mat4& getLocalMatrix();
+	glm::mat4& getWorldMatrix();
 
 	void setLocalMatrix(const glm::mat4& mat);
 	void setWorldMatrix(const glm::mat4& mat);

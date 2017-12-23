@@ -65,6 +65,11 @@ Model & Entity::getModel(unsigned int index)
 	return this->models.at(index);
 }
 
+std::vector<Model>& Entity::getModels()
+{
+	return this->models;
+}
+
 glm::mat4 Entity::getTransformation(unsigned int modelIndex) const
 {
 	return this->worldMatrix*this->localMatrix*this->models.at(modelIndex).getTransformation();
@@ -75,12 +80,12 @@ glm::mat4 Entity::getEntityMatrix() const
 	return this->worldMatrix*this->localMatrix;
 }
 
-glm::mat4 Entity::getLocalMatrix() const
+glm::mat4& Entity::getLocalMatrix() 
 {
 	return this->localMatrix;
 }
 
-glm::mat4 Entity::getWorldMatrix() const
+glm::mat4& Entity::getWorldMatrix()
 {
 	return this->worldMatrix;
 }
