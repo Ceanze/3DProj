@@ -23,6 +23,8 @@ void ObjLoader::load(Mesh * mesh, const std::string & name)
 	std::vector<glm::vec3> temp_normals;
 	std::vector<glm::vec2> temp_uvs;
 
+	int numv = 0;
+
 	std::ifstream file(MODEL_PATH+name);
 	if (file.is_open())
 	{
@@ -91,6 +93,7 @@ void ObjLoader::load(Mesh * mesh, const std::string & name)
 					unsigned char triangle[3];
 					for (uint8_t i = 0; i < 3; i++)
 					{
+					numv++;
 						ss >> str;
 						// Get vertex data.
 						if (!hasUvs && hasNormal)
@@ -127,7 +130,7 @@ void ObjLoader::load(Mesh * mesh, const std::string & name)
 
 		if (materials.empty())
 			mesh->material = new Material();
-
+		Error::printError("numv: " + std::to_string(numv));
 		file.close();
 	}
 	else

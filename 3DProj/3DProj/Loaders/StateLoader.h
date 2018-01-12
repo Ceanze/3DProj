@@ -1,7 +1,7 @@
 #ifndef STATELOADER_H
 #define STATELOADER_H
 
-#define STATEFILEPATH ""
+
 
 #include "..\Core\Display.h"
 #include "ObjLoader.h"
