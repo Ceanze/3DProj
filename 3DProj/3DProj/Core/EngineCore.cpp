@@ -36,7 +36,9 @@ EngineCore::EngineCore()
 
 EngineCore::~EngineCore()
 {
-
+	delete this->vsShader;
+	delete this->fsShader;
+	delete this->sp;
 }
 
 void EngineCore::init()
