@@ -147,6 +147,7 @@
     <ClCompile Include="Entities\Models\Material.cpp" />
     <ClCompile Include="Entities\Models\Mesh.cpp" />
     <ClCompile Include="Entities\Models\Model.cpp" />
+    <ClCompile Include="Entities\Node.cpp" />
     <ClCompile Include="Error.cpp" />
     <ClCompile Include="ImGui\imgui.cpp" />
     <ClCompile Include="ImGui\imgui_demo.cpp" />
@@ -155,9 +156,11 @@
     <ClCompile Include="Loaders\MTLLoader.cpp" />
     <ClCompile Include="Loaders\ObjLoader.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Shading\PhongShader.cpp" />
     <ClCompile Include="Shading\Shader.cpp" />
     <ClCompile Include="Shading\ShaderProgram.cpp" />
     <ClCompile Include="Loaders\StateLoader.cpp" />
+    <ClCompile Include="Utils\Transform.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\Config.h" />
@@ -172,6 +175,7 @@
     <ClInclude Include="Entities\Models\Material.h" />
     <ClInclude Include="Entities\Models\Mesh.h" />
     <ClInclude Include="Entities\Models\Model.h" />
+    <ClInclude Include="Entities\Node.h" />
     <ClInclude Include="Error.h" />
     <ClInclude Include="ImGui\imconfig.h" />
     <ClInclude Include="ImGui\imgui.h" />
@@ -182,9 +186,11 @@
     <ClInclude Include="ImGui\stb_truetype.h" />
     <ClInclude Include="Loaders\MTLLoader.h" />
     <ClInclude Include="Loaders\ObjLoader.h" />
+    <ClInclude Include="Shading\PhongShader.h" />
     <ClInclude Include="Shading\Shader.h" />
     <ClInclude Include="Shading\ShaderProgram.h" />
     <ClInclude Include="Loaders\StateLoader.h" />
+    <ClInclude Include="Utils\Transform.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

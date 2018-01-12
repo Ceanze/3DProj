@@ -75,6 +75,15 @@
     <ClCompile Include="ImGui\imgui_impl_glfw_gl3.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Entities\Node.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\Transform.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Shading\PhongShader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\EngineCore.h">
@@ -150,6 +159,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ImGui\stb_truetype.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Entities\Node.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\Transform.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Shading\PhongShader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

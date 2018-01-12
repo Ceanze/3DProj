@@ -80,12 +80,10 @@ void EngineCore::init()
 					std::string entityName("Entity " + std::to_string(i));
 					if (ImGui::TreeNode(entityName.c_str()))
 					{
-						glm::mat4& wm = entites[i]->getWorldMatrix();
-						glm::vec3 pos = { wm[3][0], wm[3][1], wm[3][2] };
+						Transform& m = entites[i]->getWorldTransform();
+						glm::vec3 pos(m.getTranslation());
 						ImGui::DragFloat3("Position", &pos[0], 0.01f, -100.0f, 100.0f);
-						wm[3][0] = pos.x;
-						wm[3][1] = pos.y;
-						wm[3][2] = pos.z;
+						m.setTranslation(pos);
 						std::vector<Model>& models = entites[i]->getModels();
 						for (int j = 0; j < models.size(); j++)
 						{

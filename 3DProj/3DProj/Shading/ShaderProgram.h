@@ -6,15 +6,19 @@
 
 #include "Shader.h"
 
+#include "../Entities/Node.h"
+
 class ShaderProgram
 {
 public:
 	ShaderProgram();
 	ShaderProgram(const Shader& vertexShader, const Shader& fragmentShader);
-	~ShaderProgram();
+	virtual ~ShaderProgram();
 
 	void addShader(const Shader& shader);
 	void link(bool shouldDeleteShaders = true);
+
+	virtual void updateUniforms(Node* entity) {};
 
 	const GLuint getID() const;
 private:
