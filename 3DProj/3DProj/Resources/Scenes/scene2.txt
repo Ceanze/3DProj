@@ -1,0 +1,16 @@
+#StateFile version 1.0
+#Make sure that the path is right in the code
+#Make a #define path "../Models"
+
+states 1 gameState
+
+#Models: (mesh, pos, scale, direction, isDynamic)
+#Entities: (models, pos, theModels,...)
+begin
+1
+Tyra/tyra.obj
+1
+0 0.0 0.0 0.0 0.5 1.0 0.0 0.0 
+1
+1 0.0 0.0 0.0 1.0 1.0 0.0 0.0 1 0
+end
