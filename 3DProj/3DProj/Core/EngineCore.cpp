@@ -23,7 +23,7 @@ EngineCore::EngineCore()
 	this->phongShader = new PhongShader();
 	this->testShader = new TestShader();
 
-	base = new Entity({ 0.0f, 0.0f, -5.0f }, {1.0f, 0.0f, 0.0f});
+	this->base = new Entity({ 0.0f, 0.0f, -5.0f }, {1.0f, 0.0f, 0.0f});
 
 	this->m1 = new Mesh();
 	loader.load(this->m1, "Bunny/bunny.obj");
@@ -37,7 +37,7 @@ EngineCore::EngineCore()
 	this->e2->addMesh(this->m2, this->phongShader);
 	this->e2->addMesh(this->m1, this->testShader);
 	base->addChild(e2);
-
+	
 	Entity* temp = new Entity({ 0.0f, -3.0f, 0.0f }, { 0.0f, 0.0f, 1.0f });
 	temp->addMesh(this->m2, this->phongShader);
 	base->addChild(temp);
@@ -83,10 +83,7 @@ EngineCore::~EngineCore()
 	delete this->phongShader;
 	delete this->m1;
 	delete this->m2;
-	delete this->e1;
-	delete this->e2;
-
-	delete this->arm[0];
+	delete this->base;
 }
 
 void EngineCore::init()
@@ -145,16 +142,17 @@ void EngineCore::update(const float & dt)
 	
 	Transform& tb = this->base->getWorldTransform();
 	tb.setLocalRotation(tb.getLocalRotation() + glm::vec3{ 0.0f, -dt, 0.0f });
-
+	
 	Transform& a1 = this->arm[1]->getWorldTransform();
 	a1.setLocalRotation(a1.getLocalRotation() + glm::vec3{ dt, 0.0f, dt });
 	Transform& a2 = this->arm[3]->getWorldTransform();
 	a2.setLocalRotation(a2.getLocalRotation() + glm::vec3{ -dt, 0.0f, dt });
-
+	
 	Transform& t = this->e1->getWorldTransform();
 	t.setLocalRotation(t.getLocalRotation() + glm::vec3{ dt*1.5f, dt*1.5f, dt*1.5f });
 	
 	this->base->update(dt);
+	
 }
 
 void EngineCore::render()
@@ -166,6 +164,7 @@ void EngineCore::render()
 
 	/*---------------- TEMP --------------------*/
 	this->base->render();
+
 	//this->entity->draw(this->sp->getID());
 
 	//for (int i = 0; i < this->stateLoader.getEntities()->size(); i++)
