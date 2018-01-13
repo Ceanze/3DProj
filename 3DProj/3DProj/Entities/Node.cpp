@@ -18,6 +18,7 @@ Node::~Node()
 
 void Node::addChild(Node * child)
 {
+	child->setParent(this);
 	this->children.push_back(child);
 }
 

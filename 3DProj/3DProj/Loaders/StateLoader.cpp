@@ -121,13 +121,13 @@ void StateLoader::readFile()
 
 							xx >> pos.x >> pos.y >> pos.z >> scale >> dir.x >> dir.y >> dir.z >> isDynamic;
 							xx >> selection;
-							Entity* temp = new Entity(*this->models[selection], pos, glm::normalize(dir), isDynamic);
+							//Entity* temp = new Entity(*this->models[selection], pos, glm::normalize(dir), isDynamic);
 							for (int j = 0; j < nrOfModels - 1; j++)
 							{
 								xx >> selection;
-								temp->addModel(*this->models[selection]);
+								//temp->addModel(*this->models[selection]);
 							}
-							this->entities.push_back(temp);
+							//this->entities.push_back(temp);
 						}
 					}
 				}

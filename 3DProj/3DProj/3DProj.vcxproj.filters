@@ -84,6 +84,9 @@
     <ClCompile Include="Shading\PhongShader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Shading\TestShader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\EngineCore.h">
@@ -170,5 +173,11 @@
     <ClInclude Include="Shading\PhongShader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Shading\TestShader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Shaders\Phong\TestShader.fs" />
   </ItemGroup>
 </Project>

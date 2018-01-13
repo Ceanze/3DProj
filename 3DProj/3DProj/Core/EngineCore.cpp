@@ -10,35 +10,83 @@
 /*-------------- END TEMP ------------------*/
 
 EngineCore::EngineCore()
-	:	display("test window"),
-		stateLoader("Resources/Scenes/scene1.txt", &this->display)
+	:	display("test window")//,
+		//stateLoader("Resources/Scenes/scene1.txt", &this->display)
 {
 	/*---------------- TEMP --------------------*/
 	// Load shader.
-	this->vsShader = new Shader("Phong/Phong.vs", GL_VERTEX_SHADER);
-	this->fsShader = new Shader("Phong/Phong.fs", GL_FRAGMENT_SHADER);
-	this->sp = new ShaderProgram(*this->vsShader, *this->fsShader);
+	//this->vsShader = new Shader("Phong/Phong.vs", GL_VERTEX_SHADER);
+	//this->fsShader = new Shader("Phong/Phong.fs", GL_FRAGMENT_SHADER);
+	//this->sp = new ShaderProgram(*this->vsShader, *this->fsShader);
 
+	// Create Shader
+	this->phongShader = new PhongShader();
+	this->testShader = new TestShader();
+
+	base = new Entity({ 0.0f, 0.0f, -5.0f }, {1.0f, 0.0f, 0.0f});
+
+	this->m1 = new Mesh();
+	loader.load(this->m1, "Bunny/bunny.obj");
+	this->e1 = new Entity({ -3.0f, 1.f, -5.0f }, glm::normalize(glm::vec3{ 0.1f, 2.0f, -2.0f }), false);
+	this->e1->addMesh(this->m1, this->phongShader);
+	base->addChild(e1);
+	
+	this->m2 = new Mesh();
+	loader.load(this->m2, "Cube/Cube.obj");
+	this->e2 = new Entity({ 3.0f, -1.f, -5.0f }, glm::normalize(glm::vec3{ 2.0f, -0.0f, -1.0f }), false);
+	this->e2->addMesh(this->m2, this->phongShader);
+	this->e2->addMesh(this->m1, this->testShader);
+	base->addChild(e2);
+
+	Entity* temp = new Entity({ 0.0f, -3.0f, 0.0f }, { 0.0f, 0.0f, 1.0f });
+	temp->addMesh(this->m2, this->phongShader);
+	base->addChild(temp);
+	this->arm.push_back(temp);
+
+	temp = new Entity({ 0.0f, 2.0f, 0.0f }, { 0.0f, 0.0f, 1.0f });
+	temp->addMesh(this->m2, this->phongShader);
+	this->arm[this->arm.size() - 1]->addChild(temp);
+	this->arm.push_back(temp);
+
+	temp = new Entity({ 0.0f, 2.0f, 0.0f }, { 0.0f, 0.0f, 1.0f });
+	temp->addMesh(this->m2, this->phongShader);
+	this->arm[this->arm.size() - 1]->addChild(temp);
+	this->arm.push_back(temp);
+
+	temp = new Entity({ 0.0f, 2.0f, 0.0f }, { 0.0f, 0.0f, 1.0f });
+	temp->addMesh(this->m2, this->phongShader);
+	this->arm[this->arm.size() - 1]->addChild(temp);
+	this->arm.push_back(temp);
+	
+	/*
 	for (int i = 0; i < this->stateLoader.getMeshes()->size(); i++)
 	{
 		(*this->stateLoader.getMeshes())[i]->loadToGPU(this->sp->getID());
-	}
+	}*/
 
 	// Construct a simple camera.
-	glUseProgram(sp->getID());
+	/*glUseProgram(sp->getID());
 	GLuint camLoc = glGetUniformLocation(this->sp->getID(), "camera");
 	if (camLoc == -1) fprintf(stderr, "Can't find 'camera' in the shader!");
 	glm::mat4 proj = glm::perspective(glm::pi<float>() / 4.0f, this->display.getRatio(), 0.1f, 100.0f);
 	glm::mat4 cam = proj*glm::lookAt(glm::vec3( 0.0f, 0.0f, 10.0f ), glm::vec3( 0.0f, 0.0f, 0.0f ), glm::vec3(0.0f, 1.0f, 0.0f));
-	glUniformMatrix4fv(camLoc, 1, GL_FALSE, &cam[0][0]);
+	glUniformMatrix4fv(camLoc, 1, GL_FALSE, &cam[0][0]);*/
 	/*-------------- END TEMP ------------------*/
 }
 
 EngineCore::~EngineCore()
 {
-	delete this->vsShader;
+	/*delete this->vsShader;
 	delete this->fsShader;
-	delete this->sp;
+	delete this->sp;*/
+	delete this->testShader;
+	delete this->phongShader;
+	delete this->m1;
+	delete this->m2;
+	delete this->e1;
+	delete this->e2;
+
+	delete this->arm[0];
 }
 
 void EngineCore::init()
@@ -48,8 +96,6 @@ void EngineCore::init()
 	float dt = 0.0f;
 
 	// ------------ GUI TEST VARIABLES --------------
-	bool show_test_window = true;
-	bool show_entities_window = false;
 	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 	// ----------------------------------------------
 
@@ -60,68 +106,7 @@ void EngineCore::init()
 		ImGui_ImplGlfwGL3_NewFrame();
 		
 		// ------------------------------- GUI TEST ---------------------------------
-		{
-			{
-				static float f = 0.0f;
-				ImGui::Text("Hello, world!");
-				ImGui::SliderFloat("float", &f, 0.0f, 1.0f);
-				ImGui::ColorEdit3("clear color", (float*)&clear_color);
-				if (ImGui::Button("Test Window")) show_test_window ^= 1;
-				if (ImGui::Button("Entities Window")) show_entities_window ^= 1;
-				ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-			}
-			// 2. Show another simple window. In most cases you will use an explicit Begin/End pair to name the window.
-			if (show_entities_window)
-			{
-				ImGui::Begin("Entities Window", &show_entities_window);
-				std::vector<Entity*> entites = *this->stateLoader.getEntities();
-				for (int i = 0; i < entites.size(); i++)
-				{
-					std::string entityName("Entity " + std::to_string(i));
-					if (ImGui::TreeNode(entityName.c_str()))
-					{
-						Transform& m = entites[i]->getWorldTransform();
-						glm::vec3 pos(m.getTranslation());
-						ImGui::DragFloat3("Position", &pos[0], 0.01f, -100.0f, 100.0f);
-						m.setTranslation(pos);
-						std::vector<Model>& models = entites[i]->getModels();
-						for (int j = 0; j < models.size(); j++)
-						{
-							std::string modelName("Model " + std::to_string(j));
-							if (ImGui::TreeNode(modelName.c_str()))
-							{
-								glm::mat4& wm2 = models[j].getWorldMatrix();
-								glm::vec3 pos2 = { wm2[3][0], wm2[3][1], wm2[3][2] };
-								ImGui::DragFloat3("Position", &pos2[0], 0.01f, -100.0f, 100.0f);
-								wm2[3][0] = pos2.x;
-								wm2[3][1] = pos2.y;
-								wm2[3][2] = pos2.z;
-								std::vector<Mesh*>& meshes = models[j].getMeshes();
-								for (int k = 0; k < meshes.size(); k++)
-								{
-									std::string meshName("Mesh " + std::to_string(k));
-									if (ImGui::TreeNode(meshName.c_str()))
-									{
-										ImGui::Text("This is a mesh!");
-										ImGui::TreePop();
-									}
-								}
-								ImGui::TreePop();
-							}
-						}
-						ImGui::TreePop();
-					}
-				}
-				ImGui::End();
-			}
-
-			// 3. Show the ImGui test window. Most of the sample code is in ImGui::ShowTestWindow().
-			if (show_test_window)
-			{
-				ImGui::SetNextWindowPos(ImVec2(650, 20), ImGuiCond_FirstUseEver);
-				ImGui::ShowTestWindow(&show_test_window);
-			}
-		}
+		renderGui();
 		// ------------------------------------------------------------------------
 
 
@@ -144,14 +129,32 @@ void EngineCore::update(const float & dt)
 	//this->entity->setLocalMatrix(glm::rotate(this->entity->getLocalMatrix(), -dt, {0.0f, 1.0f, 0.0f})); // Rotate Entity (rotate Cube 1 and Cube 2 around Bunny).
 	/*-------------- END TEMP ------------------*/
 
+	/*
 	if (this->stateLoader.getEntities()->size() > 0)
 	{
 		Entity * temp = (*this->stateLoader.getEntities())[0];
-		temp->getModel(0).setLocalMatrix(glm::rotate(temp->getModel(0).getLocalMatrix(), dt*3.0f, { 0.0f, 1.0f, 0.0f }));
-		temp->getModel(1).setLocalMatrix(glm::rotate(temp->getModel(1).getLocalMatrix(), dt*3.0f, { 0.0f, 1.0f, 0.0f }));
-		temp->setLocalMatrix(glm::rotate(temp->getLocalMatrix(), -dt, { 0.0f, 1.0f, 0.0f }));
-	}
+		//temp->getModel(0).setLocalMatrix(glm::rotate(temp->getModel(0).getLocalMatrix(), dt*3.0f, { 0.0f, 1.0f, 0.0f }));
+		//temp->getModel(1).setLocalMatrix(glm::rotate(temp->getModel(1).getLocalMatrix(), dt*3.0f, { 0.0f, 1.0f, 0.0f }));
+		//temp->setLocalMatrix(glm::rotate(temp->getLocalMatrix(), -dt, { 0.0f, 1.0f, 0.0f }));
+	}*/
+
+	float& time = this->testShader->getTime();
+	time += dt*3.0f;
+	if (time > 10)
+		time = 0;
 	
+	Transform& tb = this->base->getWorldTransform();
+	tb.setLocalRotation(tb.getLocalRotation() + glm::vec3{ 0.0f, -dt, 0.0f });
+
+	Transform& a1 = this->arm[1]->getWorldTransform();
+	a1.setLocalRotation(a1.getLocalRotation() + glm::vec3{ dt, 0.0f, dt });
+	Transform& a2 = this->arm[3]->getWorldTransform();
+	a2.setLocalRotation(a2.getLocalRotation() + glm::vec3{ -dt, 0.0f, dt });
+
+	Transform& t = this->e1->getWorldTransform();
+	t.setLocalRotation(t.getLocalRotation() + glm::vec3{ dt*1.5f, dt*1.5f, dt*1.5f });
+	
+	this->base->update(dt);
 }
 
 void EngineCore::render()
@@ -162,12 +165,11 @@ void EngineCore::render()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	/*---------------- TEMP --------------------*/
-	glUseProgram(this->sp->getID());
-	
+	this->base->render();
 	//this->entity->draw(this->sp->getID());
 
-	for (int i = 0; i < this->stateLoader.getEntities()->size(); i++)
-		(*this->stateLoader.getEntities())[i]->draw(this->sp->getID());
+	//for (int i = 0; i < this->stateLoader.getEntities()->size(); i++)
+	//	(*this->stateLoader.getEntities())[i]->render();
 
 	/*-------------- END TEMP ------------------*/
 
@@ -175,5 +177,53 @@ void EngineCore::render()
 	ImGui::Render();
 	// Swap buffers
 	glfwSwapBuffers(display.getWindowPtr());
+}
+
+void EngineCore::renderGui()
+{
+	static bool show_node_tree_window = false;
+	{
+		ImGui::Text("Hello, world!");
+		if (ImGui::Button("Node tree Window")) show_node_tree_window ^= 1;
+		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+	}
+	// 2. Show another simple window. In most cases you will use an explicit Begin/End pair to name the window.
+	if (show_node_tree_window)
+	{
+		ImGui::Begin("Node tree Window", &show_node_tree_window);
+		if (ImGui::TreeNode("Base Node level 0"))
+		{
+			renderNodeGUI(this->base);
+			ImGui::TreePop();
+		}
+		ImGui::End();
+	}
+}
+
+void EngineCore::renderNodeGUI(Node* e, int level)
+{
+	Transform& t = e->getWorldTransform();
+	glm::vec3 pos = t.getLocalTranslation();
+	ImGui::DragFloat3("Position", &pos[0], 0.01f, -100.0f, 100.0f);
+	t.setLocalTranslation(pos);
+
+	glm::vec3 rot = t.getLocalRotation();
+	ImGui::DragFloat3("Rotation", &rot[0], 0.01f, 0.0f, 2*3.1415f);
+	t.setLocalRotation(rot);
+
+	glm::vec3 scale = t.getLocalScale();
+	ImGui::DragFloat3("Scale", &scale[0], 0.01f, 0.01f, 100.0f);
+	t.setLocalScale(scale);
+
+	std::vector<Node*>& nodes = e->getChildren();
+	for (int i = 0; i < nodes.size(); i++)
+	{
+		std::string nodeName("Node " + std::to_string(i) + " in level " + std::to_string(level));
+		if (ImGui::TreeNode(nodeName.c_str()))
+		{
+			renderNodeGUI(nodes[i], level+1);
+			ImGui::TreePop();
+		}
+	}
 }
 

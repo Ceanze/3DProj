@@ -11,9 +11,11 @@ public:
 	void setTranslation(const glm::vec3& translation);
 	void setRotation(const glm::vec3& rotation);
 	void setScale(const glm::vec3& scale);
+	void setDirection(const glm::vec3& dir);
 	void setLocalTranslation(const glm::vec3& translation);
 	void setLocalRotation(const glm::vec3& rotation);
 	void setLocalScale(const glm::vec3& scale);
+	void setLocalDirection(const glm::vec3& dir);
 
 	glm::vec3 getTranslation() const;
 	glm::vec3 getRotation() const;

@@ -1,6 +1,8 @@
 #include "Transform.h"
 
 #include <gtc\matrix_transform.hpp>
+#include <gtc\quaternion.hpp>
+#include <gtx\quaternion.hpp>
 
 Transform::Transform()
 {
@@ -27,13 +29,23 @@ void Transform::setTranslation(const glm::vec3 & translation)
 void Transform::setRotation(const glm::vec3 & rotation)
 {
 	this->rotation = rotation;
-	this->worldMatrix = glm::mat4(1.0f);
+
+	const float cosX = glm::cos(rotation.x);
+	const float sinX = glm::sin(rotation.x);
+	const glm::mat4 rotX = glm::mat4{ {1.0f, 0.0f, 0.0f, 0.0f}, {0.0f, cosX, sinX, 0.0f}, {0.0f, -sinX, cosX, 0.0f}, {0.0f, 0.0f, 0.0f, 1.0f} };
+
+	const float cosY = glm::cos(rotation.y);
+	const float sinY = glm::sin(rotation.y);
+	const glm::mat4 rotY = glm::mat4{ { cosY, 0.0f, -sinY, 0.0f },{ 0.0f, 1.0f, 0.0f, 0.0f },{ sinY, 0.0f, cosY, 0.0f },{ 0.0f, 0.0f, 0.0f, 1.0f } };
+
+	const float cosZ = glm::cos(rotation.z);
+	const float sinZ = glm::sin(rotation.z);
+	const glm::mat4 rotZ = glm::mat4{ { cosZ, sinZ, 0.0f, 0.0f },{ -sinZ, cosZ, 0.0f, 0.0f },{ 0.0f, 0.0f, 1.0f, 0.0f },{ 0.0f, 0.0f, 0.0f, 1.0f } };
+
+	const glm::mat4 scaleMat = glm::mat4{ { this->scale.x, 0.0f, 0.0f, 0.0f },{ 0.0f, this->scale.y, 0.0f, 0.0f },{ 0.0f, 0.0f, this->scale.z, 0.0f },{ 0.0f, 0.0f, 0.0f, 1.0f } };
+
+	this->worldMatrix = rotZ*rotY*rotX*scaleMat;
 	setTranslation(this->translation);
-	setScale(this->scale);
-	// This might be worng order. TODO: Make this myself instead of using glm::rotate.
-	glm::rotate(this->worldMatrix, rotation.x, {0.0f, 1.0f, 0.0f});
-	glm::rotate(this->worldMatrix, rotation.y, {0.0f, 1.0f, 0.0f});
-	glm::rotate(this->worldMatrix, rotation.z, {0.0f, 1.0f, 0.0f});
 }
 
 void Transform::setScale(const glm::vec3 & scale)
@@ -42,6 +54,26 @@ void Transform::setScale(const glm::vec3 & scale)
 	this->worldMatrix[0][0] = scale.x;
 	this->worldMatrix[1][1] = scale.y;
 	this->worldMatrix[2][2] = scale.z;
+}
+
+void Transform::setDirection(const glm::vec3 & dir)
+{
+	const glm::vec3 f = dir;
+	glm::vec3 r;
+
+	if (f == glm::vec3(0.0f, 1.0f, 0.0f))
+	{
+		r = glm::normalize(glm::cross(f, glm::vec3(1.0f, 0.0f, 0.0f)));
+	}
+	else
+	{
+		r = glm::normalize(glm::cross(f, glm::vec3(0.0f, 1.0f, 0.0f)));
+	}
+
+	const glm::vec3 u = glm::cross(r, f);
+	const glm::mat4 scaleMat = glm::mat4{ { this->scale.x, 0.0f, 0.0f, 0.0f },{ 0.0f, this->scale.y, 0.0f, 0.0f },{ 0.0f, 0.0f, this->scale.z, 0.0f },{ 0.0f, 0.0f, 0.0f, 1.0f } };
+
+	this->worldMatrix = glm::mat4({ -r.x, -r.y, -r.z, 0.0f }, { u.x, u.y, u.z, 0.0f }, { f.x, f.y, f.z, 0.0f }, { this->translation.x, this->translation.y, this->translation.z, 1.0f })*scaleMat;
 }
 
 void Transform::setLocalTranslation(const glm::vec3 & translation)
@@ -55,13 +87,23 @@ void Transform::setLocalTranslation(const glm::vec3 & translation)
 void Transform::setLocalRotation(const glm::vec3 & rotation)
 {
 	this->localRotation = rotation;
-	this->localMatrix = glm::mat4(1.0f);
+
+	const float cosX = glm::cos(rotation.x);
+	const float sinX = glm::sin(rotation.x);
+	const glm::mat4 rotX = glm::mat4{ { 1.0f, 0.0f, 0.0f, 0.0f },{ 0.0f, cosX, sinX, 0.0f },{ 0.0f, -sinX, cosX, 0.0f },{ 0.0f, 0.0f, 0.0f, 1.0f } };
+
+	const float cosY = glm::cos(rotation.y);
+	const float sinY = glm::sin(rotation.y);
+	const glm::mat4 rotY = glm::mat4{ { cosY, 0.0f, -sinY, 0.0f },{ 0.0f, 1.0f, 0.0f, 0.0f },{ sinY, 0.0f, cosY, 0.0f },{ 0.0f, 0.0f, 0.0f, 1.0f } };
+
+	const float cosZ = glm::cos(rotation.z);
+	const float sinZ = glm::sin(rotation.z);
+	const glm::mat4 rotZ = glm::mat4{ { cosZ, sinZ, 0.0f, 0.0f },{ -sinZ, cosZ, 0.0f, 0.0f },{ 0.0f, 0.0f, 1.0f, 0.0f },{ 0.0f, 0.0f, 0.0f, 1.0f } };
+
+	const glm::mat4 scaleMat = glm::mat4{ { this->localScale.x, 0.0f, 0.0f, 0.0f },{ 0.0f, this->localScale.y, 0.0f, 0.0f },{ 0.0f, 0.0f, this->localScale.z, 0.0f },{ 0.0f, 0.0f, 0.0f, 1.0f } };
+
+	this->localMatrix = rotZ*rotY*rotX*scaleMat;
 	setLocalTranslation(this->localTranslation);
-	setLocalScale(this->localScale);
-	// This might be worng order. TODO: Make this myself instead of using glm::rotate.
-	glm::rotate(this->localMatrix, rotation.x, {0.0f, 1.0f, 0.0f});
-	glm::rotate(this->localMatrix, rotation.y, { 0.0f, 1.0f, 0.0f });
-	glm::rotate(this->localMatrix, rotation.z, { 0.0f, 1.0f, 0.0f });
 }
 
 void Transform::setLocalScale(const glm::vec3 & scale)
@@ -70,6 +112,26 @@ void Transform::setLocalScale(const glm::vec3 & scale)
 	this->localMatrix[0][0] = scale.x;
 	this->localMatrix[1][1] = scale.y;
 	this->localMatrix[2][2] = scale.z;
+}
+
+void Transform::setLocalDirection(const glm::vec3 & dir)
+{
+	const glm::vec3 f = dir;
+	glm::vec3 r;
+
+	if (f == glm::vec3(0.0f, 1.0f, 0.0f))
+	{
+		r = glm::normalize(glm::cross(f, glm::vec3(1.0f, 0.0f, 0.0f)));
+	}
+	else
+	{
+		r = glm::normalize(glm::cross(f, glm::vec3(0.0f, 1.0f, 0.0f)));
+	}
+
+	const glm::vec3 u = glm::cross(r, f);
+	const glm::mat4 scaleMat = glm::mat4{ { this->localScale.x, 0.0f, 0.0f, 0.0f },{ 0.0f, this->localScale.y, 0.0f, 0.0f },{ 0.0f, 0.0f, this->localScale.z, 0.0f },{ 0.0f, 0.0f, 0.0f, 1.0f } };
+
+	this->localMatrix = glm::mat4({ -r.x, -r.y, -r.z, 0.0f }, { u.x, u.y, u.z, 0.0f }, { f.x, f.y, f.z, 0.0f }, { this->localTranslation.x, this->localTranslation.y, this->localTranslation.z, 1.0f })*scaleMat;
 }
 
 glm::vec3 Transform::getTranslation() const

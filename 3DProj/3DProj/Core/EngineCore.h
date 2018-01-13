@@ -12,7 +12,10 @@
 #include "../Entities/Entity.h"
 #include "../Loaders/ObjLoader.h"
 #include "../Shading/Shader.h"
+
 #include "../Shading/ShaderProgram.h"
+#include "../Shading/PhongShader.h"
+#include "../Shading/TestShader.h"
 /*-------------- END TEMP ------------------*/
 
 class EngineCore
@@ -27,15 +30,28 @@ private:
 	void update(const float& dt);
 	void render();
 
+	void renderGui();
+	void renderNodeGUI(Node* e, int level = 0);
+
 	Display display;
 
-	StateManager states;
-	StateLoader stateLoader;
+	//StateManager states;
+	//StateLoader stateLoader;
 
 	/*---------------- TEMP --------------------*/
-	Shader* vsShader = nullptr;
+	/*Shader* vsShader = nullptr;
 	Shader* fsShader = nullptr;
 	ShaderProgram* sp = nullptr;
+	*/
+	PhongShader* phongShader;
+	TestShader* testShader;
+	Entity* base;
+	Entity* e1;
+	Entity* e2;
+	std::vector<Entity*> arm;
+	Mesh* m1;
+	Mesh* m2;
+	ObjLoader loader;
 	/*-------------- END TEMP ------------------*/
 };
 
