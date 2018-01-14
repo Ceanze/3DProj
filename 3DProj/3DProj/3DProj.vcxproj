@@ -138,6 +138,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Entities\Components\Component.cpp" />
     <ClCompile Include="Core\Display.cpp" />
     <ClCompile Include="Core\EngineCore.cpp" />
     <ClCompile Include="Core\States\GameState.cpp" />
@@ -146,7 +147,6 @@
     <ClCompile Include="Entities\Entity.cpp" />
     <ClCompile Include="Entities\Models\Material.cpp" />
     <ClCompile Include="Entities\Models\Mesh.cpp" />
-    <ClCompile Include="Entities\Models\Model.cpp" />
     <ClCompile Include="Entities\Node.cpp" />
     <ClCompile Include="Error.cpp" />
     <ClCompile Include="ImGui\imgui.cpp" />
@@ -161,9 +161,11 @@
     <ClCompile Include="Shading\ShaderProgram.cpp" />
     <ClCompile Include="Loaders\StateLoader.cpp" />
     <ClCompile Include="Shading\TestShader.cpp" />
+    <ClCompile Include="Entities\Components\Movement Components\testComponent.cpp" />
     <ClCompile Include="Utils\Transform.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Entities\Components\Component.h" />
     <ClInclude Include="Core\Config.h" />
     <ClInclude Include="Core\Display.h" />
     <ClInclude Include="Core\EngineCore.h" />
@@ -175,7 +177,6 @@
     <ClInclude Include="Entities\Entity.h" />
     <ClInclude Include="Entities\Models\Material.h" />
     <ClInclude Include="Entities\Models\Mesh.h" />
-    <ClInclude Include="Entities\Models\Model.h" />
     <ClInclude Include="Entities\Node.h" />
     <ClInclude Include="Error.h" />
     <ClInclude Include="ImGui\imconfig.h" />
@@ -192,6 +193,7 @@
     <ClInclude Include="Shading\ShaderProgram.h" />
     <ClInclude Include="Loaders\StateLoader.h" />
     <ClInclude Include="Shading\TestShader.h" />
+    <ClInclude Include="Entities\Components\Movement Components\testComponent.h" />
     <ClInclude Include="Utils\Transform.h" />
   </ItemGroup>
   <ItemGroup>

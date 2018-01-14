@@ -4,6 +4,7 @@
 
 #include "../ImGui/imgui.h"
 #include "../ImGui/imgui_impl_glfw_gl3.h"
+#include "..\Entities\Components\Movement Components\testComponent.h"
 
 /*---------------- TEMP --------------------*/
 #include <gtc\matrix_transform.hpp>
@@ -27,12 +28,14 @@ EngineCore::EngineCore()
 
 	this->m1 = new Mesh();
 	loader.load(this->m1, "Bunny/bunny.obj");
-	this->e1 = new Entity({ -3.0f, 1.f, -5.0f }, glm::normalize(glm::vec3{ 0.1f, 2.0f, -2.0f }), false);
-	this->e1->addMesh(this->m1, this->phongShader);
-	base->addChild(e1);
-	
 	this->m2 = new Mesh();
 	loader.load(this->m2, "Cube/Cube.obj");
+	
+	this->e1 = new Entity({ -3.0f, 1.f, -5.0f }, glm::normalize(glm::vec3{ 0.1f, 2.0f, -2.0f }), false);
+	this->e1->addMesh(this->m1, this->phongShader);
+	this->e1->addComponent(new testComponent());
+	base->addChild(e1);
+	/*
 	this->e2 = new Entity({ 3.0f, -1.f, -5.0f }, glm::normalize(glm::vec3{ 2.0f, -0.0f, -1.0f }), false);
 	this->e2->addMesh(this->m2, this->phongShader);
 	this->e2->addMesh(this->m1, this->testShader);
@@ -56,7 +59,7 @@ EngineCore::EngineCore()
 	temp = new Entity({ 0.0f, 2.0f, 0.0f }, { 0.0f, 0.0f, 1.0f });
 	temp->addMesh(this->m2, this->phongShader);
 	this->arm[this->arm.size() - 1]->addChild(temp);
-	this->arm.push_back(temp);
+	this->arm.push_back(temp);*/
 	
 	/*
 	for (int i = 0; i < this->stateLoader.getMeshes()->size(); i++)
@@ -112,6 +115,7 @@ void EngineCore::init()
 		float dt = std::chrono::duration<float>(currentTime-previousTime).count();
 		previousTime = currentTime;
 
+		this->input(&this->display);
 		this->update(dt);
 		this->render();
 	}
@@ -140,16 +144,7 @@ void EngineCore::update(const float & dt)
 	if (time > 10)
 		time = 0;
 	
-	Transform& tb = this->base->getWorldTransform();
-	tb.setLocalRotation(tb.getLocalRotation() + glm::vec3{ 0.0f, -dt, 0.0f });
 	
-	Transform& a1 = this->arm[1]->getWorldTransform();
-	a1.setLocalRotation(a1.getLocalRotation() + glm::vec3{ dt, 0.0f, dt });
-	Transform& a2 = this->arm[3]->getWorldTransform();
-	a2.setLocalRotation(a2.getLocalRotation() + glm::vec3{ -dt, 0.0f, dt });
-	
-	Transform& t = this->e1->getWorldTransform();
-	t.setLocalRotation(t.getLocalRotation() + glm::vec3{ dt*1.5f, dt*1.5f, dt*1.5f });
 	
 	this->base->update(dt);
 	
@@ -176,6 +171,11 @@ void EngineCore::render()
 	ImGui::Render();
 	// Swap buffers
 	glfwSwapBuffers(display.getWindowPtr());
+}
+
+void EngineCore::input(Display* display)
+{
+	base->input(display);
 }
 
 void EngineCore::renderGui()

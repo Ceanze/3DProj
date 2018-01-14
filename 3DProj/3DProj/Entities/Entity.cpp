@@ -1,4 +1,5 @@
 #include "Entity.h"
+#include "Components\Component.h"
 
 #include <gtc\matrix_transform.hpp>
 #include <string>
@@ -20,6 +21,8 @@ Entity::Entity(const glm::mat4 &matrix, bool isDynamic)
 
 Entity::~Entity()
 {
+	for (int i = 0; i < this->components.size(); i++)
+		delete this->components[i];
 }
 
 void Entity::addMesh(Mesh * mesh, ShaderProgram * shader)
@@ -34,9 +37,18 @@ void Entity::addMesh(Mesh * mesh, ShaderProgram * shader)
 	this->shaderMap[shader].push_back(this->meshes.size() - 1);
 }
 
+void Entity::addComponent(Component* component)
+{
+	component->setEntity(this);
+	this->components.push_back(component);
+}
+
 void Entity::selfUpdate(float dt)
 {
-
+	for (int i = 0; i < this->components.size(); i++)
+	{
+		this->components[i]->update(dt);
+	}
 }
 
 void Entity::selfRender()
@@ -48,5 +60,13 @@ void Entity::selfRender()
 		this->shaders[i]->updateUniforms(this);
 		for (unsigned int j = 0; j < meshIds.size(); j++)
 			this->meshes[meshIds[j]]->draw();
+	}
+}
+
+void Entity::selfInput(Display * display)
+{
+	for (int i = 0; i < this->components.size(); i++)
+	{
+		this->components[i]->input(display);
 	}
 }

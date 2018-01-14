@@ -40,6 +40,15 @@ void Node::update(float dt)
 		this->worldTransform.setWorldMatrix(this->worldTransform.getLocalMatrix());
 }
 
+void Node::input(Display * display)
+{
+	this->selfInput(display);
+
+	for (Node* node : this->children)
+		node->selfInput(display);
+	
+}
+
 void Node::render()
 {
 	selfRender();

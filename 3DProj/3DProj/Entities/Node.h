@@ -6,6 +6,8 @@
 
 #include "../Utils/Transform.h"
 
+class Display;
+
 class Node
 {
 public:
@@ -16,6 +18,7 @@ public:
 	void setParent(Node* parent);
 
 	void update(float dt);
+	void input(Display* display);
 	void render();
 
 	Node* getParent();
@@ -27,6 +30,7 @@ public:
 private:
 	virtual void selfUpdate(float dt) = 0;
 	virtual void selfRender() = 0;
+	virtual void selfInput(Display* display) = 0;
 
 	Node* parent;
 	std::vector<Node*> children;
