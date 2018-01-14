@@ -23,6 +23,7 @@ public:
 
 	Transform& getWorldTransform();
 	Transform& getLocalTransform();
+	Transform& getChainTransform();
 
 private:
 	virtual void selfUpdate(float dt) = 0;
@@ -33,6 +34,7 @@ private:
 	
 	Transform worldTransform;
 	Transform localTransform;
+	Transform chainTransform;
 };
 
 #endif
