@@ -27,12 +27,13 @@ EngineCore::EngineCore()
 
 	this->m1 = new Mesh();
 	loader.load(this->m1, "Bunny/bunny.obj");
+	this->m2 = new Mesh();
+	loader.load(this->m2, "Cube/Cube.obj");
+
 	this->e1 = new Entity({ -3.0f, 1.f, -5.0f }, glm::normalize(glm::vec3{ 0.1f, 2.0f, -2.0f }), false);
 	this->e1->addMesh(this->m1, this->phongShader);
 	base->addChild(e1);
 	
-	this->m2 = new Mesh();
-	loader.load(this->m2, "Cube/Cube.obj");
 	this->e2 = new Entity({ 3.0f, -1.f, -5.0f }, glm::normalize(glm::vec3{ 2.0f, -0.0f, -1.0f }), false);
 	this->e2->addMesh(this->m2, this->phongShader);
 	this->e2->addMesh(this->m1, this->testShader);

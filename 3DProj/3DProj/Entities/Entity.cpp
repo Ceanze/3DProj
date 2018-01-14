@@ -36,7 +36,7 @@ void Entity::addMesh(Mesh * mesh, ShaderProgram * shader)
 
 void Entity::selfUpdate(float dt)
 {
-
+	
 }
 
 void Entity::selfRender()
