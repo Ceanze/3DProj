@@ -27,6 +27,14 @@ void Node::setParent(Node * parent)
 	this->parent = parent;
 }
 
+void Node::init()
+{
+	selfInit();
+
+	for (Node* node : this->children)
+		node->selfInit();
+}
+
 void Node::update(float dt)
 {
 	selfUpdate(dt);

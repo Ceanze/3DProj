@@ -90,6 +90,9 @@
     <ClCompile Include="Entities\Components\Movement Components\testComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Entities\Components\Camera\Camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\EngineCore.h">
@@ -180,6 +183,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Entities\Components\Movement Components\testComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Entities\Components\Camera\Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

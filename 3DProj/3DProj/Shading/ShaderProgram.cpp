@@ -49,6 +49,22 @@ void ShaderProgram::link(bool shouldDeleteShaders)
 	}
 }
 
+void ShaderProgram::setCamera(Camera * camera)
+{
+	this->camera = camera;
+}
+
+void ShaderProgram::updateUniforms(Node * entity)
+{
+	GLuint camLoc = glGetUniformLocation(this->getID(), "camera");
+	if (camLoc != -1)
+	{
+		glUniformMatrix4fv(camLoc, 1, GL_FALSE, &(this->camera->getVP())[0][0]);
+	}
+
+	selfUpdateUniforms(entity);
+}
+
 const GLuint ShaderProgram::getID() const
 {
 	return this->id;

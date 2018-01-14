@@ -28,6 +28,7 @@ private:
 	std::vector<ShaderProgram*> shaders;
 	std::map<ShaderProgram*, std::vector<unsigned int>> shaderMap;
 
+	void selfInit();
 	void selfUpdate(float dt);
 	void selfRender();
 	void selfInput(Display* display);

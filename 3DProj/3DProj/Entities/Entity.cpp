@@ -43,12 +43,16 @@ void Entity::addComponent(Component* component)
 	this->components.push_back(component);
 }
 
+void Entity::selfInit()
+{
+	for (int i = 0; i < this->components.size(); i++)
+		this->components[i]->init();
+}
+
 void Entity::selfUpdate(float dt)
 {
 	for (int i = 0; i < this->components.size(); i++)
-	{
 		this->components[i]->update(dt);
-	}
 }
 
 void Entity::selfRender()
@@ -66,7 +70,5 @@ void Entity::selfRender()
 void Entity::selfInput(Display * display)
 {
 	for (int i = 0; i < this->components.size(); i++)
-	{
 		this->components[i]->input(display);
-	}
 }

@@ -7,6 +7,7 @@
 #include "Shader.h"
 
 #include "../Entities/Node.h"
+#include "../Entities/Components/Camera/Camera.h"
 
 class ShaderProgram
 {
@@ -18,10 +19,16 @@ public:
 	void addShader(const Shader& shader);
 	void link(bool shouldDeleteShaders = true);
 
-	virtual void updateUniforms(Node* entity) {};
+	void updateUniforms(Node* entity);
 
 	const GLuint getID() const;
+
+	void setCamera(Camera* camera);
+
 private:
+	virtual void selfUpdateUniforms(Node* entity) = 0;
+
+	Camera* camera;
 	GLuint id;
 	std::vector<GLuint> shaderIds;
 };

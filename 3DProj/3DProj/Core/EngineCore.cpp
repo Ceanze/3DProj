@@ -24,6 +24,10 @@ EngineCore::EngineCore()
 	this->phongShader = new PhongShader();
 	this->testShader = new TestShader();
 
+	this->camera = new Camera(&this->display, glm::vec3{0.0f, 0.0f, 10.0f});
+	this->phongShader->setCamera(this->camera);
+	this->testShader->setCamera(this->camera);
+
 	this->base = new Entity({ 0.0f, 0.0f, -5.0f }, {1.0f, 0.0f, 0.0f});
 
 	this->m1 = new Mesh();
@@ -34,6 +38,7 @@ EngineCore::EngineCore()
 	this->e1 = new Entity({ -3.0f, 1.f, -5.0f }, glm::normalize(glm::vec3{ 0.1f, 2.0f, -2.0f }), false);
 	this->e1->addMesh(this->m1, this->phongShader);
 	this->e1->addComponent(new testComponent());
+	this->e1->addComponent(this->camera);
 	base->addChild(e1);
 
 	this->e2 = new Entity({ 3.0f, -1.f, -5.0f }, glm::normalize(glm::vec3{ 2.0f, -0.0f, -1.0f }), false);
@@ -60,6 +65,8 @@ EngineCore::EngineCore()
 	temp->addMesh(this->m2, this->testShader);
 	this->arm[this->arm.size() - 1]->addChild(temp);
 	this->arm.push_back(temp);
+
+	this->base->init();
 	
 	/*
 	for (int i = 0; i < this->stateLoader.getMeshes()->size(); i++)
@@ -102,6 +109,12 @@ void EngineCore::init()
 	glfwSetInputMode(display.getWindowPtr(), GLFW_STICKY_KEYS, GL_TRUE);
 	while (glfwGetKey(display.getWindowPtr(), GLFW_KEY_ESCAPE) != GLFW_PRESS && glfwWindowShouldClose(display.getWindowPtr()) == 0)
 	{
+		if (this->display.sizeUpdated)
+		{
+			this->camera->updateProj();
+			this->display.sizeUpdated = false;
+		}
+
 		glfwPollEvents();
 		ImGui_ImplGlfwGL3_NewFrame();
 		

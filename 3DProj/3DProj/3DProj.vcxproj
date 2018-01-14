@@ -138,6 +138,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Entities\Components\Camera\Camera.cpp" />
     <ClCompile Include="Entities\Components\Component.cpp" />
     <ClCompile Include="Core\Display.cpp" />
     <ClCompile Include="Core\EngineCore.cpp" />
@@ -165,6 +166,7 @@
     <ClCompile Include="Utils\Transform.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Entities\Components\Camera\Camera.h" />
     <ClInclude Include="Entities\Components\Component.h" />
     <ClInclude Include="Core\Config.h" />
     <ClInclude Include="Core\Display.h" />

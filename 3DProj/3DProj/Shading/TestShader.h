@@ -10,12 +10,12 @@ class TestShader : public ShaderProgram
 public:
 	TestShader();
 	virtual ~TestShader();
-
-	void updateUniforms(Node* node);
-
+	
 	float& getTime();
 
 private:
+	void selfUpdateUniforms(Node* node);
+
 	glm::mat4 proj;
 	glm::mat4 view;
 	glm::vec3 lightPos;

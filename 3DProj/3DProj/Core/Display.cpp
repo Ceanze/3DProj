@@ -31,7 +31,7 @@ Display::~Display()
 void Display::resizeCallback(GLFWwindow * window, int width, int height)
 {
 	Display::displayPtr->updateView(width, height);
-	Display::displayPtr->shouldUpdateSize = true;
+	Display::displayPtr->sizeUpdated = true;
 }
 
 void Display::updateView(unsigned int width, unsigned int height)

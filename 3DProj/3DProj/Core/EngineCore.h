@@ -16,6 +16,8 @@
 #include "../Shading/TestShader.h"
 /*-------------- END TEMP ------------------*/
 
+#include "../Entities/Components/Camera/Camera.h"
+
 class EngineCore
 {
 public:
@@ -51,6 +53,7 @@ private:
 	Mesh* m1;
 	Mesh* m2;
 	ObjLoader loader;
+	Camera* camera;
 	/*-------------- END TEMP ------------------*/
 };
 

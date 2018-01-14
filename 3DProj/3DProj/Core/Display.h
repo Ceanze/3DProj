@@ -24,7 +24,7 @@ public:
 
 public:
 	static Display* displayPtr;
-	bool shouldUpdateSize;
+	bool sizeUpdated;
 
 private:
 	void init();
