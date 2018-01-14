@@ -5,11 +5,12 @@
 #include <map>
 #include <glm.hpp>
 
-#include "Models\Model.h"
-
+#include "Models\Mesh.h"
 #include "Node.h"
-
 #include "../Shading/ShaderProgram.h"
+
+class Component;
+class Display;
 
 class Entity : public Node
 {
@@ -19,13 +20,17 @@ public:
 	~Entity();
 
 	void addMesh(Mesh* mesh, ShaderProgram* shader);
+	void addComponent(Component* component);
 private:
+	std::vector<Component*> components;
+
 	std::vector<Mesh*> meshes;
 	std::vector<ShaderProgram*> shaders;
 	std::map<ShaderProgram*, std::vector<unsigned int>> shaderMap;
 
 	void selfUpdate(float dt);
 	void selfRender();
+	void selfInput(Display* display);
 
 	bool isDynamic;
 };

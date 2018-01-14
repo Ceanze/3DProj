@@ -1,14 +1,12 @@
 #ifndef ENGINECORE_H
 #define ENGINECORE_H
 
-#include "..\Loaders\StateLoader.h"
 #include "States\StateManager.h"
 #include "Display.h"
 #include "Config.h"
 
 /*---------------- TEMP --------------------*/
 #include "../Entities/Models/Mesh.h"
-#include "../Entities/Models/Model.h"
 #include "../Entities/Entity.h"
 #include "../Loaders/ObjLoader.h"
 #include "../Shading/Shader.h"
@@ -29,6 +27,7 @@ public:
 private:
 	void update(const float& dt);
 	void render();
+	void input(Display* display);
 
 	void renderGui();
 	void renderNodeGUI(Node* e, int level = 0);

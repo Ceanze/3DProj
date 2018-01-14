@@ -98,15 +98,15 @@ void StateLoader::readFile()
 						std::getline(file, line);
 						nrOf = std::stoi(line);
 
-						for (int i = 0; i < nrOf; i++)
-						{
-							std::getline(file, line);
-							std::stringstream xx(line);
-							xx >> selection >> pos.x >> pos.y >> pos.z >> scale >> dir.x >> dir.y >> dir.z;
+						//for (int i = 0; i < nrOf; i++)
+						//{
+						//	std::getline(file, line);
+						//	std::stringstream xx(line);
+						//	xx >> selection >> pos.x >> pos.y >> pos.z >> scale >> dir.x >> dir.y >> dir.z;
 
-							Model* temp = new Model(this->meshes[selection], pos, glm::normalize(dir), scale);
-							this->models.push_back(temp);
-						}
+						///*	Model* temp = new Model(this->meshes[selection], pos, glm::normalize(dir), scale);
+						//	this->models.push_back(temp);*/
+						//}
 
 						std::getline(file, line);
 						nrOf = std::stoi(line);
@@ -134,18 +134,9 @@ void StateLoader::readFile()
 			}
 			
 		}
-		this->deleteModels();
 	}
 	else
 	{
 		Error::printError("no file found");
 	}
-}
-
-void StateLoader::deleteModels()
-{
-	for (int i = 0; i < this->models.size(); i++)
-		delete this->models[i];
-
-	this->models.resize(0);
 }
