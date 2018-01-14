@@ -21,7 +21,7 @@ void testComponent::init()
 
 void testComponent::update(const float & dt)
 {
-	this->getEntity()->getWorldTransform().setLocalRotation(this->getEntity()->getWorldTransform().getLocalRotation() + glm::vec3(0.0f, this->rotSpeed * dt, 0.0));
+	this->getEntity()->getWorldTransform().setRotation(this->getEntity()->getWorldTransform().getRotation() + glm::vec3(0.0f, this->rotSpeed * dt, 0.0));
 }
 
 void testComponent::input(Display * display)

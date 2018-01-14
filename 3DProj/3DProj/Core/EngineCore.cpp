@@ -35,9 +35,7 @@ EngineCore::EngineCore()
 	this->e1->addMesh(this->m1, this->phongShader);
 	this->e1->addComponent(new testComponent());
 	base->addChild(e1);
-	
-	this->m2 = new Mesh();
-	loader.load(this->m2, "Cube/Cube.obj");
+
 	this->e2 = new Entity({ 3.0f, -1.f, -5.0f }, glm::normalize(glm::vec3{ 2.0f, -0.0f, -1.0f }), false);
 	this->e2->addMesh(this->m2, this->testShader);
 	this->e2->addMesh(this->m1, this->testShader);
@@ -61,7 +59,7 @@ EngineCore::EngineCore()
 	temp = new Entity({ 0.0f, 2.0f, 0.0f }, { 0.0f, 0.0f, 1.0f });
 	temp->addMesh(this->m2, this->testShader);
 	this->arm[this->arm.size() - 1]->addChild(temp);
-	this->arm.push_back(temp);*/
+	this->arm.push_back(temp);
 	
 	/*
 	for (int i = 0; i < this->stateLoader.getMeshes()->size(); i++)
