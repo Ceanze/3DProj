@@ -35,9 +35,9 @@ void Node::update(float dt)
 		node->update(dt);
 
 	if (this->parent != nullptr)
-		this->worldTransform.setWorldMatrix(this->parent->getWorldTransform().getWorldMatrix()*this->worldTransform.getLocalMatrix());
+		this->chainTransform.setMatrix(this->parent->getChainTransform().getMatrix()*this->worldTransform.getMatrix());
 	else
-		this->worldTransform.setWorldMatrix(this->worldTransform.getLocalMatrix());
+		this->chainTransform.setMatrix(this->worldTransform.getMatrix());
 }
 
 void Node::input(Display * display)
@@ -75,5 +75,10 @@ Transform& Node::getWorldTransform()
 Transform& Node::getLocalTransform()
 {
 	return this->localTransform;
+}
+
+Transform & Node::getChainTransform()
+{
+	return this->chainTransform;
 }
 

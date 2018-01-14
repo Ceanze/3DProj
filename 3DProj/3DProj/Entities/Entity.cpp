@@ -8,8 +8,8 @@
 
 Entity::Entity(const glm::vec3 & position, const glm::vec3 & direction, bool isDynamic)
 {
-	this->getWorldTransform().setLocalTranslation(position);
-	this->getWorldTransform().setLocalDirection(direction);
+	this->getWorldTransform().setTranslation(position);
+	this->getWorldTransform().setDirection(direction);
 	this->isDynamic = isDynamic;
 }
 

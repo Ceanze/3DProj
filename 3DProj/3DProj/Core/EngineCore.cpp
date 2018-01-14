@@ -35,29 +35,31 @@ EngineCore::EngineCore()
 	this->e1->addMesh(this->m1, this->phongShader);
 	this->e1->addComponent(new testComponent());
 	base->addChild(e1);
-	/*
+	
+	this->m2 = new Mesh();
+	loader.load(this->m2, "Cube/Cube.obj");
 	this->e2 = new Entity({ 3.0f, -1.f, -5.0f }, glm::normalize(glm::vec3{ 2.0f, -0.0f, -1.0f }), false);
-	this->e2->addMesh(this->m2, this->phongShader);
+	this->e2->addMesh(this->m2, this->testShader);
 	this->e2->addMesh(this->m1, this->testShader);
 	base->addChild(e2);
 	
 	Entity* temp = new Entity({ 0.0f, -3.0f, 0.0f }, { 0.0f, 0.0f, 1.0f });
-	temp->addMesh(this->m2, this->phongShader);
+	temp->addMesh(this->m2, this->testShader);
 	base->addChild(temp);
 	this->arm.push_back(temp);
 
 	temp = new Entity({ 0.0f, 2.0f, 0.0f }, { 0.0f, 0.0f, 1.0f });
-	temp->addMesh(this->m2, this->phongShader);
+	temp->addMesh(this->m2, this->testShader);
 	this->arm[this->arm.size() - 1]->addChild(temp);
 	this->arm.push_back(temp);
 
 	temp = new Entity({ 0.0f, 2.0f, 0.0f }, { 0.0f, 0.0f, 1.0f });
-	temp->addMesh(this->m2, this->phongShader);
+	temp->addMesh(this->m2, this->testShader);
 	this->arm[this->arm.size() - 1]->addChild(temp);
 	this->arm.push_back(temp);
 
 	temp = new Entity({ 0.0f, 2.0f, 0.0f }, { 0.0f, 0.0f, 1.0f });
-	temp->addMesh(this->m2, this->phongShader);
+	temp->addMesh(this->m2, this->testShader);
 	this->arm[this->arm.size() - 1]->addChild(temp);
 	this->arm.push_back(temp);*/
 	
@@ -144,7 +146,16 @@ void EngineCore::update(const float & dt)
 	if (time > 10)
 		time = 0;
 	
+	Transform& tb = this->base->getWorldTransform();
+	tb.setRotation(tb.getRotation() + glm::vec3{ 0.0f, -dt, 0.0f });
 	
+	Transform& a1 = this->arm[1]->getWorldTransform();
+	a1.setRotation(a1.getRotation() + glm::vec3{ dt, 0.0f, dt });
+	Transform& a2 = this->arm[2]->getLocalTransform();
+	a2.setRotation(a2.getRotation() + glm::vec3{ -dt, 0.0f, dt });
+	
+	Transform& t = this->e1->getWorldTransform();
+	t.setRotation(t.getRotation() + glm::vec3{ dt*1.5f, dt*1.5f, dt*1.5f });
 	
 	this->base->update(dt);
 	
@@ -202,17 +213,17 @@ void EngineCore::renderGui()
 void EngineCore::renderNodeGUI(Node* e, int level)
 {
 	Transform& t = e->getWorldTransform();
-	glm::vec3 pos = t.getLocalTranslation();
+	glm::vec3 pos = t.getTranslation();
 	ImGui::DragFloat3("Position", &pos[0], 0.01f, -100.0f, 100.0f);
-	t.setLocalTranslation(pos);
+	t.setTranslation(pos);
 
-	glm::vec3 rot = t.getLocalRotation();
+	glm::vec3 rot = t.getRotation();
 	ImGui::DragFloat3("Rotation", &rot[0], 0.01f, 0.0f, 2*3.1415f);
-	t.setLocalRotation(rot);
+	t.setRotation(rot);
 
-	glm::vec3 scale = t.getLocalScale();
+	glm::vec3 scale = t.getScale();
 	ImGui::DragFloat3("Scale", &scale[0], 0.01f, 0.01f, 100.0f);
-	t.setLocalScale(scale);
+	t.setScale(scale);
 
 	std::vector<Node*>& nodes = e->getChildren();
 	for (int i = 0; i < nodes.size(); i++)

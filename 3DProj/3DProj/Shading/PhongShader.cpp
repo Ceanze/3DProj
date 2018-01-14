@@ -26,6 +26,6 @@ void PhongShader::updateUniforms(Node* node)
 	GLuint mwLoc = glGetUniformLocation(this->getID(), "mw");
 	if (mwLoc != -1)
 	{
-		glUniformMatrix4fv(mwLoc, 1, GL_FALSE, &(node->getWorldTransform().getWorldMatrix()*node->getLocalTransform().getWorldMatrix())[0][0]);
+		glUniformMatrix4fv(mwLoc, 1, GL_FALSE, &(node->getChainTransform().getMatrix()*node->getLocalTransform().getMatrix())[0][0]);
 	}
 }
