@@ -31,29 +31,27 @@ void DeferredRenderer::render(Node * node)
 	glClear(GL_COLOR_BUFFER_BIT);
 	glViewport(0, 0, this->gBuffer->getWidth(), this->gBuffer->getHeight());
 
-
 	glUseProgram(this->quadShader->getID());
-	
-	glUniform1d(0, this->gBuffer->getTexture(0));
-	glUniform1d(1, this->gBuffer->getTexture(1));
-	glUniform1d(2, this->gBuffer->getTexture(2));
-	glUniform1d(3, this->gBuffer->getTexture(3));
 
+	glUniform1d(0, 0);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, this->gBuffer->getTexture(0));
 
+	glUniform1d(1, 1);
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, this->gBuffer->getTexture(1));
 
+	glUniform1d(2, 2);
 	glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_2D, this->gBuffer->getTexture(2));
 
+	glUniform1d(3, 3);
 	glActiveTexture(GL_TEXTURE3);
 	glBindTexture(GL_TEXTURE_2D, this->gBuffer->getTexture(3));
 	
 	glBindVertexArray(this->quadVAO);
 	glDrawArrays(GL_TRIANGLES, 0, 6);
-	//glBindVertexArray(0);
+	glBindVertexArray(0);
 }
 
 void DeferredRenderer::createQuad()

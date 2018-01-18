@@ -1,6 +1,6 @@
-#version 330
+#version 440
 
-out vec2 fragTextureCoord;
+in vec2 fragTextureCoord;
 
 uniform sampler2D positionTexture;
 uniform sampler2D normalTexture;
@@ -11,7 +11,7 @@ out vec4 finalColor;
 
 void main()
 {
-    
+ 
     if(fragTextureCoord.x < 0.5 && fragTextureCoord.y < 0.5) // BL
         finalColor = texture(albedoTexture, fragTextureCoord);
     else if(fragTextureCoord.x > 0.5 && fragTextureCoord.y < 0.5) // BR
@@ -20,6 +20,4 @@ void main()
         finalColor = texture(positionTexture, fragTextureCoord);
     else
         finalColor = texture(normalTexture, fragTextureCoord);
-    
-    finalColor = vec4(1.0, 0.0, 0.0, 1.0);
 }
