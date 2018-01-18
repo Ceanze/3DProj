@@ -1,6 +1,6 @@
 #version 330
 
-out vec2 fragTextureCoord;
+in vec2 fragTextureCoord;
 
 uniform sampler2D positionTexture;
 uniform sampler2D normalTexture;
@@ -21,5 +21,5 @@ void main()
     else
         finalColor = texture(normalTexture, fragTextureCoord);
     
-    finalColor = vec4(1.0, 0.0, 0.0, 1.0);
+    //finalColor = vec4(0.0, 1.0, 0.0, 1.0);
 }

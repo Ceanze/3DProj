@@ -4,6 +4,8 @@
 
 #include <vector>
 
+#include "..\..\Error.h"
+
 DeferredRenderer::DeferredRenderer(Display* display)
 {
 	this->gBuffer = new FrameBuffer(display->getWidth(), display->getHeight());
@@ -28,16 +30,33 @@ void DeferredRenderer::render(Node * node)
 	this->gBuffer->unbind();
 
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glViewport(0, 0, this->gBuffer->getWidth(), this->gBuffer->getHeight());
 
 
 	glUseProgram(this->quadShader->getID());
+
+	GLint positionLoc = glGetUniformLocation(this->quadShader->getID(), "positionTexture");
+	if (positionLoc == -1)
+		Error::printError("Could not find positionLoc");
+
+	GLint normalLoc = glGetUniformLocation(this->quadShader->getID(), "normalTexture");
+	if (positionLoc == -1)
+		Error::printError("Could not find normalLoc");
+
+	GLint albedoLoc = glGetUniformLocation(this->quadShader->getID(), "albedoTexture");
+	if (positionLoc == -1)
+		Error::printError("Could not find albedoLoc");
+
+	GLint depthLoc = glGetUniformLocation(this->quadShader->getID(), "depthTexture");
+	if (positionLoc == -1)
+		Error::printError("Could not find depthLoc");
+
 	
-	glUniform1d(0, this->gBuffer->getTexture(0));
-	glUniform1d(1, this->gBuffer->getTexture(1));
-	glUniform1d(2, this->gBuffer->getTexture(2));
-	glUniform1d(3, this->gBuffer->getTexture(3));
+	glUniform1i(positionLoc, this->gBuffer->getTexture(0));
+	glUniform1i(normalLoc, this->gBuffer->getTexture(1));
+	glUniform1i(albedoLoc, this->gBuffer->getTexture(2));
+	glUniform1i(depthLoc, this->gBuffer->getTexture(3));
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, this->gBuffer->getTexture(0));
