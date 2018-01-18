@@ -33,10 +33,7 @@ void DeferredRenderer::render(Node * node)
 	glClear(GL_COLOR_BUFFER_BIT);
 	glViewport(0, 0, this->gBuffer->getWidth(), this->gBuffer->getHeight());
 
-
 	glUseProgram(this->quadShader->getID());
-
-	glUniform1d(0, 0);
 
 	GLint positionLoc = glGetUniformLocation(this->quadShader->getID(), "positionTexture");
 	if (positionLoc == -1)
@@ -54,21 +51,19 @@ void DeferredRenderer::render(Node * node)
 	if (positionLoc == -1)
 		Error::printError("Could not find depthLoc");
 
-	
-	glUniform1i(positionLoc, this->gBuffer->getTexture(0));
-	glUniform1i(normalLoc, this->gBuffer->getTexture(1));
-	glUniform1i(albedoLoc, this->gBuffer->getTexture(2));
-	glUniform1i(depthLoc, this->gBuffer->getTexture(3));
-
+	glUniform1i(positionLoc, 0);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, this->gBuffer->getTexture(0));
 
+	glUniform1i(normalLoc, 1);
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, this->gBuffer->getTexture(1));
 
+	glUniform1i(albedoLoc, 2);
 	glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_2D, this->gBuffer->getTexture(2));
 
+	glUniform1i(depthLoc, 3);
 	glActiveTexture(GL_TEXTURE3);
 	glBindTexture(GL_TEXTURE_2D, this->gBuffer->getTexture(3));
 	

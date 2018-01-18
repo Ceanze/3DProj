@@ -15,8 +15,11 @@ void main()
     if(fragTextureCoord.x < 0.5 && fragTextureCoord.y < 0.5) // BL
         finalColor = texture(albedoTexture, fragTextureCoord);
     else if(fragTextureCoord.x > 0.5 && fragTextureCoord.y < 0.5) // BR
-        finalColor = texture(depthTexture, fragTextureCoord);
-    else if(fragTextureCoord.x < 0.5 && fragTextureCoord.y > 0.5) // TL
+	{
+		float depth = texture(depthTexture, fragTextureCoord).x;
+        finalColor = vec4(depth, depth, depth, 1.0);
+    }
+	else if(fragTextureCoord.x < 0.5 && fragTextureCoord.y > 0.5) // TL
         finalColor = texture(positionTexture, fragTextureCoord);
     else
         finalColor = texture(normalTexture, fragTextureCoord);
