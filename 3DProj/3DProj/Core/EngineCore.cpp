@@ -162,11 +162,9 @@ void EngineCore::renderGui()
 {
 	static bool show_node_tree_window = false;
 	static bool show_dr_window = false;
-	static bool show_ls_window = false;
 	{
 		if (ImGui::Button("Node tree Window")) show_node_tree_window ^= 1;
 		if (ImGui::Button("Deferred Rendering")) show_dr_window ^= 1;
-		if (ImGui::Button("Lightning Shader")) show_ls_window ^= 1;
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 		ImGui::Text("Click 'C' to toggle camera on and off.");
 	}
@@ -186,12 +184,6 @@ void EngineCore::renderGui()
 	{
 		ImGui::Begin("Deferred Rendering Window", &show_dr_window);
 		renderDRTextures();
-		ImGui::End();
-	}
-
-	if (show_ls_window)
-	{
-		ImGui::Begin("Lightning Shader Window", &show_dr_window);
 		renderLSTextures();
 		ImGui::End();
 	}
@@ -226,26 +218,22 @@ void EngineCore::renderNodeGUI(Node* e, int level)
 
 void EngineCore::renderDRTextures()
 {
-	if (ImGui::TreeNode("Deferred Rendering"))
+	if (ImGui::TreeNode("GBuffer"))
 	{
-		if (ImGui::TreeNode("GBuffer"))
+		const FrameBuffer* gBuffer = this->deferredRenderer->getGBuffer();
+		for (unsigned i = 0; i < gBuffer->getNumTextures(); i++)
 		{
-			const FrameBuffer* gBuffer = this->deferredRenderer->getGBuffer();
-			for (unsigned i = 0; i < gBuffer->getNumTextures(); i++)
+			ImTextureID texID = (ImTextureID)gBuffer->getTexture(i);
+			float ratio = (float)gBuffer->getWidth() / (float)gBuffer->getHeight();
+			ImGui::Image(texID, ImVec2(50 * ratio, 50), ImVec2(0, 1), ImVec2(1, 0));
+			if (i != gBuffer->getNumTextures() - 1)
+				ImGui::SameLine();
+			if (ImGui::IsItemHovered())
 			{
-				ImTextureID texID = (ImTextureID)gBuffer->getTexture(i);
-				float ratio = (float)gBuffer->getWidth() / (float)gBuffer->getHeight();
-				ImGui::Image(texID, ImVec2(50 * ratio, 50), ImVec2(0, 1), ImVec2(1, 0));
-				if (i != gBuffer->getNumTextures() - 1)
-					ImGui::SameLine();
-				if (ImGui::IsItemHovered())
-				{
-					ImGui::BeginTooltip();
-					ImGui::Image(texID, ImVec2(170* ratio, 170), ImVec2(0, 1), ImVec2(1, 0), ImVec4(1, 1, 1, 1), ImVec4(1, 1, 1, 1));
-					ImGui::EndTooltip();
-				}
+				ImGui::BeginTooltip();
+				ImGui::Image(texID, ImVec2(170* ratio, 170), ImVec2(0, 1), ImVec2(1, 0), ImVec4(1, 1, 1, 1), ImVec4(1, 1, 1, 1));
+				ImGui::EndTooltip();
 			}
-			ImGui::TreePop();
 		}
 		ImGui::TreePop();
 	}
@@ -253,26 +241,22 @@ void EngineCore::renderDRTextures()
 
 void EngineCore::renderLSTextures()
 {
-	if (ImGui::TreeNode("Lightning Shader"))
+	if (ImGui::TreeNode("LightningBuffer"))
 	{
-		if (ImGui::TreeNode("LightningBuffer"))
+		const FrameBuffer* lBuffer = this->deferredRenderer->getLBuffer();
+		for (unsigned i = 0; i < lBuffer->getNumTextures(); i++)
 		{
-			const FrameBuffer* lBuffer = this->deferredRenderer->getLBuffer();
-			for (unsigned i = 0; i < lBuffer->getNumTextures(); i++)
+			ImTextureID texID = (ImTextureID)lBuffer->getTexture(i);
+			float ratio = (float)lBuffer->getWidth() / (float)lBuffer->getHeight();
+			ImGui::Image(texID, ImVec2(50 * ratio, 50), ImVec2(0, 1), ImVec2(1, 0));
+			if (i != lBuffer->getNumTextures() - 1)
+				ImGui::SameLine();
+			if (ImGui::IsItemHovered())
 			{
-				ImTextureID texID = (ImTextureID)lBuffer->getTexture(i);
-				float ratio = (float)lBuffer->getWidth() / (float)lBuffer->getHeight();
-				ImGui::Image(texID, ImVec2(50 * ratio, 50), ImVec2(0, 1), ImVec2(1, 0));
-				if (i != lBuffer->getNumTextures() - 1)
-					ImGui::SameLine();
-				if (ImGui::IsItemHovered())
-				{
-					ImGui::BeginTooltip();
-					ImGui::Image(texID, ImVec2(170 * ratio, 170), ImVec2(0, 1), ImVec2(1, 0), ImVec4(1, 1, 1, 1), ImVec4(1, 1, 1, 1));
-					ImGui::EndTooltip();
-				}
+				ImGui::BeginTooltip();
+				ImGui::Image(texID, ImVec2(170 * ratio, 170), ImVec2(0, 1), ImVec2(1, 0), ImVec4(1, 1, 1, 1), ImVec4(1, 1, 1, 1));
+				ImGui::EndTooltip();
 			}
-			ImGui::TreePop();
 		}
 		ImGui::TreePop();
 	}

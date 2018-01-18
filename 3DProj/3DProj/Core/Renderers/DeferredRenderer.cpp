@@ -36,24 +36,33 @@ void DeferredRenderer::render(Node * node)
 {
 	this->gBuffer->bind();
 	node->render();
+	glBindVertexArray(0);
+	glUseProgram(0);
 	this->gBuffer->unbind();
 
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
-	glViewport(0, 0, this->gBuffer->getWidth(), this->gBuffer->getHeight());
+	glViewport(0, 0, this->lightningBuffer->getWidth(), this->lightningBuffer->getHeight());
 
 	this->findTextureLocation(this->phongShader, this->gBuffer);
 
-	glBindVertexArray(this->quadVAO);
 	this->lightningBuffer->bind();
+	glBindVertexArray(this->quadVAO);
 	glDrawArrays(GL_TRIANGLES, 0, 6);
+	glBindVertexArray(0);
+	glUseProgram(0);
 	this->lightningBuffer->unbind();
-	
+
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT);
+	glViewport(0, 0, this->gBuffer->getWidth(), this->gBuffer->getHeight()); // Change this to display!
+
 	this->findTextureLocation(this->quadShader, this->gBuffer);
 
 	glBindVertexArray(this->quadVAO);
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 	glBindVertexArray(0);
+	glUseProgram(0);
 }
 
 const FrameBuffer * DeferredRenderer::getGBuffer() const
@@ -69,7 +78,6 @@ const FrameBuffer * DeferredRenderer::getLBuffer() const
 const void DeferredRenderer::findTextureLocation(ShaderProgram* shader, FrameBuffer* buffer) const
 {
 	glUseProgram(shader->getID());
-
 	shader->updateUniforms(buffer);
 }
 

@@ -13,6 +13,8 @@ public:
 	void updateUniforms(FrameBuffer* buffer);
 private:
 	void selfUpdateUniforms(Node* entity);
+
+	GLuint positionLoc, normalLoc, albedoLoc, depthLoc;
 };
 
 #endif

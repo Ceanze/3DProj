@@ -9,14 +9,12 @@ layout(location=0) out vec4 finalAmbient;
 layout(location=1) out vec4 finalDiffuse;
 layout(location=2) out vec4 finalSpecular;
 
-
 in vec2 fragTextureCoord;
 
 void main()
 {
-    vec2 test1 = fragTextureCoord;
-    vec3 test = positionTexture * normalTexture * albedoTexture * depthTexture;
-    finalAmbient = vec4(1.0f + test.x * 0.01f + test1.x * 0.01f, 0.0f, 0.0f , 1.0f);
-    finalDiffuse = vec4(0.0f, 1.0f, 0.0f, 1.0f);
-    finalSpecular = vec4(1.0f, 0.0f, 0.0f, 1.0f);
+    vec3 test = texture(positionTexture, fragTextureCoord).xyz * texture(normalTexture, fragTextureCoord).xyz * texture(albedoTexture, fragTextureCoord).xyz * texture(depthTexture, fragTextureCoord).xyz;
+    finalAmbient = vec4(1.0 +  test.x * 0.01, 0.0, 0.0, 1.0);
+    finalDiffuse = vec4(0.0, 1.0, 0.0, 1.0);
+    finalSpecular = vec4(1.0, 0.0, 0.0, 1.0);
 }
