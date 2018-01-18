@@ -23,7 +23,7 @@
     <ProjectGuid>{E153C5BA-4A29-4DD9-B332-0C76B7F3E036}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>My3DProj</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -159,6 +159,7 @@
     <ClCompile Include="Loaders\MTLLoader.cpp" />
     <ClCompile Include="Loaders\ObjLoader.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Shading\Deferred Rendering\PhongLS.cpp" />
     <ClCompile Include="Shading\Deferred Rendering\GeometryShader.cpp" />
     <ClCompile Include="Shading\Deferred Rendering\QuadShader.cpp" />
     <ClCompile Include="Shading\PhongShader.cpp" />
@@ -196,6 +197,7 @@
     <ClInclude Include="ImGui\stb_truetype.h" />
     <ClInclude Include="Loaders\MTLLoader.h" />
     <ClInclude Include="Loaders\ObjLoader.h" />
+    <ClInclude Include="Shading\Deferred Rendering\PhongLS.h" />
     <ClInclude Include="Shading\Deferred Rendering\GeometryShader.h" />
     <ClInclude Include="Shading\Deferred Rendering\QuadShader.h" />
     <ClInclude Include="Shading\PhongShader.h" />
@@ -207,6 +209,8 @@
     <ClInclude Include="Utils\Transform.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\Shaders\Lightning Shaders\PhongLS.fs" />
+    <None Include="Resources\Shaders\Lightning Shaders\PhongLS.vs" />
     <None Include="Resources\Shaders\Phong\TestShader.fs" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

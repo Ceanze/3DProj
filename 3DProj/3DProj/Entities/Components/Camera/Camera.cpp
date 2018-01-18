@@ -31,7 +31,7 @@ void Camera::update(const float & dt)
 void Camera::input(Display * display)
 {
 	// -------------------------- TEMP --------------------------
-	static bool isCClicked = 1;
+	static bool isCClicked = 0;
 	static bool isCPressed = false;
 	if (glfwGetKey(this->display->getWindowPtr(), GLFW_KEY_C) != GLFW_PRESS)
 	{

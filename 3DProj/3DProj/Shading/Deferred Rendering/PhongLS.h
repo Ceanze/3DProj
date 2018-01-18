@@ -1,18 +1,18 @@
-#ifndef QUAD_SHADER_H
-#define QUAD_SHADER_H
+#ifndef PHONGSHADER_H
+#define PHONGSHADER_H
 
 #include "../ShaderProgram.h"
 
-
-class QuadShader : public ShaderProgram
+class PhongLS : public ShaderProgram
 {
 public:
-	QuadShader();
-	virtual ~QuadShader();
+	PhongLS();
+	virtual ~PhongLS();
 
 	void updateUniforms(FrameBuffer* buffer);
 private:
 	void selfUpdateUniforms(Node* entity);
+
 };
 
 #endif

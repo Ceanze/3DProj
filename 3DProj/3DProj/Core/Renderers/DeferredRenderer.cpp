@@ -13,14 +13,23 @@ DeferredRenderer::DeferredRenderer(Display* display)
 		FrameBuffer::FBO_COLOR_ATTACHMENT, FrameBuffer::FBO_COLOR_ATTACHMENT, FrameBuffer::FBO_COLOR_ATTACHMENT, FrameBuffer::FBO_DEPTH_ATTACHMENT
 	});
 
+	this->lightningBuffer = new FrameBuffer(display->getWidth(), display->getHeight());
+	this->lightningBuffer->createTextures(std::vector<FrameBuffer::FBO_ATTATCHMENT_TYPE>{
+		FrameBuffer::FBO_COLOR_ATTACHMENT, FrameBuffer::FBO_COLOR_ATTACHMENT, FrameBuffer::FBO_COLOR_ATTACHMENT
+	});
+
+	this->phongShader = new PhongLS();
+
 	this->quadShader = new QuadShader();
 	createQuad();
 }
 
 DeferredRenderer::~DeferredRenderer()
 {
+	delete this->lightningBuffer;
 	delete this->gBuffer;
 	delete this->quadShader;
+	delete this->phongShader;
 }
 
 void DeferredRenderer::render(Node * node)
@@ -33,40 +42,15 @@ void DeferredRenderer::render(Node * node)
 	glClear(GL_COLOR_BUFFER_BIT);
 	glViewport(0, 0, this->gBuffer->getWidth(), this->gBuffer->getHeight());
 
-	glUseProgram(this->quadShader->getID());
+	this->findTextureLocation(this->phongShader, this->gBuffer);
 
-	GLint positionLoc = glGetUniformLocation(this->quadShader->getID(), "positionTexture");
-	if (positionLoc == -1)
-		Error::printError("Could not find positionLoc");
-
-	GLint normalLoc = glGetUniformLocation(this->quadShader->getID(), "normalTexture");
-	if (positionLoc == -1)
-		Error::printError("Could not find normalLoc");
-
-	GLint albedoLoc = glGetUniformLocation(this->quadShader->getID(), "albedoTexture");
-	if (positionLoc == -1)
-		Error::printError("Could not find albedoLoc");
-
-	GLint depthLoc = glGetUniformLocation(this->quadShader->getID(), "depthTexture");
-	if (positionLoc == -1)
-		Error::printError("Could not find depthLoc");
-
-	glUniform1i(positionLoc, 0);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, this->gBuffer->getTexture(0));
-
-	glUniform1i(normalLoc, 1);
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, this->gBuffer->getTexture(1));
-
-	glUniform1i(albedoLoc, 2);
-	glActiveTexture(GL_TEXTURE2);
-	glBindTexture(GL_TEXTURE_2D, this->gBuffer->getTexture(2));
-
-	glUniform1i(depthLoc, 3);
-	glActiveTexture(GL_TEXTURE3);
-	glBindTexture(GL_TEXTURE_2D, this->gBuffer->getTexture(3));
+	glBindVertexArray(this->quadVAO);
+	this->lightningBuffer->bind();
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+	this->lightningBuffer->unbind();
 	
+	this->findTextureLocation(this->quadShader, this->gBuffer);
+
 	glBindVertexArray(this->quadVAO);
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 	glBindVertexArray(0);
@@ -75,6 +59,18 @@ void DeferredRenderer::render(Node * node)
 const FrameBuffer * DeferredRenderer::getGBuffer() const
 {
 	return this->gBuffer;
+}
+
+const FrameBuffer * DeferredRenderer::getLBuffer() const
+{
+	return this->lightningBuffer;
+}
+
+const void DeferredRenderer::findTextureLocation(ShaderProgram* shader, FrameBuffer* buffer) const
+{
+	glUseProgram(shader->getID());
+
+	shader->updateUniforms(buffer);
 }
 
 void DeferredRenderer::createQuad()

@@ -8,6 +8,7 @@
 
 #include "../Entities/Node.h"
 #include "../Entities/Components/Camera/Camera.h"
+#include "../Core/GL Utils/FrameBuffer.h"
 
 class ShaderProgram
 {
@@ -24,6 +25,8 @@ public:
 	const GLuint getID() const;
 
 	void setCamera(Camera* camera);
+
+	virtual void updateUniforms(FrameBuffer* buffer) = 0;
 
 private:
 	virtual void selfUpdateUniforms(Node* entity) = 0;

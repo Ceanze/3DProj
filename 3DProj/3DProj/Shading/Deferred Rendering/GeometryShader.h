@@ -11,6 +11,8 @@ public:
 	GeometryShader();
 	virtual ~GeometryShader();
 
+	void updateUniforms(FrameBuffer* buffer);
+
 private:
 	void selfUpdateUniforms(Node* node);
 

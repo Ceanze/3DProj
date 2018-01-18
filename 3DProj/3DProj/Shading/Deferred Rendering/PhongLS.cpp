@@ -1,16 +1,18 @@
-#include "QuadShader.h"
+#include "PhongLS.h"
 
 #include "../../Error.h"
 
-QuadShader::QuadShader() : ShaderProgram({ "Deferred Rendering/QuadDR.vs", GL_VERTEX_SHADER }, { "Deferred Rendering/QuadDR.fs", GL_FRAGMENT_SHADER })
+PhongLS::PhongLS() : ShaderProgram({ "Lightning Shaders/PhongLS.vs", GL_VERTEX_SHADER }, { "Lightning Shaders/PhongLS.fs", GL_FRAGMENT_SHADER })
+{
+
+}
+
+
+PhongLS::~PhongLS()
 {
 }
 
-QuadShader::~QuadShader()
-{
-}
-
-void QuadShader::updateUniforms(FrameBuffer* buffer)
+void PhongLS::updateUniforms(FrameBuffer* buffer)
 {
 	GLint positionLoc = glGetUniformLocation(this->getID(), "positionTexture");
 	if (positionLoc == -1)
@@ -45,6 +47,6 @@ void QuadShader::updateUniforms(FrameBuffer* buffer)
 	glBindTexture(GL_TEXTURE_2D, buffer->getTexture(3));
 }
 
-void QuadShader::selfUpdateUniforms(Node * entity)
+void PhongLS::selfUpdateUniforms(Node * entity)
 {
 }

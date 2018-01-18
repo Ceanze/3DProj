@@ -8,6 +8,10 @@ GeometryShader::~GeometryShader()
 {
 }
 
+void GeometryShader::updateUniforms(FrameBuffer * buffer)
+{
+}
+
 void GeometryShader::selfUpdateUniforms(Node * node)
 {
 	GLuint wmLoc = glGetUniformLocation(this->getID(), "wm");

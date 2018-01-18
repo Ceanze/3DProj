@@ -37,6 +37,7 @@ private:
 	void renderGui();
 	void renderNodeGUI(Node* e, int level = 0);
 	void renderDRTextures();
+	void renderLSTextures();
 
 	Display display;
 

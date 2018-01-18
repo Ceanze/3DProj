@@ -27,20 +27,20 @@ EngineCore::EngineCore()
 
 	this->base = new Entity({ 0.0f, 0.0f, -5.0f }, {1.0f, 0.0f, 0.0f});
 
-	this->m1 = new Mesh();
-	loader.load(this->m1, "Bunny/bunny.obj");
+	/*this->m1 = new Mesh();
+	loader.load(this->m1, "Bunny/bunny.obj");*/
 	this->m2 = new Mesh();
 	loader.load(this->m2, "Cube/Cube.obj");
 	
 	this->e1 = new Entity({ -3.0f, 1.f, -5.0f }, glm::normalize(glm::vec3{ 0.1f, 2.0f, -2.0f }), false);
-	this->e1->addMesh(this->m1, this->geometryShader);
+	this->e1->addMesh(this->m2, this->geometryShader);
 	this->e1->addComponent(new testComponent());
 	this->e1->addComponent(this->camera);
 	base->addChild(e1);
 
 	this->e2 = new Entity({ 3.0f, -1.f, -5.0f }, glm::normalize(glm::vec3{ 2.0f, -0.0f, -1.0f }), false);
 	this->e2->addMesh(this->m2, this->geometryShader);
-	this->e2->addMesh(this->m1, this->geometryShader);
+	this->e2->addMesh(this->m2, this->geometryShader);
 	base->addChild(e2);
 	
 	Entity* temp = new Entity({ 0.0f, -3.0f, 0.0f }, { 0.0f, 0.0f, 1.0f });
@@ -71,7 +71,7 @@ EngineCore::~EngineCore()
 {
 	//delete this->testShader;
 	//delete this->phongShader;
-	delete this->m1;
+	//delete this->m1;
 	delete this->m2;
 	delete this->base;
 
@@ -162,9 +162,11 @@ void EngineCore::renderGui()
 {
 	static bool show_node_tree_window = false;
 	static bool show_dr_window = false;
+	static bool show_ls_window = false;
 	{
 		if (ImGui::Button("Node tree Window")) show_node_tree_window ^= 1;
 		if (ImGui::Button("Deferred Rendering")) show_dr_window ^= 1;
+		if (ImGui::Button("Lightning Shader")) show_ls_window ^= 1;
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 		ImGui::Text("Click 'C' to toggle camera on and off.");
 	}
@@ -184,6 +186,13 @@ void EngineCore::renderGui()
 	{
 		ImGui::Begin("Deferred Rendering Window", &show_dr_window);
 		renderDRTextures();
+		ImGui::End();
+	}
+
+	if (show_ls_window)
+	{
+		ImGui::Begin("Lightning Shader Window", &show_dr_window);
+		renderLSTextures();
 		ImGui::End();
 	}
 }
@@ -233,6 +242,33 @@ void EngineCore::renderDRTextures()
 				{
 					ImGui::BeginTooltip();
 					ImGui::Image(texID, ImVec2(170* ratio, 170), ImVec2(0, 1), ImVec2(1, 0), ImVec4(1, 1, 1, 1), ImVec4(1, 1, 1, 1));
+					ImGui::EndTooltip();
+				}
+			}
+			ImGui::TreePop();
+		}
+		ImGui::TreePop();
+	}
+}
+
+void EngineCore::renderLSTextures()
+{
+	if (ImGui::TreeNode("Lightning Shader"))
+	{
+		if (ImGui::TreeNode("LightningBuffer"))
+		{
+			const FrameBuffer* lBuffer = this->deferredRenderer->getLBuffer();
+			for (unsigned i = 0; i < lBuffer->getNumTextures(); i++)
+			{
+				ImTextureID texID = (ImTextureID)lBuffer->getTexture(i);
+				float ratio = (float)lBuffer->getWidth() / (float)lBuffer->getHeight();
+				ImGui::Image(texID, ImVec2(50 * ratio, 50), ImVec2(0, 1), ImVec2(1, 0));
+				if (i != lBuffer->getNumTextures() - 1)
+					ImGui::SameLine();
+				if (ImGui::IsItemHovered())
+				{
+					ImGui::BeginTooltip();
+					ImGui::Image(texID, ImVec2(170 * ratio, 170), ImVec2(0, 1), ImVec2(1, 0), ImVec4(1, 1, 1, 1), ImVec4(1, 1, 1, 1));
 					ImGui::EndTooltip();
 				}
 			}
