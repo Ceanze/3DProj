@@ -1,6 +1,7 @@
 #include "Camera.h"
 
 #include "../../../Core/Display.h"
+#include "..\..\Entity.h"
 
 #include <gtc\matrix_transform.hpp>
 
