@@ -11,15 +11,9 @@
 /*-------------- END TEMP ------------------*/
 
 EngineCore::EngineCore()
-	:	display("test window")//,
-		//stateLoader("Resources/Scenes/scene1.txt", &this->display)
+	:	display("test window")
 {
 	/*---------------- TEMP --------------------*/
-	// Load shader.
-	//this->vsShader = new Shader("Phong/Phong.vs", GL_VERTEX_SHADER);
-	//this->fsShader = new Shader("Phong/Phong.fs", GL_FRAGMENT_SHADER);
-	//this->sp = new ShaderProgram(*this->vsShader, *this->fsShader);
-
 	// Create Shader
 	//this->phongShader = new PhongShader();
 	//this->testShader = new TestShader();
@@ -70,20 +64,6 @@ EngineCore::EngineCore()
 	this->arm.push_back(temp);
 
 	this->base->init();
-	
-	/*
-	for (int i = 0; i < this->stateLoader.getMeshes()->size(); i++)
-	{
-		(*this->stateLoader.getMeshes())[i]->loadToGPU(this->sp->getID());
-	}*/
-
-	// Construct a simple camera.
-	/*glUseProgram(sp->getID());
-	GLuint camLoc = glGetUniformLocation(this->sp->getID(), "camera");
-	if (camLoc == -1) fprintf(stderr, "Can't find 'camera' in the shader!");
-	glm::mat4 proj = glm::perspective(glm::pi<float>() / 4.0f, this->display.getRatio(), 0.1f, 100.0f);
-	glm::mat4 cam = proj*glm::lookAt(glm::vec3( 0.0f, 0.0f, 10.0f ), glm::vec3( 0.0f, 0.0f, 0.0f ), glm::vec3(0.0f, 1.0f, 0.0f));
-	glUniformMatrix4fv(camLoc, 1, GL_FALSE, &cam[0][0]);*/
 	/*-------------- END TEMP ------------------*/
 }
 
@@ -104,10 +84,6 @@ void EngineCore::init()
 	auto currentTime = std::chrono::high_resolution_clock::now();
 	auto previousTime = currentTime;
 	float dt = 0.0f;
-
-	// ------------ GUI TEST VARIABLES --------------
-	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-	// ----------------------------------------------
 
 	glfwSetInputMode(display.getWindowPtr(), GLFW_STICKY_KEYS, GL_TRUE);
 	while (glfwGetKey(display.getWindowPtr(), GLFW_KEY_ESCAPE) != GLFW_PRESS && glfwWindowShouldClose(display.getWindowPtr()) == 0)
@@ -140,21 +116,6 @@ void EngineCore::init()
 
 void EngineCore::update(const float & dt)
 {
-	/*---------------- TEMP --------------------*/
-	//this->entity->getModel(0).setLocalMatrix(glm::rotate(this->entity->getModel(0).getLocalMatrix(), dt*3.0f, { 0.0f, 1.0f, 0.0f })); // Rotate Cube 1
-	//this->entity->getModel(1).setLocalMatrix(glm::rotate(this->entity->getModel(1).getLocalMatrix(), dt*3.0f, { 0.0f, 1.0f, 0.0f })); // Rotate Cube 2
-	//this->entity->setLocalMatrix(glm::rotate(this->entity->getLocalMatrix(), -dt, {0.0f, 1.0f, 0.0f})); // Rotate Entity (rotate Cube 1 and Cube 2 around Bunny).
-	/*-------------- END TEMP ------------------*/
-
-	/*
-	if (this->stateLoader.getEntities()->size() > 0)
-	{
-		Entity * temp = (*this->stateLoader.getEntities())[0];
-		//temp->getModel(0).setLocalMatrix(glm::rotate(temp->getModel(0).getLocalMatrix(), dt*3.0f, { 0.0f, 1.0f, 0.0f }));
-		//temp->getModel(1).setLocalMatrix(glm::rotate(temp->getModel(1).getLocalMatrix(), dt*3.0f, { 0.0f, 1.0f, 0.0f }));
-		//temp->setLocalMatrix(glm::rotate(temp->getLocalMatrix(), -dt, { 0.0f, 1.0f, 0.0f }));
-	}*/
-
 	/*
 	float& time = this->testShader->getTime();
 	time += dt*3.0f;
@@ -184,16 +145,7 @@ void EngineCore::render()
 	glClearColor(0, 0, 0, 1);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	/*---------------- TEMP --------------------*/
-	//this->base->render();
 	this->deferredRenderer->render(this->base);
-
-	//this->entity->draw(this->sp->getID());
-
-	//for (int i = 0; i < this->stateLoader.getEntities()->size(); i++)
-	//	(*this->stateLoader.getEntities())[i]->render();
-
-	/*-------------- END TEMP ------------------*/
 
 	// Draw ImGui elements.
 	ImGui::Render();
@@ -209,12 +161,14 @@ void EngineCore::input(Display* display)
 void EngineCore::renderGui()
 {
 	static bool show_node_tree_window = false;
+	static bool show_dr_window = false;
 	{
-		ImGui::Text("Hello, world!");
 		if (ImGui::Button("Node tree Window")) show_node_tree_window ^= 1;
+		if (ImGui::Button("Deferred Rendering")) show_dr_window ^= 1;
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+		ImGui::Text("Click 'C' to toggle camera on and off.");
 	}
-	// 2. Show another simple window. In most cases you will use an explicit Begin/End pair to name the window.
+
 	if (show_node_tree_window)
 	{
 		ImGui::Begin("Node tree Window", &show_node_tree_window);
@@ -223,6 +177,13 @@ void EngineCore::renderGui()
 			renderNodeGUI(this->base);
 			ImGui::TreePop();
 		}
+		ImGui::End();
+	}
+
+	if (show_dr_window)
+	{
+		ImGui::Begin("Deferred Rendering Window", &show_dr_window);
+		renderDRTextures();
 		ImGui::End();
 	}
 }
@@ -251,6 +212,33 @@ void EngineCore::renderNodeGUI(Node* e, int level)
 			renderNodeGUI(nodes[i], level+1);
 			ImGui::TreePop();
 		}
+	}
+}
+
+void EngineCore::renderDRTextures()
+{
+	if (ImGui::TreeNode("Deferred Rendering"))
+	{
+		if (ImGui::TreeNode("GBuffer"))
+		{
+			const FrameBuffer* gBuffer = this->deferredRenderer->getGBuffer();
+			for (unsigned i = 0; i < gBuffer->getNumTextures(); i++)
+			{
+				ImTextureID texID = (ImTextureID)gBuffer->getTexture(i);
+				float ratio = (float)gBuffer->getWidth() / (float)gBuffer->getHeight();
+				ImGui::Image(texID, ImVec2(50 * ratio, 50), ImVec2(0, 1), ImVec2(1, 0));
+				if (i != gBuffer->getNumTextures() - 1)
+					ImGui::SameLine();
+				if (ImGui::IsItemHovered())
+				{
+					ImGui::BeginTooltip();
+					ImGui::Image(texID, ImVec2(170* ratio, 170), ImVec2(0, 1), ImVec2(1, 0), ImVec4(1, 1, 1, 1), ImVec4(1, 1, 1, 1));
+					ImGui::EndTooltip();
+				}
+			}
+			ImGui::TreePop();
+		}
+		ImGui::TreePop();
 	}
 }
 

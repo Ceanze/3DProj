@@ -81,9 +81,14 @@ void FrameBuffer::unbind()
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-GLuint FrameBuffer::getTexture(unsigned int index)
+GLuint FrameBuffer::getTexture(unsigned int index) const
 {
 	return this->textures[index];
+}
+
+unsigned int FrameBuffer::getNumTextures() const
+{
+	return this->numTextures;
 }
 
 void FrameBuffer::createTexture(FBO_ATTATCHMENT_TYPE attachment)

@@ -30,23 +30,42 @@ void Camera::update(const float & dt)
 
 void Camera::input(Display * display)
 {
-	double xPos, yPos, sensitivity = 0.5f;
-
-	// --------------------------------- Move Cursor ---------------------------------
-	glfwGetCursorPos(this->display->getWindowPtr(), &xPos, &yPos);
-	xPos -= this->display->getWidth() / 2;
-	yPos -= this->display->getHeight() / 2;
-	if (xPos != 0.0 || yPos != 0.0)
+	// -------------------------- TEMP --------------------------
+	static bool isCClicked = 1;
+	static bool isCPressed = false;
+	if (glfwGetKey(this->display->getWindowPtr(), GLFW_KEY_C) != GLFW_PRESS)
 	{
-		this->yawPitchRoll.x += xPos*dt*sensitivity;
-		this->yawPitchRoll.y -= yPos*dt*sensitivity;
+		if (isCPressed)
+		{
+			isCPressed = false;
+			isCClicked ^= 1;
+			glfwSetCursorPos(this->display->getWindowPtr(), this->display->getWidth() / 2, this->display->getHeight() / 2);
+		}
+	}
+	else isCPressed = true;
+	// ----------------------------------------------------------
 
-		rotate(this->yawPitchRoll.x, this->yawPitchRoll.y, this->yawPitchRoll.z);
+	if (isCClicked)
+	{
+		double xPos, yPos, sensitivity = 0.5f;
+
+		// --------------------------------- Move Cursor ---------------------------------
+		glfwGetCursorPos(this->display->getWindowPtr(), &xPos, &yPos);
+		xPos -= this->display->getWidth() / 2;
+		yPos -= this->display->getHeight() / 2;
+		if (xPos != 0.0 || yPos != 0.0)
+		{
+			this->yawPitchRoll.x += xPos*dt*sensitivity;
+			this->yawPitchRoll.y -= yPos*dt*sensitivity;
+
+			rotate(this->yawPitchRoll.x, this->yawPitchRoll.y, this->yawPitchRoll.z);
+		}
+
+		glfwSetCursorPos(this->display->getWindowPtr(), this->display->getWidth() / 2, this->display->getHeight() / 2);
+		// -------------------------------------------------------------------------------
+
 	}
 
-	glfwSetCursorPos(this->display->getWindowPtr(), this->display->getWidth() / 2, this->display->getHeight() / 2);
-	// -------------------------------------------------------------------------------
-	
 	// -------------------------------- Move position --------------------------------
 	static const float CAMERA_SPEED = 10.0f;
 	if (glfwGetKey(this->display->getWindowPtr(), GLFW_KEY_W) == GLFW_PRESS)

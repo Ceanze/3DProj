@@ -72,6 +72,11 @@ void DeferredRenderer::render(Node * node)
 	glBindVertexArray(0);
 }
 
+const FrameBuffer * DeferredRenderer::getGBuffer() const
+{
+	return this->gBuffer;
+}
+
 void DeferredRenderer::createQuad()
 {
 	static const GLfloat quadVertexBufferData[30] = {

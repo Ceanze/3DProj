@@ -13,6 +13,8 @@ public:
 
 	void render(Node* node);
 
+	const FrameBuffer* getGBuffer() const;
+
 private:
 	void createQuad();
 

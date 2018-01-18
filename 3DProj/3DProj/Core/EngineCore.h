@@ -36,17 +36,11 @@ private:
 
 	void renderGui();
 	void renderNodeGUI(Node* e, int level = 0);
+	void renderDRTextures();
 
 	Display display;
 
-	//StateManager states;
-	//StateLoader stateLoader;
-
 	/*---------------- TEMP --------------------*/
-	/*Shader* vsShader = nullptr;
-	Shader* fsShader = nullptr;
-	ShaderProgram* sp = nullptr;
-	*/
 	GeometryShader* geometryShader;
 	DeferredRenderer* deferredRenderer;
 
