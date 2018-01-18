@@ -21,12 +21,15 @@ EngineCore::EngineCore()
 	//this->sp = new ShaderProgram(*this->vsShader, *this->fsShader);
 
 	// Create Shader
-	this->phongShader = new PhongShader();
-	this->testShader = new TestShader();
+	//this->phongShader = new PhongShader();
+	//this->testShader = new TestShader();
+	this->geometryShader = new GeometryShader();
+	this->deferredRenderer = new DeferredRenderer(&this->display);
 
 	this->camera = new Camera(&this->display, glm::vec3{0.0f, 0.0f, 10.0f});
-	this->phongShader->setCamera(this->camera);
-	this->testShader->setCamera(this->camera);
+	this->geometryShader->setCamera(this->camera);
+	//this->phongShader->setCamera(this->camera);
+	//this->testShader->setCamera(this->camera);
 
 	this->base = new Entity({ 0.0f, 0.0f, -5.0f }, {1.0f, 0.0f, 0.0f});
 
@@ -36,33 +39,33 @@ EngineCore::EngineCore()
 	loader.load(this->m2, "Cube/Cube.obj");
 	
 	this->e1 = new Entity({ -3.0f, 1.f, -5.0f }, glm::normalize(glm::vec3{ 0.1f, 2.0f, -2.0f }), false);
-	this->e1->addMesh(this->m1, this->phongShader);
+	this->e1->addMesh(this->m1, this->geometryShader);
 	this->e1->addComponent(new testComponent());
 	this->e1->addComponent(this->camera);
 	base->addChild(e1);
 
 	this->e2 = new Entity({ 3.0f, -1.f, -5.0f }, glm::normalize(glm::vec3{ 2.0f, -0.0f, -1.0f }), false);
-	this->e2->addMesh(this->m2, this->testShader);
-	this->e2->addMesh(this->m1, this->testShader);
+	this->e2->addMesh(this->m2, this->geometryShader);
+	this->e2->addMesh(this->m1, this->geometryShader);
 	base->addChild(e2);
 	
 	Entity* temp = new Entity({ 0.0f, -3.0f, 0.0f }, { 0.0f, 0.0f, 1.0f });
-	temp->addMesh(this->m2, this->testShader);
+	temp->addMesh(this->m2, this->geometryShader);
 	base->addChild(temp);
 	this->arm.push_back(temp);
 
 	temp = new Entity({ 0.0f, 2.0f, 0.0f }, { 0.0f, 0.0f, 1.0f });
-	temp->addMesh(this->m2, this->testShader);
+	temp->addMesh(this->m2, this->geometryShader);
 	this->arm[this->arm.size() - 1]->addChild(temp);
 	this->arm.push_back(temp);
 
 	temp = new Entity({ 0.0f, 2.0f, 0.0f }, { 0.0f, 0.0f, 1.0f });
-	temp->addMesh(this->m2, this->testShader);
+	temp->addMesh(this->m2, this->geometryShader);
 	this->arm[this->arm.size() - 1]->addChild(temp);
 	this->arm.push_back(temp);
 
 	temp = new Entity({ 0.0f, 2.0f, 0.0f }, { 0.0f, 0.0f, 1.0f });
-	temp->addMesh(this->m2, this->testShader);
+	temp->addMesh(this->m2, this->geometryShader);
 	this->arm[this->arm.size() - 1]->addChild(temp);
 	this->arm.push_back(temp);
 
@@ -86,14 +89,14 @@ EngineCore::EngineCore()
 
 EngineCore::~EngineCore()
 {
-	/*delete this->vsShader;
-	delete this->fsShader;
-	delete this->sp;*/
-	delete this->testShader;
-	delete this->phongShader;
+	//delete this->testShader;
+	//delete this->phongShader;
 	delete this->m1;
 	delete this->m2;
 	delete this->base;
+
+	delete this->geometryShader;
+	delete this->deferredRenderer;
 }
 
 void EngineCore::init()
@@ -152,11 +155,13 @@ void EngineCore::update(const float & dt)
 		//temp->setLocalMatrix(glm::rotate(temp->getLocalMatrix(), -dt, { 0.0f, 1.0f, 0.0f }));
 	}*/
 
+	/*
 	float& time = this->testShader->getTime();
 	time += dt*3.0f;
 	if (time > 10)
 		time = 0;
-	
+	*/
+
 	Transform& tb = this->base->getWorldTransform();
 	tb.setRotation(tb.getRotation() + glm::vec3{ 0.0f, -dt, 0.0f });
 	
@@ -180,7 +185,8 @@ void EngineCore::render()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	/*---------------- TEMP --------------------*/
-	this->base->render();
+	//this->base->render();
+	this->deferredRenderer->render(this->base);
 
 	//this->entity->draw(this->sp->getID());
 
