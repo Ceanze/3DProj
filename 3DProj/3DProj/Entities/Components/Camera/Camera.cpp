@@ -46,7 +46,7 @@ void Camera::input(Display * display)
 
 	glfwSetCursorPos(this->display->getWindowPtr(), this->display->getWidth() / 2, this->display->getHeight() / 2);
 	// -------------------------------------------------------------------------------
-
+	
 	// -------------------------------- Move position --------------------------------
 	static const float CAMERA_SPEED = 10.0f;
 	if (glfwGetKey(this->display->getWindowPtr(), GLFW_KEY_W) == GLFW_PRESS)

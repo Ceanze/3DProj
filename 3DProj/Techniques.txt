@@ -1,0 +1,9 @@
+- Deferred Rendering
+* Parsing and rendering an existing model format
+- Height-map terrain rendering, user can walk on the terrainusing WASD keys.
+- Normal Mapping
+- Shadow Mapping
+- View frustum culling against a quadtree
+- Back face culling using Geometry Shader
+- Gaussian Filter
+- Mouse picking (or something)

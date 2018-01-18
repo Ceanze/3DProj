@@ -14,6 +14,9 @@
 #include "../Shading/ShaderProgram.h"
 #include "../Shading/PhongShader.h"
 #include "../Shading/TestShader.h"
+#include "../Shading/Deferred Rendering/GeometryShader.h"
+
+#include "Renderers\DeferredRenderer.h"
 /*-------------- END TEMP ------------------*/
 
 #include "../Entities/Components/Camera/Camera.h"
@@ -44,8 +47,11 @@ private:
 	Shader* fsShader = nullptr;
 	ShaderProgram* sp = nullptr;
 	*/
-	PhongShader* phongShader;
-	TestShader* testShader;
+	GeometryShader* geometryShader;
+	DeferredRenderer* deferredRenderer;
+
+	//PhongShader* phongShader;
+	//TestShader* testShader;
 	Entity* base;
 	Entity* e1;
 	Entity* e2;

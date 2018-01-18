@@ -138,6 +138,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Core\GL Utils\FrameBuffer.cpp" />
+    <ClCompile Include="Core\Renderers\DeferredRenderer.cpp" />
     <ClCompile Include="Entities\Components\Camera\Camera.cpp" />
     <ClCompile Include="Entities\Components\Component.cpp" />
     <ClCompile Include="Core\Display.cpp" />
@@ -157,6 +159,8 @@
     <ClCompile Include="Loaders\MTLLoader.cpp" />
     <ClCompile Include="Loaders\ObjLoader.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Shading\Deferred Rendering\GeometryShader.cpp" />
+    <ClCompile Include="Shading\Deferred Rendering\QuadShader.cpp" />
     <ClCompile Include="Shading\PhongShader.cpp" />
     <ClCompile Include="Shading\Shader.cpp" />
     <ClCompile Include="Shading\ShaderProgram.cpp" />
@@ -166,6 +170,8 @@
     <ClCompile Include="Utils\Transform.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Core\GL Utils\FrameBuffer.h" />
+    <ClInclude Include="Core\Renderers\DeferredRenderer.h" />
     <ClInclude Include="Entities\Components\Camera\Camera.h" />
     <ClInclude Include="Entities\Components\Component.h" />
     <ClInclude Include="Core\Config.h" />
@@ -190,6 +196,8 @@
     <ClInclude Include="ImGui\stb_truetype.h" />
     <ClInclude Include="Loaders\MTLLoader.h" />
     <ClInclude Include="Loaders\ObjLoader.h" />
+    <ClInclude Include="Shading\Deferred Rendering\GeometryShader.h" />
+    <ClInclude Include="Shading\Deferred Rendering\QuadShader.h" />
     <ClInclude Include="Shading\PhongShader.h" />
     <ClInclude Include="Shading\Shader.h" />
     <ClInclude Include="Shading\ShaderProgram.h" />
