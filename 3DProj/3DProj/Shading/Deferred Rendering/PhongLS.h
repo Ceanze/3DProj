@@ -13,7 +13,7 @@ public:
 private:
 	void selfUpdateUniforms(Node* entity);
 
-	GLuint positionLoc, normalLoc, albedoLoc, depthLoc;
+	GLuint positionLoc, normalLoc, albedoLoc, depthLoc, camLoc;
 };
 
 #endif

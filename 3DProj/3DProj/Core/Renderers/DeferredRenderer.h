@@ -17,6 +17,8 @@ public:
 	const FrameBuffer* getGBuffer() const;
 	const FrameBuffer* getLBuffer() const;
 
+	void setCamera(Camera* camera);
+
 	const void findTextureLocation(ShaderProgram* shader, FrameBuffer* buffer) const;
 
 private:

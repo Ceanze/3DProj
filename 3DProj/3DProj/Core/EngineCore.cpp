@@ -19,9 +19,11 @@ EngineCore::EngineCore()
 	//this->testShader = new TestShader();
 	this->geometryShader = new GeometryShader();
 	this->deferredRenderer = new DeferredRenderer(&this->display);
+	
 
 	this->camera = new Camera(&this->display, glm::vec3{0.0f, 0.0f, 10.0f});
 	this->geometryShader->setCamera(this->camera);
+	this->deferredRenderer->setCamera(this->camera);
 	//this->phongShader->setCamera(this->camera);
 	//this->testShader->setCamera(this->camera);
 

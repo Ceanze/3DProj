@@ -25,6 +25,7 @@ public:
 	const GLuint getID() const;
 
 	void setCamera(Camera* camera);
+	Camera* getCamera() { return this->camera; };
 
 	virtual void updateUniforms(FrameBuffer* buffer) = 0;
 

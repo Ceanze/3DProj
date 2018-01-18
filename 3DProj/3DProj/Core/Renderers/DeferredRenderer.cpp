@@ -75,6 +75,11 @@ const FrameBuffer * DeferredRenderer::getLBuffer() const
 	return this->lightningBuffer;
 }
 
+void DeferredRenderer::setCamera(Camera * camera)
+{
+	this->phongShader->setCamera(camera);
+}
+
 const void DeferredRenderer::findTextureLocation(ShaderProgram* shader, FrameBuffer* buffer) const
 {
 	glUseProgram(shader->getID());

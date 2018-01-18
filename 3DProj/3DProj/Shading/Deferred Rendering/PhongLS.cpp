@@ -19,6 +19,10 @@ PhongLS::PhongLS() : ShaderProgram({ "Lightning Shaders/PhongLS.vs", GL_VERTEX_S
 	this->depthLoc = glGetUniformLocation(this->getID(), "depthTexture");
 	if (depthLoc == -1)
 		Error::printError("Could not find depthLoc");
+
+	GLuint camLoc = glGetUniformLocation(this->getID(), "camPos");
+		if (camLoc != -1)
+			Error::printError("Could not find camPos");
 }
 
 PhongLS::~PhongLS()
@@ -27,6 +31,8 @@ PhongLS::~PhongLS()
 
 void PhongLS::updateUniforms(FrameBuffer* buffer)
 {
+	glUniform3fv(this->camLoc, 1, &(this->getCamera()->getPosition()[0]));
+
 	glUniform1i(this->positionLoc, 0);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, buffer->getTexture(0));
