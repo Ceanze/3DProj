@@ -5,6 +5,8 @@
 
 #include <vector>
 
+#include "Texture.h"
+
 class FrameBuffer
 {
 public:

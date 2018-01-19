@@ -139,6 +139,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Core\GL Utils\FrameBuffer.cpp" />
+    <ClCompile Include="Core\GL Utils\Texture.cpp" />
+    <ClCompile Include="Core\GL Utils\TextureInfo.cpp" />
     <ClCompile Include="Core\Renderers\DeferredRenderer.cpp" />
     <ClCompile Include="Entities\Components\Camera\Camera.cpp" />
     <ClCompile Include="Entities\Components\Component.cpp" />
@@ -172,6 +174,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\GL Utils\FrameBuffer.h" />
+    <ClInclude Include="Core\GL Utils\Texture.h" />
+    <ClInclude Include="Core\GL Utils\TextureInfo.h" />
     <ClInclude Include="Core\Renderers\DeferredRenderer.h" />
     <ClInclude Include="Entities\Components\Camera\Camera.h" />
     <ClInclude Include="Entities\Components\Component.h" />
@@ -206,6 +210,7 @@
     <ClInclude Include="Loaders\StateLoader.h" />
     <ClInclude Include="Shading\TestShader.h" />
     <ClInclude Include="Entities\Components\Movement\testComponent.h" />
+    <ClInclude Include="Stb\stb_image.h" />
     <ClInclude Include="Utils\Transform.h" />
   </ItemGroup>
   <ItemGroup>

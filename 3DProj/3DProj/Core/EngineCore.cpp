@@ -4,7 +4,7 @@
 
 #include "../ImGui/imgui.h"
 #include "../ImGui/imgui_impl_glfw_gl3.h"
-#include "..\Entities\Components\Movement Components\testComponent.h"
+#include "..\Entities\Components\Movement\testComponent.h"
 
 /*---------------- TEMP --------------------*/
 #include <gtc\matrix_transform.hpp>

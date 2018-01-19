@@ -108,6 +108,12 @@
     <ClCompile Include="Entities\Components\Movement\testComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Core\GL Utils\Texture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\GL Utils\TextureInfo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\EngineCore.h">
@@ -216,6 +222,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Entities\Components\Movement\testComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Stb\stb_image.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\GL Utils\Texture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\GL Utils\TextureInfo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
