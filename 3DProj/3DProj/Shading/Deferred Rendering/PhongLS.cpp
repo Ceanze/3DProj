@@ -13,7 +13,7 @@ PhongLS::PhongLS() : ShaderProgram({ "Lightning Shaders/PhongLS.vs", GL_VERTEX_S
 		Error::printError("Could not find normalLoc");
 
 	this->camLoc = glGetUniformLocation(this->getID(), "camPos");
-	if (camLoc != -1)
+	if (camLoc == -1)
 		Error::printError("Could not find camPos in PhongLS");
 }
 

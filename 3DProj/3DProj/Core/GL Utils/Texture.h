@@ -10,6 +10,7 @@ class Texture
 {
 public:
 	Texture();
+	Texture(const std::vector<TextureInfo>& textureInfos);
 	Texture(unsigned int width, unsigned int height, unsigned int numTextures = 1);
 	Texture(unsigned int width, unsigned int height, void* data, unsigned int numTextures = 1);
 	Texture(unsigned int width, unsigned int height, void* data, GLuint dataType = GL_UNSIGNED_BYTE, GLuint externalFormat = GL_RGBA, GLuint internalFormat = GL_RGBA, unsigned int numTextures = 1);
@@ -31,7 +32,7 @@ public:
 private:
 	void init(unsigned int numTextures, unsigned int width, unsigned int height, void* data, GLuint dataType = GL_UNSIGNED_BYTE, GLuint externalFormat = GL_RGBA, GLuint internalFormat = GL_RGBA);
 
-	void createTextures(unsigned int numTextures, unsigned int width, unsigned int height, void* data, GLuint dataType, GLuint externalFormat, GLuint internalFormat);
+	void createTextures();
 	void createTexture(unsigned int width, unsigned int height, void* data, GLuint dataType, GLuint externalFormat, GLuint internalFormat);
 
 	GLuint* textures;

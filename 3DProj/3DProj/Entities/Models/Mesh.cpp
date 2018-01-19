@@ -57,11 +57,9 @@ void Mesh::loadToGPU(GLuint shaderProgramID, GLenum usage, bool useUvs)
 
 void Mesh::draw() const
 {
-	// tell opengl we are going to use the VAO we described earlier
 	glBindVertexArray(this->vao);
-
-	//glDrawArrays(GL_TRIANGLES, 0, this->vertices.size());
 	glDrawElements(GL_TRIANGLES, this->indices.size(), GL_UNSIGNED_INT, 0);
+	glBindVertexArray(0);
 }
 
 GLuint Mesh::getVAO() const

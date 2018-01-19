@@ -5,6 +5,16 @@ Texture::Texture()
 	init(1, 16, 16, nullptr);
 }
 
+Texture::Texture(const std::vector<TextureInfo>& textureInfos)
+{
+	this->textureIndex = 0;
+	this->numTextures = textureInfos.size();
+	this->textures = nullptr;
+	for(unsigned int i = 0; i < textureInfos.size(); i++)
+		this->textureInfos.push_back(textureInfos[i]);
+	createTextures();
+}
+
 Texture::Texture(unsigned int width, unsigned int height, unsigned int numTextures)
 {
 	init(numTextures, width, height, nullptr);
@@ -97,15 +107,16 @@ void Texture::init(unsigned int numTextures, unsigned int width, unsigned int he
 	for (unsigned int i = 0; i < numTextures; i++)
 		this->textureInfos.push_back(TextureInfo(width, height, data, dataType, externalFormat, internalFormat));
 
-	createTextures(numTextures, width, height, data, dataType, externalFormat, internalFormat);
+	createTextures();
 }
 
-void Texture::createTextures(unsigned int numTextures, unsigned int width, unsigned int height, void* data, GLuint dataType, GLuint externalFormat, GLuint internalFormat)
+void Texture::createTextures()
 {
-	glGenTextures(numTextures, this->textures);
+	this->textures = new GLuint[this->textureInfos.size()];
+	glGenTextures(this->textureInfos.size(), this->textures);
 
-	for (unsigned int i = 0; i < numTextures; i++)
-		createTexture(width, height, data, dataType, externalFormat, internalFormat);
+	for (unsigned int i = 0; i < this->textureInfos.size(); i++)
+		createTexture(this->textureInfos[i].width, this->textureInfos[i].height, this->textureInfos[i].data, this->textureInfos[i].dataType, this->textureInfos[i].externalFormat, this->textureInfos[i].internalFormat);
 }
 
 void Texture::createTexture(unsigned int width, unsigned int height, void* data, GLuint dataType, GLuint externalFormat, GLuint internalFormat)

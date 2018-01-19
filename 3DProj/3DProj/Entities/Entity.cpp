@@ -64,6 +64,7 @@ void Entity::selfRender()
 		this->shaders[i]->updateUniforms(this);
 		for (unsigned int j = 0; j < meshIds.size(); j++)
 			this->meshes[meshIds[j]]->draw();
+		glUseProgram(0);
 	}
 }
 

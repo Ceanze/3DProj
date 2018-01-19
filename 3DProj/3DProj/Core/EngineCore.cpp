@@ -93,6 +93,7 @@ void EngineCore::init()
 		if (this->display.sizeUpdated)
 		{
 			this->camera->updateProj();
+			this->deferredRenderer->resize(&this->display);
 			this->display.sizeUpdated = false;
 		}
 
@@ -207,7 +208,7 @@ void EngineCore::renderNodeGUI(Node* e, int level)
 	t.setScale(scale);
 
 	std::vector<Node*>& nodes = e->getChildren();
-	for (int i = 0; i < nodes.size(); i++)
+	for (unsigned int i = 0; i < nodes.size(); i++)
 	{
 		std::string nodeName("Node " + std::to_string(i) + " in level " + std::to_string(level));
 		if (ImGui::TreeNode(nodeName.c_str()))

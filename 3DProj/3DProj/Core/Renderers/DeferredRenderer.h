@@ -9,10 +9,12 @@
 class DeferredRenderer
 {
 public:
-	DeferredRenderer(Display* display);
+	DeferredRenderer(const Display* display);
 	virtual ~DeferredRenderer();
 
 	void render(Node* node);
+
+	void resize(const Display* display);
 
 	const FrameBuffer* getGBuffer() const;
 	const FrameBuffer* getLBuffer() const;
@@ -20,11 +22,14 @@ public:
 	void setCamera(Camera* camera);
 
 private:
+	void renderGBuffer(Node* node);
+	void renderLightBuffer();
 	void createQuad();
 
 	QuadShader* quadShader;
 	PhongLS* phongShader;
 
+	GLuint* quadTextures;
 
 	FrameBuffer* gBuffer;
 	FrameBuffer* lightningBuffer;
