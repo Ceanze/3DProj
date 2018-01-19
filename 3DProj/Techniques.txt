@@ -1,4 +1,4 @@
-- Deferred Rendering
+/ Deferred Rendering
 * Parsing and rendering an existing model format
 - Height-map terrain rendering, user can walk on the terrainusing WASD keys.
 - Normal Mapping
