@@ -167,7 +167,7 @@
     <ClCompile Include="Shading\ShaderProgram.cpp" />
     <ClCompile Include="Loaders\StateLoader.cpp" />
     <ClCompile Include="Shading\TestShader.cpp" />
-    <ClCompile Include="Entities\Components\Movement Components\testComponent.cpp" />
+    <ClCompile Include="Entities\Components\Movement\testComponent.cpp" />
     <ClCompile Include="Utils\Transform.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -205,7 +205,7 @@
     <ClInclude Include="Shading\ShaderProgram.h" />
     <ClInclude Include="Loaders\StateLoader.h" />
     <ClInclude Include="Shading\TestShader.h" />
-    <ClInclude Include="Entities\Components\Movement Components\testComponent.h" />
+    <ClInclude Include="Entities\Components\Movement\testComponent.h" />
     <ClInclude Include="Utils\Transform.h" />
   </ItemGroup>
   <ItemGroup>

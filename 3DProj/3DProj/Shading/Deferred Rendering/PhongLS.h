@@ -9,11 +9,11 @@ public:
 	PhongLS();
 	virtual ~PhongLS();
 
-	void updateUniforms(FrameBuffer* buffer);
+	void updateUniforms(GLuint* textures, unsigned nrOf);
 private:
 	void selfUpdateUniforms(Node* entity);
 
-	GLuint positionLoc, normalLoc, albedoLoc, depthLoc, camLoc;
+	GLint positionLoc, normalLoc, albedoLoc, depthLoc, camLoc;
 };
 
 #endif

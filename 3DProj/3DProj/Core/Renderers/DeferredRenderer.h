@@ -19,8 +19,6 @@ public:
 
 	void setCamera(Camera* camera);
 
-	const void findTextureLocation(ShaderProgram* shader, FrameBuffer* buffer) const;
-
 private:
 	void createQuad();
 

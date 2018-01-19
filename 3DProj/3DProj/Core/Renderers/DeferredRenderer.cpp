@@ -15,7 +15,7 @@ DeferredRenderer::DeferredRenderer(Display* display)
 
 	this->lightningBuffer = new FrameBuffer(display->getWidth(), display->getHeight());
 	this->lightningBuffer->createTextures(std::vector<FrameBuffer::FBO_ATTATCHMENT_TYPE>{
-		FrameBuffer::FBO_COLOR_ATTACHMENT, FrameBuffer::FBO_COLOR_ATTACHMENT, FrameBuffer::FBO_COLOR_ATTACHMENT
+		FrameBuffer::FBO_COLOR_ATTACHMENT, FrameBuffer::FBO_COLOR_ATTACHMENT
 	});
 
 	this->phongShader = new PhongLS();
@@ -44,7 +44,8 @@ void DeferredRenderer::render(Node * node)
 	glClear(GL_COLOR_BUFFER_BIT);
 	glViewport(0, 0, this->lightningBuffer->getWidth(), this->lightningBuffer->getHeight());
 
-	this->findTextureLocation(this->phongShader, this->gBuffer);
+	glUseProgram(this->phongShader->getID());
+	this->phongShader->updateUniforms(this->gBuffer->getTextures(), this->gBuffer->getNumTextures());
 
 	this->lightningBuffer->bind();
 	glBindVertexArray(this->quadVAO);
@@ -57,7 +58,11 @@ void DeferredRenderer::render(Node * node)
 	glClear(GL_COLOR_BUFFER_BIT);
 	glViewport(0, 0, this->gBuffer->getWidth(), this->gBuffer->getHeight()); // Change this to display!
 
-	this->findTextureLocation(this->quadShader, this->gBuffer);
+	glUseProgram(this->quadShader->getID());
+
+	GLuint* quadTextures = new GLuint[3]{this->lightningBuffer->getTexture(0), this->lightningBuffer->getTexture(1), this->gBuffer->getTexture(2)};
+	this->quadShader->updateUniforms(quadTextures, 3);
+	delete[] quadTextures;
 
 	glBindVertexArray(this->quadVAO);
 	glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -78,12 +83,6 @@ const FrameBuffer * DeferredRenderer::getLBuffer() const
 void DeferredRenderer::setCamera(Camera * camera)
 {
 	this->phongShader->setCamera(camera);
-}
-
-const void DeferredRenderer::findTextureLocation(ShaderProgram* shader, FrameBuffer* buffer) const
-{
-	glUseProgram(shader->getID());
-	shader->updateUniforms(buffer);
 }
 
 void DeferredRenderer::createQuad()

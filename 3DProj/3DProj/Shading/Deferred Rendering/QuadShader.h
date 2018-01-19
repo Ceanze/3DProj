@@ -10,11 +10,11 @@ public:
 	QuadShader();
 	virtual ~QuadShader();
 
-	void updateUniforms(FrameBuffer* buffer);
+	void updateUniforms(GLuint* textures, unsigned nrOf);
 private:
 	void selfUpdateUniforms(Node* entity);
 
-	GLuint positionLoc, normalLoc, albedoLoc, depthLoc;
+	GLint positionLoc, normalLoc, albedoLoc, depthLoc;
 };
 
 #endif

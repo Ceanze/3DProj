@@ -27,7 +27,7 @@ public:
 	void setCamera(Camera* camera);
 	Camera* getCamera() { return this->camera; };
 
-	virtual void updateUniforms(FrameBuffer* buffer) = 0;
+	virtual void updateUniforms(GLuint* textures, unsigned nrOf) = 0;
 
 private:
 	virtual void selfUpdateUniforms(Node* entity) = 0;

@@ -2,25 +2,19 @@
 
 in vec2 fragTextureCoord;
 
-uniform sampler2D positionTexture;
-uniform sampler2D normalTexture;
+uniform sampler2D diffuseTexture;
+uniform sampler2D specularTexture;
 uniform sampler2D albedoTexture;
-uniform sampler2D depthTexture;
 
 out vec4 finalColor;
 
+const vec3 ambient = vec3(0.2, 0.2, 0.2);
+
 void main()
 {
- 
-    if(fragTextureCoord.x < 0.5 && fragTextureCoord.y < 0.5) // BL
-        finalColor = texture(albedoTexture, fragTextureCoord);
-    else if(fragTextureCoord.x > 0.5 && fragTextureCoord.y < 0.5) // BR
-	{
-		float depth = texture(depthTexture, fragTextureCoord).x;
-        finalColor = vec4(depth, depth, depth, 1.0);
-    }
-	else if(fragTextureCoord.x < 0.5 && fragTextureCoord.y > 0.5) // TL
-        finalColor = texture(positionTexture, fragTextureCoord);
-    else
-        finalColor = texture(normalTexture, fragTextureCoord);
+    float diffuse = texture(diffuseTexture, fragTextureCoord).x;
+    float specular = texture(specularTexture, fragTextureCoord).x;
+    vec3 materialColor = texture(albedoTexture, fragTextureCoord).xyz;
+
+    finalColor = min(vec4(materialColor * ambient + materialColor * diffuse + materialColor * specular, 1.0f), 1);
 }

@@ -86,6 +86,11 @@ GLuint FrameBuffer::getTexture(unsigned int index) const
 	return this->textures[index];
 }
 
+GLuint * FrameBuffer::getTextures()
+{
+	return this->textures;
+}
+
 unsigned int FrameBuffer::getNumTextures() const
 {
 	return this->numTextures;

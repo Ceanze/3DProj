@@ -29,13 +29,13 @@ EngineCore::EngineCore()
 
 	this->base = new Entity({ 0.0f, 0.0f, -5.0f }, {1.0f, 0.0f, 0.0f});
 
-	/*this->m1 = new Mesh();
-	loader.load(this->m1, "Bunny/bunny.obj");*/
+	this->m1 = new Mesh();
+	loader.load(this->m1, "Bunny/bunny.obj");
 	this->m2 = new Mesh();
 	loader.load(this->m2, "Cube/Cube.obj");
 	
 	this->e1 = new Entity({ -3.0f, 1.f, -5.0f }, glm::normalize(glm::vec3{ 0.1f, 2.0f, -2.0f }), false);
-	this->e1->addMesh(this->m2, this->geometryShader);
+	this->e1->addMesh(this->m1, this->geometryShader);
 	this->e1->addComponent(new testComponent());
 	this->e1->addComponent(this->camera);
 	base->addChild(e1);
@@ -73,7 +73,7 @@ EngineCore::~EngineCore()
 {
 	//delete this->testShader;
 	//delete this->phongShader;
-	//delete this->m1;
+	delete this->m1;
 	delete this->m2;
 	delete this->base;
 

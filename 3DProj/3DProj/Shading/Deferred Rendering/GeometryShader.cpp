@@ -8,7 +8,7 @@ GeometryShader::~GeometryShader()
 {
 }
 
-void GeometryShader::updateUniforms(FrameBuffer * buffer)
+void GeometryShader::updateUniforms(GLuint* textures, unsigned nrOf)
 {
 }
 

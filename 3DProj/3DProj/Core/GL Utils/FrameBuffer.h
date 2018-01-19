@@ -25,6 +25,7 @@ public:
 	void unbind();
 
 	GLuint getTexture(unsigned int index) const;
+	GLuint* getTextures();
 	unsigned int getNumTextures() const;
 	unsigned int getWidth() const;
 	unsigned int getHeight() const;

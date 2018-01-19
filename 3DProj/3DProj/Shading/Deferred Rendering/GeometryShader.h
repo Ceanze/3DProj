@@ -11,7 +11,7 @@ public:
 	GeometryShader();
 	virtual ~GeometryShader();
 
-	void updateUniforms(FrameBuffer* buffer);
+	void updateUniforms(GLuint* textures, unsigned nrOf);
 
 private:
 	void selfUpdateUniforms(Node* node);
