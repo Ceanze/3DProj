@@ -21,6 +21,8 @@ public:
 
 	void addMesh(Mesh* mesh, ShaderProgram* shader);
 	void addComponent(Component* component);
+
+	std::vector<Mesh*>& getMeshes();
 private:
 	std::vector<Component*> components;
 

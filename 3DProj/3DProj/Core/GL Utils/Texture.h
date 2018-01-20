@@ -13,7 +13,7 @@ public:
 	Texture(const std::vector<TextureInfo>& textureInfos);
 	Texture(unsigned int width, unsigned int height, unsigned int numTextures = 1);
 	Texture(unsigned int width, unsigned int height, void* data, unsigned int numTextures = 1);
-	Texture(unsigned int width, unsigned int height, void* data, GLuint dataType = GL_UNSIGNED_BYTE, GLuint externalFormat = GL_RGBA, GLuint internalFormat = GL_RGBA, unsigned int numTextures = 1);
+	Texture(unsigned int width, unsigned int height, void* data, GLuint dataType, GLuint externalFormat = GL_RGBA, GLuint internalFormat = GL_RGBA, unsigned int numTextures = 1);
 	virtual ~Texture();
 
 	void recreate(unsigned int width, unsigned int height, void* data = nullptr);
@@ -23,7 +23,7 @@ public:
 	void bind(unsigned int index = 0);
 	void unbind();
 
-	GLuint getTexture(unsigned int index) const;
+	GLuint getTexture(unsigned int index = 0) const;
 	GLuint * getTextures() const;
 	unsigned int getNumTextures() const;
 	unsigned int getWidth(unsigned int index = 0) const;

@@ -114,6 +114,9 @@
     <ClCompile Include="Core\GL Utils\TextureInfo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Core\TextureManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\EngineCore.h">
@@ -233,10 +236,13 @@
     <ClInclude Include="Core\GL Utils\TextureInfo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Core\TextureManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\Phong\TestShader.fs" />
-    <None Include="Resources\Shaders\Lightning Shaders\PhongLS.vs" />
-    <None Include="Resources\Shaders\Lightning Shaders\PhongLS.fs" />
+    <None Include="Resources\Shaders\Deferred Rendering\PhongLS.fs" />
+    <None Include="Resources\Shaders\Deferred Rendering\PhongLS.vs" />
   </ItemGroup>
 </Project>

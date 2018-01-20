@@ -43,6 +43,11 @@ void Entity::addComponent(Component* component)
 	this->components.push_back(component);
 }
 
+std::vector<Mesh*> & Entity::getMeshes()
+{
+	return this->meshes;
+}
+
 void Entity::selfInit()
 {
 	for (int i = 0; i < this->components.size(); i++)

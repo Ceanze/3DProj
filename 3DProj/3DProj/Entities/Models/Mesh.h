@@ -24,6 +24,7 @@ public:
 	{
 		glm::vec3 position;
 		glm::vec3 normal;
+		glm::vec3 tangent;
 		glm::vec2 uvs;
 	};
 
@@ -39,7 +40,11 @@ private:
 
 	GLint vertexPosID;
 	GLint vertexNormalID;
+	GLint vertexTangentID;
 	GLint vertexUvsID;
+
+	GLint textureLocation;
+	GLint normalMapLocation;
 };
 
 #endif

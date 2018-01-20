@@ -2,7 +2,7 @@
 
 #include "../../Error.h"
 
-PhongLS::PhongLS() : ShaderProgram({ "Lightning Shaders/PhongLS.vs", GL_VERTEX_SHADER }, { "Lightning Shaders/PhongLS.fs", GL_FRAGMENT_SHADER })
+PhongLS::PhongLS() : ShaderProgram({ "Deferred Rendering/PhongLS.vs", GL_VERTEX_SHADER }, { "Deferred Rendering/PhongLS.fs", GL_FRAGMENT_SHADER })
 {
 	this->positionLoc = glGetUniformLocation(this->getID(), "positionTexture");
 	if (positionLoc == -1)

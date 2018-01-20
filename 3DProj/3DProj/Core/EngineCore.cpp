@@ -2,9 +2,9 @@
 
 #include <chrono>
 
-#include "../ImGui/imgui.h"
-#include "../ImGui/imgui_impl_glfw_gl3.h"
 #include "..\Entities\Components\Movement\testComponent.h"
+
+#include "TextureManager.h"
 
 /*---------------- TEMP --------------------*/
 #include <gtc\matrix_transform.hpp>
@@ -79,6 +79,8 @@ EngineCore::~EngineCore()
 
 	delete this->geometryShader;
 	delete this->deferredRenderer;
+
+	TextureManager::deleteTextures();
 }
 
 void EngineCore::init()
@@ -194,18 +196,47 @@ void EngineCore::renderGui()
 
 void EngineCore::renderNodeGUI(Node* e, int level)
 {
-	Transform& t = e->getWorldTransform();
-	glm::vec3 pos = t.getTranslation();
-	ImGui::DragFloat3("Position", &pos[0], 0.01f, -100.0f, 100.0f);
-	t.setTranslation(pos);
+	if (ImGui::TreeNode("Transform"))
+	{
+		Transform& t = e->getWorldTransform();
+		glm::vec3 pos = t.getTranslation();
+		ImGui::DragFloat3("Position", &pos[0], 0.01f, -100.0f, 100.0f);
+		t.setTranslation(pos);
 
-	glm::vec3 rot = t.getRotation();
-	ImGui::DragFloat3("Rotation", &rot[0], 0.01f, 0.0f, 2*3.1415f);
-	t.setRotation(rot);
+		glm::vec3 rot = t.getRotation();
+		ImGui::DragFloat3("Rotation", &rot[0], 0.01f, 0.0f, 2 * 3.1415f);
+		t.setRotation(rot);
 
-	glm::vec3 scale = t.getScale();
-	ImGui::DragFloat3("Scale", &scale[0], 0.01f, 0.01f, 100.0f);
-	t.setScale(scale);
+		glm::vec3 scale = t.getScale();
+		ImGui::DragFloat3("Scale", &scale[0], 0.01f, 0.01f, 100.0f);
+		t.setScale(scale);
+		ImGui::TreePop();
+	}
+
+	std::vector<Mesh*> meshes = static_cast<Entity*>(e)->getMeshes();
+	if (meshes.size() != 0)
+	{
+		if (ImGui::TreeNode("Textures"))
+		{
+			ImGui::Text("Albedo map");
+			for (unsigned int i = 0; i < meshes.size(); i++)
+			{
+				Texture* texture = meshes[i]->material->texture;
+				ImTextureID texID = (ImTextureID)texture->getTexture();
+				float ratio = (float)texture->getWidth() / (float)texture->getHeight();
+				renderTexture(texID, ratio, i != meshes.size() - 1);
+			}
+			ImGui::Text("Normal map");
+			for (unsigned int i = 0; i < meshes.size(); i++)
+			{
+				Texture* texture2 = meshes[i]->material->normalMap;
+				ImTextureID texID2 = (ImTextureID)texture2->getTexture();
+				float ratio2 = (float)texture2->getWidth() / (float)texture2->getHeight();
+				renderTexture(texID2, ratio2, i != meshes.size() - 1);
+			}
+			ImGui::TreePop();
+		}
+	}
 
 	std::vector<Node*>& nodes = e->getChildren();
 	for (unsigned int i = 0; i < nodes.size(); i++)
@@ -228,15 +259,7 @@ void EngineCore::renderDRTextures()
 		{
 			ImTextureID texID = (ImTextureID)gBuffer->getTexture(i);
 			float ratio = (float)gBuffer->getWidth() / (float)gBuffer->getHeight();
-			ImGui::Image(texID, ImVec2(50 * ratio, 50), ImVec2(0, 1), ImVec2(1, 0));
-			if (i != gBuffer->getNumTextures() - 1)
-				ImGui::SameLine();
-			if (ImGui::IsItemHovered())
-			{
-				ImGui::BeginTooltip();
-				ImGui::Image(texID, ImVec2(170* ratio, 170), ImVec2(0, 1), ImVec2(1, 0), ImVec4(1, 1, 1, 1), ImVec4(1, 1, 1, 1));
-				ImGui::EndTooltip();
-			}
+			renderTexture(texID, ratio, i != gBuffer->getNumTextures() - 1);
 		}
 		ImGui::TreePop();
 	}
@@ -251,17 +274,22 @@ void EngineCore::renderLSTextures()
 		{
 			ImTextureID texID = (ImTextureID)lBuffer->getTexture(i);
 			float ratio = (float)lBuffer->getWidth() / (float)lBuffer->getHeight();
-			ImGui::Image(texID, ImVec2(50 * ratio, 50), ImVec2(0, 1), ImVec2(1, 0));
-			if (i != lBuffer->getNumTextures() - 1)
-				ImGui::SameLine();
-			if (ImGui::IsItemHovered())
-			{
-				ImGui::BeginTooltip();
-				ImGui::Image(texID, ImVec2(170 * ratio, 170), ImVec2(0, 1), ImVec2(1, 0), ImVec4(1, 1, 1, 1), ImVec4(1, 1, 1, 1));
-				ImGui::EndTooltip();
-			}
+			renderTexture(texID, ratio, i != lBuffer->getNumTextures() - 1);
 		}
 		ImGui::TreePop();
+	}
+}
+
+void EngineCore::renderTexture(ImTextureID texID, float ratio, bool nextLine)
+{
+	ImGui::Image(texID, ImVec2(50 * ratio, 50), ImVec2(0, 1), ImVec2(1, 0));
+	if (nextLine)
+		ImGui::SameLine();
+	if (ImGui::IsItemHovered())
+	{
+		ImGui::BeginTooltip();
+		ImGui::Image(texID, ImVec2(170 * ratio, 170), ImVec2(0, 1), ImVec2(1, 0), ImVec4(1, 1, 1, 1), ImVec4(1, 1, 1, 1));
+		ImGui::EndTooltip();
 	}
 }
 

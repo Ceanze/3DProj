@@ -1,5 +1,7 @@
 #include "TextureInfo.h"
 
+#include "../../Stb/stb_image.h"
+
 TextureInfo::TextureInfo() : 
 	data(nullptr), 
 	width(0), 

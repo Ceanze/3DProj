@@ -7,11 +7,10 @@
 #include <gtc\type_ptr.hpp>
 
 #include "MTLLoader.h"
-#include "../Core/Config.h"
 
 #include "../Error.h"
 
-void ObjLoader::load(Mesh * mesh, const std::string & name)
+void ObjLoader::load(Mesh * mesh, const std::string & name, unsigned int flags)
 {
 	MTLLoader mtlLoader;
 	std::vector<std::map<std::string, Material*>> materials;
@@ -47,7 +46,7 @@ void ObjLoader::load(Mesh * mesh, const std::string & name)
 					ss >> str;
 					std::string mtlName(name);
 					mtlName = mtlName.substr(0, mtlName.find_last_of("/\\") +1).append(str);
-					materials.push_back(mtlLoader.load(mtlName));
+					materials.push_back(mtlLoader.load(mtlName, flags & USE_NORMAL_MAP));
 				}
 
 				if (c == "v") // Vertex position
@@ -124,12 +123,13 @@ void ObjLoader::load(Mesh * mesh, const std::string & name)
 
 					if (!hasNormal)
 						calculateNormal(mesh, triangle);
+					calculateTangent(mesh, triangle);
 				}
 			}
 		}
 
 		if (materials.empty())
-			mesh->material = new Material();
+			mesh->material = new Material(flags & USE_NORMAL_MAP);
 		Error::printError("numv: " + std::to_string(numv));
 		file.close();
 	}
@@ -149,4 +149,26 @@ void ObjLoader::calculateNormal(Mesh * mesh, unsigned char triangle[3]) const
 	mesh->vertices[triangle[0]].normal = normal;
 	mesh->vertices[triangle[1]].normal = normal;
 	mesh->vertices[triangle[2]].normal = normal;
+}
+
+void ObjLoader::calculateTangent(Mesh * mesh, unsigned char triangle[3])
+{
+	Mesh::Vertex& v0 = mesh->vertices[triangle[0]];
+	Mesh::Vertex& v1 = mesh->vertices[triangle[1]];
+	Mesh::Vertex& v2 = mesh->vertices[triangle[2]];
+	glm::vec2 deltaUV1 = v1.uvs - v0.uvs;
+	glm::vec2 deltaUV2 = v2.uvs - v0.uvs;
+	glm::vec3 deltaPos1 = v1.position - v0.position;
+	glm::vec3 deltaPos2 = v2.position - v0.position;
+	/* Calculat tangent T from the equations:
+	deltaPos1 = delatUV1.x*T + deltaUV1.y*B
+	deltaPos2 = delatUV2.x*T + deltaUV2.y*B
+	*/
+	float r = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV1.y * deltaUV2.x);
+	glm::vec3 tangent = (deltaPos1 * deltaUV2.y - deltaPos2 * deltaUV1.y)*r;
+
+	// Make the tangent perpendicular to its corresponding normal.
+	v0.tangent = glm::normalize(tangent - v0.normal*glm::dot(v0.normal, tangent));
+	v1.tangent = glm::normalize(tangent - v1.normal*glm::dot(v1.normal, tangent));
+	v2.tangent = glm::normalize(tangent - v2.normal*glm::dot(v2.normal, tangent));
 }

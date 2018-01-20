@@ -6,6 +6,9 @@
 #include "Config.h"
 
 /*---------------- TEMP --------------------*/
+#include "../ImGui/imgui.h"
+#include "../ImGui/imgui_impl_glfw_gl3.h"
+
 #include "../Entities/Models/Mesh.h"
 #include "../Entities/Entity.h"
 #include "../Loaders/ObjLoader.h"
@@ -38,6 +41,7 @@ private:
 	void renderNodeGUI(Node* e, int level = 0);
 	void renderDRTextures();
 	void renderLSTextures();
+	void renderTexture(ImTextureID texID, float ratio, bool nextLine);
 
 	Display display;
 
