@@ -6,7 +6,7 @@
 
 #include "..\..\Error.h"
 
-DeferredRenderer::DeferredRenderer(Display* display)
+DeferredRenderer::DeferredRenderer(const Display* display)
 {
 	this->gBuffer = new FrameBuffer(display->getWidth(), display->getHeight());
 	this->gBuffer->createTextures(std::vector<FrameBuffer::FBO_ATTATCHMENT_TYPE>{ 
@@ -20,6 +20,7 @@ DeferredRenderer::DeferredRenderer(Display* display)
 
 	this->phongShader = new PhongLS();
 
+	this->quadTextures = new GLuint[3];
 	this->quadShader = new QuadShader();
 	createQuad();
 }
@@ -29,30 +30,14 @@ DeferredRenderer::~DeferredRenderer()
 	delete this->lightningBuffer;
 	delete this->gBuffer;
 	delete this->quadShader;
+	delete[] this->quadTextures;
 	delete this->phongShader;
 }
 
 void DeferredRenderer::render(Node * node)
 {
-	this->gBuffer->bind();
-	node->render();
-	glBindVertexArray(0);
-	glUseProgram(0);
-	this->gBuffer->unbind();
-
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT);
-	glViewport(0, 0, this->lightningBuffer->getWidth(), this->lightningBuffer->getHeight());
-
-	glUseProgram(this->phongShader->getID());
-	this->phongShader->updateUniforms(this->gBuffer->getTextures(), this->gBuffer->getNumTextures());
-
-	this->lightningBuffer->bind();
-	glBindVertexArray(this->quadVAO);
-	glDrawArrays(GL_TRIANGLES, 0, 6);
-	glBindVertexArray(0);
-	glUseProgram(0);
-	this->lightningBuffer->unbind();
+	renderGBuffer(node);
+	renderLightBuffer();
 
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
@@ -60,14 +45,21 @@ void DeferredRenderer::render(Node * node)
 
 	glUseProgram(this->quadShader->getID());
 
-	GLuint* quadTextures = new GLuint[3]{this->lightningBuffer->getTexture(0), this->lightningBuffer->getTexture(1), this->gBuffer->getTexture(2)};
+	this->quadTextures[0] = this->lightningBuffer->getTexture(0);
+	this->quadTextures[1] = this->lightningBuffer->getTexture(1);
+	this->quadTextures[2] = this->gBuffer->getTexture(2);
 	this->quadShader->updateUniforms(quadTextures, 3);
-	delete[] quadTextures;
 
 	glBindVertexArray(this->quadVAO);
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 	glBindVertexArray(0);
 	glUseProgram(0);
+}
+
+void DeferredRenderer::resize(const Display * display)
+{
+	this->gBuffer->resize(display->getWidth(), display->getHeight());
+	this->lightningBuffer->resize(display->getWidth(), display->getHeight());
 }
 
 const FrameBuffer * DeferredRenderer::getGBuffer() const
@@ -85,9 +77,26 @@ void DeferredRenderer::setCamera(Camera * camera)
 	this->phongShader->setCamera(camera);
 }
 
-void DeferredRenderer::setLightPointer(LightComponent & component)
+void DeferredRenderer::renderGBuffer(Node * node)
 {
-	component.setListOfLights(this->phongShader->getLights());
+	this->gBuffer->bind();
+	node->render();
+	this->gBuffer->unbind();
+}
+
+void DeferredRenderer::renderLightBuffer()
+{
+	this->lightningBuffer->bind();
+
+	glUseProgram(this->phongShader->getID());
+	this->phongShader->updateUniforms(this->gBuffer->getTextures(), this->gBuffer->getNumTextures());
+
+	glBindVertexArray(this->quadVAO);
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+	glBindVertexArray(0);
+	glUseProgram(0);
+
+	this->lightningBuffer->unbind();
 }
 
 void DeferredRenderer::createQuad()

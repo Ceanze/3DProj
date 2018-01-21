@@ -7,6 +7,8 @@
 #include "..\Entities\Components\Movement\testComponent.h"
 #include "..\Entities\Components\Lightning\PointLight.h"
 
+#include "ResourceManager.h"
+
 /*---------------- TEMP --------------------*/
 #include <gtc\matrix_transform.hpp>
 /*-------------- END TEMP ------------------*/
@@ -16,16 +18,16 @@ EngineCore::EngineCore()
 {
 	/*---------------- TEMP --------------------*/
 	// Create Shader
-	//this->phongShader = new PhongShader();
 	//this->testShader = new TestShader();
 	this->geometryShader = new GeometryShader();
+	this->geometryNMShader = new GeometryNormalMapShader();
 	this->deferredRenderer = new DeferredRenderer(&this->display);
 	this->deferredRenderer->setLightPointer(LightComponent());
 
 	this->camera = new Camera(&this->display, glm::vec3{0.0f, 0.0f, 10.0f});
 	this->geometryShader->setCamera(this->camera);
+	this->geometryNMShader->setCamera(this->camera);
 	this->deferredRenderer->setCamera(this->camera);
-	//this->phongShader->setCamera(this->camera);
 	//this->testShader->setCamera(this->camera);
 
 	this->base = new Entity({ 0.0f, 0.0f, -5.0f }, {1.0f, 0.0f, 0.0f});
@@ -33,8 +35,13 @@ EngineCore::EngineCore()
 	this->m1 = new Mesh();
 	loader.load(this->m1, "Bunny/bunny.obj");
 	this->m2 = new Mesh();
-	loader.load(this->m2, "Cube/Cube.obj");
+	loader.load(this->m2, "Cube/Cube.obj", USE_NORMAL_MAP);
+
+	loader.load(this->cubeMeshes, "Cube2/Cube2.obj", USE_NORMAL_MAP);
+	loader.load(this->armyPilotMeshes, "ArmyPilot/ArmyPilot.obj", FLIP_UV_Y);
+	loader.load(this->swordMeshes, "Sword2a/sword2a.obj");
 	
+	// --------------------------- Bunny ---------------------------
 	this->e1 = new Entity({ -3.0f, 1.f, -5.0f }, glm::normalize(glm::vec3{ 0.1f, 2.0f, -2.0f }), false);
 	this->e1->addMesh(this->m1, this->geometryShader);
 	this->e1->addComponent(new testComponent());
@@ -42,28 +49,43 @@ EngineCore::EngineCore()
 	this->e1->addComponent(this->camera);
 	base->addChild(e1);
 
+	// --------------------------- Bunny and Cube ---------------------------
 	this->e2 = new Entity({ 3.0f, -1.f, -5.0f }, glm::normalize(glm::vec3{ 2.0f, -0.0f, -1.0f }), false);
-	this->e2->addMesh(this->m2, this->geometryShader);
-	this->e2->addMesh(this->m2, this->geometryShader);
+	this->e2->addMesh(this->m1, this->geometryShader);
+	this->e2->addMeshes(this->cubeMeshes, this->geometryNMShader);
 	base->addChild(e2);
 	
+	// --------------------------- Sword ---------------------------
+	this->sword = new Entity({ 0.0f, -2.0f, -1.0f }, glm::normalize(glm::vec3{ 0.0f, 0.0f, -1.0f }), false);
+	this->sword->getLocalTransform().setScale({ 2.0f, 2.0f, 2.0f });
+	this->sword->getLocalTransform().setRotation({ 0.0f, 0.0f, -3.1415f / 2.0f });
+	this->sword->addMeshes(this->swordMeshes, this->geometryShader);
+	base->addChild(sword);
+
+	// --------------------------- Army pilot ---------------------------
+	this->armyPilot = new Entity({ 0.0f, -5.f, 5.0f }, glm::normalize(glm::vec3{ 0.0f, 0.0f, -1.0f }), false);
+	this->armyPilot->getLocalTransform().setScale({0.05f, 0.05f, 0.05f });
+	this->armyPilot->addMeshes(this->armyPilotMeshes, this->geometryShader);
+	base->addChild(armyPilot);
+
+	// --------------------------- Arm ---------------------------
 	Entity* temp = new Entity({ 0.0f, -3.0f, 0.0f }, { 0.0f, 0.0f, 1.0f });
-	temp->addMesh(this->m2, this->geometryShader);
+	temp->addMesh(this->m2, this->geometryNMShader);
 	base->addChild(temp);
 	this->arm.push_back(temp);
 
 	temp = new Entity({ 0.0f, 2.0f, 0.0f }, { 0.0f, 0.0f, 1.0f });
-	temp->addMesh(this->m2, this->geometryShader);
+	temp->addMesh(this->m2, this->geometryNMShader);
 	this->arm[this->arm.size() - 1]->addChild(temp);
 	this->arm.push_back(temp);
 
 	temp = new Entity({ 0.0f, 2.0f, 0.0f }, { 0.0f, 0.0f, 1.0f });
-	temp->addMesh(this->m2, this->geometryShader);
+	temp->addMesh(this->m2, this->geometryNMShader);
 	this->arm[this->arm.size() - 1]->addChild(temp);
 	this->arm.push_back(temp);
 
 	temp = new Entity({ 0.0f, 2.0f, 0.0f }, { 0.0f, 0.0f, 1.0f });
-	temp->addMesh(this->m2, this->geometryShader);
+	temp->addMesh(this->m2, this->geometryNMShader);
 	this->arm[this->arm.size() - 1]->addChild(temp);
 	this->arm.push_back(temp);
 
@@ -77,10 +99,16 @@ EngineCore::~EngineCore()
 	//delete this->phongShader;
 	delete this->m1;
 	delete this->m2;
+	for (Mesh* m : this->cubeMeshes) delete m;
+	for (Mesh* m : this->armyPilotMeshes) delete m;
+	for (Mesh* m : this->swordMeshes) delete m;
 	delete this->base;
 
+	delete this->geometryNMShader;
 	delete this->geometryShader;
 	delete this->deferredRenderer;
+
+	ResourceManager::deleteResources();
 }
 
 void EngineCore::init()
@@ -95,6 +123,7 @@ void EngineCore::init()
 		if (this->display.sizeUpdated)
 		{
 			this->camera->updateProj();
+			this->deferredRenderer->resize(&this->display);
 			this->display.sizeUpdated = false;
 		}
 
@@ -195,21 +224,55 @@ void EngineCore::renderGui()
 
 void EngineCore::renderNodeGUI(Node* e, int level)
 {
-	Transform& t = e->getWorldTransform();
-	glm::vec3 pos = t.getTranslation();
-	ImGui::DragFloat3("Position", &pos[0], 0.01f, -100.0f, 100.0f);
-	t.setTranslation(pos);
+	if (ImGui::TreeNode("Transform"))
+	{
+		Transform& t = e->getWorldTransform();
+		glm::vec3 pos = t.getTranslation();
+		ImGui::DragFloat3("Position", &pos[0], 0.01f, -100.0f, 100.0f);
+		t.setTranslation(pos);
 
-	glm::vec3 rot = t.getRotation();
-	ImGui::DragFloat3("Rotation", &rot[0], 0.01f, 0.0f, 2*3.1415f);
-	t.setRotation(rot);
+		glm::vec3 rot = t.getRotation();
+		ImGui::DragFloat3("Rotation", &rot[0], 0.01f, 0.0f, 2 * 3.1415f);
+		t.setRotation(rot);
 
-	glm::vec3 scale = t.getScale();
-	ImGui::DragFloat3("Scale", &scale[0], 0.01f, 0.01f, 100.0f);
-	t.setScale(scale);
+		glm::vec3 scale = t.getScale();
+		ImGui::DragFloat3("Scale", &scale[0], 0.01f, 0.01f, 100.0f);
+		t.setScale(scale);
+		ImGui::TreePop();
+	}
+
+	std::vector<Mesh*> meshes = static_cast<Entity*>(e)->getMeshes();
+	if (meshes.size() != 0)
+	{
+		if (ImGui::TreeNode("Textures"))
+		{
+			ImGui::Text("Albedo map");
+			for (unsigned int i = 0; i < meshes.size(); i++)
+			{
+				Texture* texture = meshes[i]->material->texture;
+				ImTextureID texID = (ImTextureID)texture->getTexture();
+				float ratio = (float)texture->getWidth() / (float)texture->getHeight();
+				renderTexture(texID, ratio, i != meshes.size() - 1);
+			}
+
+			ImGui::Text("Normal map");
+			for (unsigned int i = 0; i < meshes.size(); i++)
+			{
+				Texture* texture = meshes[i]->material->normalMap;
+				if (texture != nullptr)
+				{
+					ImTextureID texID = (ImTextureID)texture->getTexture();
+					float ratio = (float)texture->getWidth() / (float)texture->getHeight();
+					renderTexture(texID, ratio, i != meshes.size() - 1);
+				}
+			}
+
+			ImGui::TreePop();
+		}
+	}
 
 	std::vector<Node*>& nodes = e->getChildren();
-	for (int i = 0; i < nodes.size(); i++)
+	for (unsigned int i = 0; i < nodes.size(); i++)
 	{
 		std::string nodeName("Node " + std::to_string(i) + " in level " + std::to_string(level));
 		if (ImGui::TreeNode(nodeName.c_str()))
@@ -229,15 +292,7 @@ void EngineCore::renderDRTextures()
 		{
 			ImTextureID texID = (ImTextureID)gBuffer->getTexture(i);
 			float ratio = (float)gBuffer->getWidth() / (float)gBuffer->getHeight();
-			ImGui::Image(texID, ImVec2(50 * ratio, 50), ImVec2(0, 1), ImVec2(1, 0));
-			if (i != gBuffer->getNumTextures() - 1)
-				ImGui::SameLine();
-			if (ImGui::IsItemHovered())
-			{
-				ImGui::BeginTooltip();
-				ImGui::Image(texID, ImVec2(170* ratio, 170), ImVec2(0, 1), ImVec2(1, 0), ImVec4(1, 1, 1, 1), ImVec4(1, 1, 1, 1));
-				ImGui::EndTooltip();
-			}
+			renderTexture(texID, ratio, i != gBuffer->getNumTextures() - 1);
 		}
 		ImGui::TreePop();
 	}
@@ -252,17 +307,22 @@ void EngineCore::renderLSTextures()
 		{
 			ImTextureID texID = (ImTextureID)lBuffer->getTexture(i);
 			float ratio = (float)lBuffer->getWidth() / (float)lBuffer->getHeight();
-			ImGui::Image(texID, ImVec2(50 * ratio, 50), ImVec2(0, 1), ImVec2(1, 0));
-			if (i != lBuffer->getNumTextures() - 1)
-				ImGui::SameLine();
-			if (ImGui::IsItemHovered())
-			{
-				ImGui::BeginTooltip();
-				ImGui::Image(texID, ImVec2(170 * ratio, 170), ImVec2(0, 1), ImVec2(1, 0), ImVec4(1, 1, 1, 1), ImVec4(1, 1, 1, 1));
-				ImGui::EndTooltip();
-			}
+			renderTexture(texID, ratio, i != lBuffer->getNumTextures() - 1);
 		}
 		ImGui::TreePop();
+	}
+}
+
+void EngineCore::renderTexture(ImTextureID texID, float ratio, bool nextLine)
+{
+	ImGui::Image(texID, ImVec2(50 * ratio, 50), ImVec2(0, 1), ImVec2(1, 0));
+	if (nextLine)
+		ImGui::SameLine();
+	if (ImGui::IsItemHovered())
+	{
+		ImGui::BeginTooltip();
+		ImGui::Image(texID, ImVec2(170 * ratio, 170), ImVec2(0, 1), ImVec2(1, 0), ImVec4(1, 1, 1, 1), ImVec4(1, 1, 1, 1));
+		ImGui::EndTooltip();
 	}
 }
 

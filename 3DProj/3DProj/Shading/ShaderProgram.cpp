@@ -61,6 +61,7 @@ void ShaderProgram::updateUniforms(Node * entity)
 	{
 		glUniformMatrix4fv(camLoc, 1, GL_FALSE, &(this->camera->getVP())[0][0]);
 	}
+	else Error::printError("Could not find 'camear' in shader!");
 
 	selfUpdateUniforms(entity);
 }

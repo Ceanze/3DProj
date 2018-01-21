@@ -30,17 +30,25 @@ void Entity::addMesh(Mesh * mesh, ShaderProgram * shader)
 	mesh->loadToGPU(shader->getID(), GL_STATIC_DRAW, true);
 	this->meshes.push_back(mesh);
 	if (this->shaderMap.find(shader) == this->shaderMap.end())
-	{
 		this->shaders.push_back(shader);
-		//this->shaderMap[shader] = std::vector<unsigned int>();
-	}
 	this->shaderMap[shader].push_back(this->meshes.size() - 1);
+}
+
+void Entity::addMeshes(const std::vector<Mesh*>& meshes, ShaderProgram * shader)
+{
+	for (Mesh* m : meshes)
+		addMesh(m, shader);
 }
 
 void Entity::addComponent(Component* component)
 {
 	component->setEntity(this);
 	this->components.push_back(component);
+}
+
+std::vector<Mesh*> & Entity::getMeshes()
+{
+	return this->meshes;
 }
 
 void Entity::selfInit()
@@ -64,6 +72,7 @@ void Entity::selfRender()
 		this->shaders[i]->updateUniforms(this);
 		for (unsigned int j = 0; j < meshIds.size(); j++)
 			this->meshes[meshIds[j]]->draw();
+		glUseProgram(0);
 	}
 }
 

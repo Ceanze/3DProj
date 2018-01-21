@@ -108,10 +108,16 @@
     <ClCompile Include="Entities\Components\Movement\testComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Entities\Components\Lightning\PointLight.cpp">
+    <ClCompile Include="Core\GL Utils\Texture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Entities\Components\Lightning\LightComponent.cpp">
+    <ClCompile Include="Core\GL Utils\TextureInfo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Shading\Deferred Rendering\GeometryNormalMapShader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\ResourceManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -224,16 +230,27 @@
     <ClInclude Include="Entities\Components\Movement\testComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Entities\Components\Lightning\PointLight.h">
+    <ClInclude Include="Stb\stb_image.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Entities\Components\Lightning\LightComponent.h">
+    <ClInclude Include="Core\GL Utils\Texture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\GL Utils\TextureInfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Shading\Deferred Rendering\GeometryNormalMapShader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\ResourceManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\Phong\TestShader.fs" />
-    <None Include="Resources\Shaders\Lightning Shaders\PhongLS.vs" />
-    <None Include="Resources\Shaders\Lightning Shaders\PhongLS.fs" />
+    <None Include="Resources\Shaders\Deferred Rendering\PhongLS.fs" />
+    <None Include="Resources\Shaders\Deferred Rendering\PhongLS.vs" />
+    <None Include="Resources\Shaders\Deferred Rendering\GeometryDRNormalMap.vs" />
+    <None Include="Resources\Shaders\Deferred Rendering\GeometryDRNormalMap.fs" />
   </ItemGroup>
 </Project>

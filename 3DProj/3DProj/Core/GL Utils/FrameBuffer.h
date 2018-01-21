@@ -5,6 +5,8 @@
 
 #include <vector>
 
+#include "Texture.h"
+
 class FrameBuffer
 {
 public:
@@ -31,12 +33,10 @@ public:
 	unsigned int getHeight() const;
 
 private:
-	void createTexture(FBO_ATTATCHMENT_TYPE attachment);
+	void createFramebuffer(const std::vector<FBO_ATTATCHMENT_TYPE>& attachments);
 
 	GLuint fbo;
-	GLuint* textures;
-	std::vector<FBO_ATTATCHMENT_TYPE> attachments;
-	unsigned int numTextures;
+	Texture* textures;
 	unsigned int width, height;
 
 	bool hasDepthAttachment;

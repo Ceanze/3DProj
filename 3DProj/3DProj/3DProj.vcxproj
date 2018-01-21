@@ -23,7 +23,7 @@
     <ProjectGuid>{E153C5BA-4A29-4DD9-B332-0C76B7F3E036}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>My3DProj</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -139,7 +139,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Core\GL Utils\FrameBuffer.cpp" />
+    <ClCompile Include="Core\GL Utils\Texture.cpp" />
+    <ClCompile Include="Core\GL Utils\TextureInfo.cpp" />
     <ClCompile Include="Core\Renderers\DeferredRenderer.cpp" />
+    <ClCompile Include="Core\ResourceManager.cpp" />
     <ClCompile Include="Entities\Components\Camera\Camera.cpp" />
     <ClCompile Include="Entities\Components\Component.cpp" />
     <ClCompile Include="Core\Display.cpp" />
@@ -156,11 +159,10 @@
     <ClCompile Include="ImGui\imgui_demo.cpp" />
     <ClCompile Include="ImGui\imgui_draw.cpp" />
     <ClCompile Include="ImGui\imgui_impl_glfw_gl3.cpp" />
-    <ClCompile Include="Entities\Components\Lightning\LightComponent.cpp" />
     <ClCompile Include="Loaders\MTLLoader.cpp" />
     <ClCompile Include="Loaders\ObjLoader.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Entities\Components\Lightning\PointLight.cpp" />
+    <ClCompile Include="Shading\Deferred Rendering\GeometryNormalMapShader.cpp" />
     <ClCompile Include="Shading\Deferred Rendering\PhongLS.cpp" />
     <ClCompile Include="Shading\Deferred Rendering\GeometryShader.cpp" />
     <ClCompile Include="Shading\Deferred Rendering\QuadShader.cpp" />
@@ -174,7 +176,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\GL Utils\FrameBuffer.h" />
+    <ClInclude Include="Core\GL Utils\Texture.h" />
+    <ClInclude Include="Core\GL Utils\TextureInfo.h" />
     <ClInclude Include="Core\Renderers\DeferredRenderer.h" />
+    <ClInclude Include="Core\ResourceManager.h" />
     <ClInclude Include="Entities\Components\Camera\Camera.h" />
     <ClInclude Include="Entities\Components\Component.h" />
     <ClInclude Include="Core\Config.h" />
@@ -197,10 +202,9 @@
     <ClInclude Include="ImGui\stb_rect_pack.h" />
     <ClInclude Include="ImGui\stb_textedit.h" />
     <ClInclude Include="ImGui\stb_truetype.h" />
-    <ClInclude Include="Entities\Components\Lightning\LightComponent.h" />
     <ClInclude Include="Loaders\MTLLoader.h" />
     <ClInclude Include="Loaders\ObjLoader.h" />
-    <ClInclude Include="Entities\Components\Lightning\PointLight.h" />
+    <ClInclude Include="Shading\Deferred Rendering\GeometryNormalMapShader.h" />
     <ClInclude Include="Shading\Deferred Rendering\PhongLS.h" />
     <ClInclude Include="Shading\Deferred Rendering\GeometryShader.h" />
     <ClInclude Include="Shading\Deferred Rendering\QuadShader.h" />
@@ -210,11 +214,14 @@
     <ClInclude Include="Loaders\StateLoader.h" />
     <ClInclude Include="Shading\TestShader.h" />
     <ClInclude Include="Entities\Components\Movement\testComponent.h" />
+    <ClInclude Include="Stb\stb_image.h" />
     <ClInclude Include="Utils\Transform.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Shaders\Lightning Shaders\PhongLS.fs" />
-    <None Include="Resources\Shaders\Lightning Shaders\PhongLS.vs" />
+    <None Include="Resources\Shaders\Deferred Rendering\GeometryDRNormalMap.fs" />
+    <None Include="Resources\Shaders\Deferred Rendering\GeometryDRNormalMap.vs" />
+    <None Include="Resources\Shaders\Deferred Rendering\PhongLS.fs" />
+    <None Include="Resources\Shaders\Deferred Rendering\PhongLS.vs" />
     <None Include="Resources\Shaders\Phong\TestShader.fs" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
