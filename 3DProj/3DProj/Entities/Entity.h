@@ -20,6 +20,7 @@ public:
 	~Entity();
 
 	void addMesh(Mesh* mesh, ShaderProgram* shader);
+	void addMeshes(const std::vector<Mesh*>& meshes, ShaderProgram* shader);
 	void addComponent(Component* component);
 
 	std::vector<Mesh*>& getMeshes();

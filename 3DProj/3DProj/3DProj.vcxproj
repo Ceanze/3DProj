@@ -142,7 +142,7 @@
     <ClCompile Include="Core\GL Utils\Texture.cpp" />
     <ClCompile Include="Core\GL Utils\TextureInfo.cpp" />
     <ClCompile Include="Core\Renderers\DeferredRenderer.cpp" />
-    <ClCompile Include="Core\TextureManager.cpp" />
+    <ClCompile Include="Core\ResourceManager.cpp" />
     <ClCompile Include="Entities\Components\Camera\Camera.cpp" />
     <ClCompile Include="Entities\Components\Component.cpp" />
     <ClCompile Include="Core\Display.cpp" />
@@ -162,6 +162,7 @@
     <ClCompile Include="Loaders\MTLLoader.cpp" />
     <ClCompile Include="Loaders\ObjLoader.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Shading\Deferred Rendering\GeometryNormalMapShader.cpp" />
     <ClCompile Include="Shading\Deferred Rendering\PhongLS.cpp" />
     <ClCompile Include="Shading\Deferred Rendering\GeometryShader.cpp" />
     <ClCompile Include="Shading\Deferred Rendering\QuadShader.cpp" />
@@ -178,7 +179,7 @@
     <ClInclude Include="Core\GL Utils\Texture.h" />
     <ClInclude Include="Core\GL Utils\TextureInfo.h" />
     <ClInclude Include="Core\Renderers\DeferredRenderer.h" />
-    <ClInclude Include="Core\TextureManager.h" />
+    <ClInclude Include="Core\ResourceManager.h" />
     <ClInclude Include="Entities\Components\Camera\Camera.h" />
     <ClInclude Include="Entities\Components\Component.h" />
     <ClInclude Include="Core\Config.h" />
@@ -203,6 +204,7 @@
     <ClInclude Include="ImGui\stb_truetype.h" />
     <ClInclude Include="Loaders\MTLLoader.h" />
     <ClInclude Include="Loaders\ObjLoader.h" />
+    <ClInclude Include="Shading\Deferred Rendering\GeometryNormalMapShader.h" />
     <ClInclude Include="Shading\Deferred Rendering\PhongLS.h" />
     <ClInclude Include="Shading\Deferred Rendering\GeometryShader.h" />
     <ClInclude Include="Shading\Deferred Rendering\QuadShader.h" />
@@ -216,6 +218,8 @@
     <ClInclude Include="Utils\Transform.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\Shaders\Deferred Rendering\GeometryDRNormalMap.fs" />
+    <None Include="Resources\Shaders\Deferred Rendering\GeometryDRNormalMap.vs" />
     <None Include="Resources\Shaders\Deferred Rendering\PhongLS.fs" />
     <None Include="Resources\Shaders\Deferred Rendering\PhongLS.vs" />
     <None Include="Resources\Shaders\Phong\TestShader.fs" />

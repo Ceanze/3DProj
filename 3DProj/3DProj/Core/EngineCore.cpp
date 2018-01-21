@@ -4,7 +4,7 @@
 
 #include "..\Entities\Components\Movement\testComponent.h"
 
-#include "TextureManager.h"
+#include "ResourceManager.h"
 
 /*---------------- TEMP --------------------*/
 #include <gtc\matrix_transform.hpp>
@@ -15,16 +15,15 @@ EngineCore::EngineCore()
 {
 	/*---------------- TEMP --------------------*/
 	// Create Shader
-	//this->phongShader = new PhongShader();
 	//this->testShader = new TestShader();
 	this->geometryShader = new GeometryShader();
+	this->geometryNMShader = new GeometryNormalMapShader();
 	this->deferredRenderer = new DeferredRenderer(&this->display);
-	
 
 	this->camera = new Camera(&this->display, glm::vec3{0.0f, 0.0f, 10.0f});
 	this->geometryShader->setCamera(this->camera);
+	this->geometryNMShader->setCamera(this->camera);
 	this->deferredRenderer->setCamera(this->camera);
-	//this->phongShader->setCamera(this->camera);
 	//this->testShader->setCamera(this->camera);
 
 	this->base = new Entity({ 0.0f, 0.0f, -5.0f }, {1.0f, 0.0f, 0.0f});
@@ -32,36 +31,56 @@ EngineCore::EngineCore()
 	this->m1 = new Mesh();
 	loader.load(this->m1, "Bunny/bunny.obj");
 	this->m2 = new Mesh();
-	loader.load(this->m2, "Cube/Cube.obj");
+	loader.load(this->m2, "Cube/Cube.obj", USE_NORMAL_MAP);
+
+	loader.load(this->cubeMeshes, "Cube2/Cube2.obj", USE_NORMAL_MAP);
+	loader.load(this->armyPilotMeshes, "ArmyPilot/ArmyPilot.obj", FLIP_UV_Y);
+	loader.load(this->swordMeshes, "Sword2a/sword2a.obj");
 	
+	// --------------------------- Bunny ---------------------------
 	this->e1 = new Entity({ -3.0f, 1.f, -5.0f }, glm::normalize(glm::vec3{ 0.1f, 2.0f, -2.0f }), false);
 	this->e1->addMesh(this->m1, this->geometryShader);
 	this->e1->addComponent(new testComponent());
 	this->e1->addComponent(this->camera);
 	base->addChild(e1);
 
+	// --------------------------- Bunny and Cube ---------------------------
 	this->e2 = new Entity({ 3.0f, -1.f, -5.0f }, glm::normalize(glm::vec3{ 2.0f, -0.0f, -1.0f }), false);
-	this->e2->addMesh(this->m2, this->geometryShader);
-	this->e2->addMesh(this->m2, this->geometryShader);
+	this->e2->addMesh(this->m1, this->geometryShader);
+	this->e2->addMeshes(this->cubeMeshes, this->geometryNMShader);
 	base->addChild(e2);
 	
+	// --------------------------- Sword ---------------------------
+	this->sword = new Entity({ 0.0f, -2.0f, -1.0f }, glm::normalize(glm::vec3{ 0.0f, 0.0f, -1.0f }), false);
+	this->sword->getLocalTransform().setScale({ 2.0f, 2.0f, 2.0f });
+	this->sword->getLocalTransform().setRotation({ 0.0f, 0.0f, -3.1415f / 2.0f });
+	this->sword->addMeshes(this->swordMeshes, this->geometryShader);
+	base->addChild(sword);
+
+	// --------------------------- Army pilot ---------------------------
+	this->armyPilot = new Entity({ 0.0f, -5.f, 5.0f }, glm::normalize(glm::vec3{ 0.0f, 0.0f, -1.0f }), false);
+	this->armyPilot->getLocalTransform().setScale({0.05f, 0.05f, 0.05f });
+	this->armyPilot->addMeshes(this->armyPilotMeshes, this->geometryShader);
+	base->addChild(armyPilot);
+
+	// --------------------------- Arm ---------------------------
 	Entity* temp = new Entity({ 0.0f, -3.0f, 0.0f }, { 0.0f, 0.0f, 1.0f });
-	temp->addMesh(this->m2, this->geometryShader);
+	temp->addMesh(this->m2, this->geometryNMShader);
 	base->addChild(temp);
 	this->arm.push_back(temp);
 
 	temp = new Entity({ 0.0f, 2.0f, 0.0f }, { 0.0f, 0.0f, 1.0f });
-	temp->addMesh(this->m2, this->geometryShader);
+	temp->addMesh(this->m2, this->geometryNMShader);
 	this->arm[this->arm.size() - 1]->addChild(temp);
 	this->arm.push_back(temp);
 
 	temp = new Entity({ 0.0f, 2.0f, 0.0f }, { 0.0f, 0.0f, 1.0f });
-	temp->addMesh(this->m2, this->geometryShader);
+	temp->addMesh(this->m2, this->geometryNMShader);
 	this->arm[this->arm.size() - 1]->addChild(temp);
 	this->arm.push_back(temp);
 
 	temp = new Entity({ 0.0f, 2.0f, 0.0f }, { 0.0f, 0.0f, 1.0f });
-	temp->addMesh(this->m2, this->geometryShader);
+	temp->addMesh(this->m2, this->geometryNMShader);
 	this->arm[this->arm.size() - 1]->addChild(temp);
 	this->arm.push_back(temp);
 
@@ -75,12 +94,16 @@ EngineCore::~EngineCore()
 	//delete this->phongShader;
 	delete this->m1;
 	delete this->m2;
+	for (Mesh* m : this->cubeMeshes) delete m;
+	for (Mesh* m : this->armyPilotMeshes) delete m;
+	for (Mesh* m : this->swordMeshes) delete m;
 	delete this->base;
 
+	delete this->geometryNMShader;
 	delete this->geometryShader;
 	delete this->deferredRenderer;
 
-	TextureManager::deleteTextures();
+	ResourceManager::deleteResources();
 }
 
 void EngineCore::init()
@@ -226,14 +249,19 @@ void EngineCore::renderNodeGUI(Node* e, int level)
 				float ratio = (float)texture->getWidth() / (float)texture->getHeight();
 				renderTexture(texID, ratio, i != meshes.size() - 1);
 			}
+
 			ImGui::Text("Normal map");
 			for (unsigned int i = 0; i < meshes.size(); i++)
 			{
-				Texture* texture2 = meshes[i]->material->normalMap;
-				ImTextureID texID2 = (ImTextureID)texture2->getTexture();
-				float ratio2 = (float)texture2->getWidth() / (float)texture2->getHeight();
-				renderTexture(texID2, ratio2, i != meshes.size() - 1);
+				Texture* texture = meshes[i]->material->normalMap;
+				if (texture != nullptr)
+				{
+					ImTextureID texID = (ImTextureID)texture->getTexture();
+					float ratio = (float)texture->getWidth() / (float)texture->getHeight();
+					renderTexture(texID, ratio, i != meshes.size() - 1);
+				}
 			}
+
 			ImGui::TreePop();
 		}
 	}

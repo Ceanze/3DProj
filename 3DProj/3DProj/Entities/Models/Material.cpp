@@ -6,7 +6,7 @@
 #include "../../Error.h"
 #include "../../Core/Config.h"
 
-#include "../../Core/TextureManager.h"
+#include "../../Core/ResourceManager.h"
 
 Material::Material(bool useNormalMap)
 {
@@ -31,16 +31,16 @@ Material::~Material()
 
 void Material::loadTexture(const std::string & path)
 {
-	char hasFailed = TextureManager::loadTexture(path, &this->texture);
+	char hasFailed = ResourceManager::loadTexture(path, &this->texture);
 	if (hasFailed == TEXTURE_FAILED)
-		Error::printError("Failed to load default texture: " + path);
+		Error::printError("Failed to load texture: " + path);
 	else if (hasFailed == TEXTURE_SUCCEEDED)
-		Error::printWarning("Loaded default texture:  " + path);
+		Error::printWarning("Loaded texture:  " + path);
 }
 
 void Material::loadNormalMap(const std::string & path)
 {
-	char hasFailed = TextureManager::loadTexture(path, &this->normalMap);
+	char hasFailed = ResourceManager::loadTexture(path, &this->normalMap);
 	if (hasFailed == TEXTURE_FAILED)
 		Error::printError("Failed to load normal map: " + path);
 	else if (hasFailed == TEXTURE_SUCCEEDED)
@@ -49,7 +49,7 @@ void Material::loadNormalMap(const std::string & path)
 
 void Material::loadDefaultTexture()
 {
-	char hasFailed = TextureManager::loadTexture(DEFAULT_TEXTURE_PATH, &this->texture);
+	char hasFailed = ResourceManager::loadTexture(DEFAULT_TEXTURE_PATH, &this->texture);
 	if (hasFailed == TEXTURE_FAILED)
 		Error::printError("Failed to load default texture: " + std::string(DEFAULT_TEXTURE_PATH));
 	else if (hasFailed == TEXTURE_SUCCEEDED)
@@ -58,9 +58,9 @@ void Material::loadDefaultTexture()
 
 void Material::loadDefaultNormalMap()
 {
-	char hasFailed = TextureManager::loadTexture(DEFAULT_NORMAL_MAP_PATH, &this->normalMap);
+	char hasFailed = ResourceManager::loadTexture(DEFAULT_NORMAL_MAP_PATH, &this->normalMap);
 	if (hasFailed == TEXTURE_FAILED)
-		Error::printError("Failed to load normal map: " + std::string(DEFAULT_NORMAL_MAP_PATH));
+		Error::printError("Failed to load default normal map: " + std::string(DEFAULT_NORMAL_MAP_PATH));
 	else if(hasFailed == TEXTURE_SUCCEEDED)
 		Error::printWarning("Loaded default normal map:  " + std::string(DEFAULT_NORMAL_MAP_PATH));
 }

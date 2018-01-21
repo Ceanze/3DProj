@@ -10,13 +10,13 @@ Mesh::Mesh()
 
 Mesh::~Mesh()
 {
-	delete this->material;
 	glDeleteBuffers(1, &(this->vbo));
 	glDeleteBuffers(1, &(this->indexBufferID));
 	glDeleteVertexArrays(1, &(this->vao));
 
 	glDisableVertexAttribArray(this->vertexPosID);
 	glDisableVertexAttribArray(this->vertexNormalID);
+	glDisableVertexAttribArray(this->vertexTangentID);
 	glDisableVertexAttribArray(this->vertexUvsID);
 }
 
@@ -43,11 +43,14 @@ void Mesh::loadToGPU(GLuint shaderProgramID, GLenum usage, bool useUvs)
 	glEnableVertexAttribArray(this->vertexNormalID);
 	glVertexAttribPointer(this->vertexNormalID, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (char*)(sizeof(GLfloat) * 3));
 
-	// Tangent
-	this->vertexTangentID = glGetAttribLocation(shaderProgramID, "vertexTangent");
-	assert(this->vertexTangentID != -1 && "Error, cannot find 'vertexTangent' attribute in Vertex shader\n");
-	glEnableVertexAttribArray(this->vertexTangentID);
-	glVertexAttribPointer(this->vertexTangentID, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (char*)(sizeof(GLfloat) * 6));
+	if (this->material->normalMap != nullptr)
+	{
+		// Tangent
+		this->vertexTangentID = glGetAttribLocation(shaderProgramID, "vertexTangent");
+		assert(this->vertexTangentID != -1 && "Error, cannot find 'vertexTangent' attribute in Vertex shader\n");
+		glEnableVertexAttribArray(this->vertexTangentID);
+		glVertexAttribPointer(this->vertexTangentID, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (char*)(sizeof(GLfloat) * 6));
+	}
 
 	// Texture coords
 	this->vertexUvsID = glGetAttribLocation(shaderProgramID, "vertexUvs");

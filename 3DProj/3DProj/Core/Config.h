@@ -31,5 +31,7 @@ static const glm::vec3 GLOBAL_UP_VECTOR = glm::vec3{ 0.0f, 1.0f, 0.0f };
 
 // ------------ OBJ LOADER CONSTANTS ------------
 #define USE_NORMAL_MAP		0x1
+#define FLIP_UV_Y			0x2
+#define FLIP_UV_X			0x4
 
 #endif

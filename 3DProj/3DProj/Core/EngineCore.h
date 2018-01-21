@@ -18,6 +18,7 @@
 #include "../Shading/PhongShader.h"
 #include "../Shading/TestShader.h"
 #include "../Shading/Deferred Rendering/GeometryShader.h"
+#include "../Shading/Deferred Rendering/GeometryNormalMapShader.h"
 
 #include "Renderers\DeferredRenderer.h"
 /*-------------- END TEMP ------------------*/
@@ -47,16 +48,21 @@ private:
 
 	/*---------------- TEMP --------------------*/
 	GeometryShader* geometryShader;
+	GeometryNormalMapShader* geometryNMShader;
 	DeferredRenderer* deferredRenderer;
 
-	//PhongShader* phongShader;
 	//TestShader* testShader;
 	Entity* base;
 	Entity* e1;
 	Entity* e2;
+	Entity* armyPilot;
+	Entity* sword;
 	std::vector<Entity*> arm;
 	Mesh* m1;
 	Mesh* m2;
+	std::vector<Mesh*> cubeMeshes;
+	std::vector<Mesh*> swordMeshes;
+	std::vector<Mesh*> armyPilotMeshes;
 	ObjLoader loader;
 	Camera* camera;
 	/*-------------- END TEMP ------------------*/

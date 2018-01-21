@@ -1,11 +1,12 @@
-#include "TextureManager.h"
+#include "ResourceManager.h"
 
 #include "../Stb/stb_image.h"
 #include "Config.h"
 
-std::unordered_map<std::string, TextureManager::TextureData> TextureManager::texturesData = std::unordered_map<std::string, TextureManager::TextureData>();
+std::unordered_map<std::string, ResourceManager::TextureData> ResourceManager::texturesData = std::unordered_map<std::string, ResourceManager::TextureData>();
+std::vector<Material*> ResourceManager::materialsData = std::vector<Material*>();
 
-char TextureManager::loadTexture(const std::string & path, Texture** texture)
+char ResourceManager::loadTexture(const std::string & path, Texture** texture)
 {
 	int width;
 	int height;
@@ -36,13 +37,27 @@ char TextureManager::loadTexture(const std::string & path, Texture** texture)
 	}
 }
 
-void TextureManager::deleteTextures()
+void ResourceManager::addMaterial(Material * material)
+{
+	materialsData.push_back(material);
+}
+
+void ResourceManager::addMaterials(const std::vector<Material*>& materials)
+{
+	for (Material* m : materials)
+		materialsData.push_back(m);
+}
+
+void ResourceManager::deleteResources()
 {
 	for (std::pair<std::string, TextureData> p : texturesData)
 		stbi_image_free(p.second.data);
+
+	for (Material* m : materialsData)
+		delete m;
 }
 
-bool TextureManager::isTextureLoaded(const std::string & path)
+bool ResourceManager::isTextureLoaded(const std::string & path)
 {
 	if(texturesData.find(path) != texturesData.end())
 		return true;
