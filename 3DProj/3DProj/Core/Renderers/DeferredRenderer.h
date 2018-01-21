@@ -38,6 +38,8 @@ private:
 
 	GLuint quadVAO;
 	GLuint quadVBO;
+
+	unsigned int displayWidth, displayHeight;
 };
 
 #endif

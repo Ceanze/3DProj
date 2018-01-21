@@ -8,6 +8,9 @@
 
 DeferredRenderer::DeferredRenderer(const Display* display)
 {
+	this->displayWidth = display->getWidth();
+	this->displayHeight = display->getHeight();
+
 	this->gBuffer = new FrameBuffer(display->getWidth(), display->getHeight());
 	this->gBuffer->createTextures(std::vector<FrameBuffer::FBO_ATTATCHMENT_TYPE>{ 
 		FrameBuffer::FBO_COLOR_ATTACHMENT, FrameBuffer::FBO_COLOR_ATTACHMENT, FrameBuffer::FBO_COLOR_ATTACHMENT, FrameBuffer::FBO_DEPTH_ATTACHMENT
@@ -41,7 +44,7 @@ void DeferredRenderer::render(Node * node)
 
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
-	glViewport(0, 0, this->gBuffer->getWidth(), this->gBuffer->getHeight()); // Change this to display!
+	glViewport(0, 0, this->displayWidth, this->displayHeight); // Change this to display!
 
 	glUseProgram(this->quadShader->getID());
 
@@ -60,6 +63,8 @@ void DeferredRenderer::resize(const Display * display)
 {
 	this->gBuffer->resize(display->getWidth(), display->getHeight());
 	this->lightningBuffer->resize(display->getWidth(), display->getHeight());
+	this->displayWidth = display->getWidth();
+	this->displayHeight = display->getHeight();
 }
 
 const FrameBuffer * DeferredRenderer::getGBuffer() const
