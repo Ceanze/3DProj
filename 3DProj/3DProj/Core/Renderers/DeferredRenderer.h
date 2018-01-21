@@ -5,6 +5,7 @@
 #include "../GL Utils/FrameBuffer.h"
 #include "../../Shading/Deferred Rendering/QuadShader.h"
 #include "../../Shading/Deferred Rendering/PhongLS.h"
+#include "../../Entities/Components/Lightning/LightComponent.h"
 
 class DeferredRenderer
 {
@@ -18,13 +19,13 @@ public:
 	const FrameBuffer* getLBuffer() const;
 
 	void setCamera(Camera* camera);
+	void setLightPointer(LightComponent& component);
 
 private:
 	void createQuad();
 
 	QuadShader* quadShader;
 	PhongLS* phongShader;
-
 
 	FrameBuffer* gBuffer;
 	FrameBuffer* lightningBuffer;

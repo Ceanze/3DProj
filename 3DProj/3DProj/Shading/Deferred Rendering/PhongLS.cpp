@@ -15,6 +15,10 @@ PhongLS::PhongLS() : ShaderProgram({ "Lightning Shaders/PhongLS.vs", GL_VERTEX_S
 	this->camLoc = glGetUniformLocation(this->getID(), "camPos");
 	if (camLoc != -1)
 		Error::printError("Could not find camPos in PhongLS");
+
+	//glGenBuffers(1, &this->ssbo);
+	//glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
+	//glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 }
 
 PhongLS::~PhongLS()
@@ -23,6 +27,9 @@ PhongLS::~PhongLS()
 
 void PhongLS::updateUniforms(GLuint* textures, unsigned nrOf)
 {
+	//glBufferData(GL_SHADER_STORAGE_BUFFER, this->lights.size() * sizeof(PointLight), this->lights[0])
+	
+
 	glUniform3fv(this->camLoc, 1, &(this->getCamera()->getPosition()[0]));
 
 	glUniform1i(this->positionLoc, 0);
@@ -32,6 +39,11 @@ void PhongLS::updateUniforms(GLuint* textures, unsigned nrOf)
 	glUniform1i(this->normalLoc, 1);
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, textures[1]);
+}
+
+std::vector<LightComponent*>* PhongLS::getLights()
+{
+	return &this->lights;
 }
 
 void PhongLS::selfUpdateUniforms(Node * entity)

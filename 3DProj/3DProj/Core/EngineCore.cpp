@@ -4,7 +4,8 @@
 
 #include "../ImGui/imgui.h"
 #include "../ImGui/imgui_impl_glfw_gl3.h"
-#include "..\Entities\Components\Movement Components\testComponent.h"
+#include "..\Entities\Components\Movement\testComponent.h"
+#include "..\Entities\Components\Lightning\PointLight.h"
 
 /*---------------- TEMP --------------------*/
 #include <gtc\matrix_transform.hpp>
@@ -19,7 +20,7 @@ EngineCore::EngineCore()
 	//this->testShader = new TestShader();
 	this->geometryShader = new GeometryShader();
 	this->deferredRenderer = new DeferredRenderer(&this->display);
-	
+	this->deferredRenderer->setLightPointer(LightComponent());
 
 	this->camera = new Camera(&this->display, glm::vec3{0.0f, 0.0f, 10.0f});
 	this->geometryShader->setCamera(this->camera);
@@ -37,6 +38,7 @@ EngineCore::EngineCore()
 	this->e1 = new Entity({ -3.0f, 1.f, -5.0f }, glm::normalize(glm::vec3{ 0.1f, 2.0f, -2.0f }), false);
 	this->e1->addMesh(this->m1, this->geometryShader);
 	this->e1->addComponent(new testComponent());
+	this->e1->addComponent(new PointLight(25.0f, 0.5f));
 	this->e1->addComponent(this->camera);
 	base->addChild(e1);
 

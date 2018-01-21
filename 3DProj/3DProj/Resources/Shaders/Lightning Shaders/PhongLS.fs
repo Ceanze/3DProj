@@ -1,5 +1,13 @@
 #version 330
 
+struct PointLight
+{
+  float intensity;
+  float radius;
+  vec3 position;
+  vec3 color;
+};
+
 uniform sampler2D positionTexture;
 uniform sampler2D normalTexture;
 

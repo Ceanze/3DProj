@@ -156,9 +156,11 @@
     <ClCompile Include="ImGui\imgui_demo.cpp" />
     <ClCompile Include="ImGui\imgui_draw.cpp" />
     <ClCompile Include="ImGui\imgui_impl_glfw_gl3.cpp" />
+    <ClCompile Include="Entities\Components\Lightning\LightComponent.cpp" />
     <ClCompile Include="Loaders\MTLLoader.cpp" />
     <ClCompile Include="Loaders\ObjLoader.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Entities\Components\Lightning\PointLight.cpp" />
     <ClCompile Include="Shading\Deferred Rendering\PhongLS.cpp" />
     <ClCompile Include="Shading\Deferred Rendering\GeometryShader.cpp" />
     <ClCompile Include="Shading\Deferred Rendering\QuadShader.cpp" />
@@ -195,8 +197,10 @@
     <ClInclude Include="ImGui\stb_rect_pack.h" />
     <ClInclude Include="ImGui\stb_textedit.h" />
     <ClInclude Include="ImGui\stb_truetype.h" />
+    <ClInclude Include="Entities\Components\Lightning\LightComponent.h" />
     <ClInclude Include="Loaders\MTLLoader.h" />
     <ClInclude Include="Loaders\ObjLoader.h" />
+    <ClInclude Include="Entities\Components\Lightning\PointLight.h" />
     <ClInclude Include="Shading\Deferred Rendering\PhongLS.h" />
     <ClInclude Include="Shading\Deferred Rendering\GeometryShader.h" />
     <ClInclude Include="Shading\Deferred Rendering\QuadShader.h" />
