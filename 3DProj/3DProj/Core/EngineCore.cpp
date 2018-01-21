@@ -66,7 +66,7 @@ EngineCore::EngineCore()
 	this->armyPilot = new Entity({ 0.0f, -5.f, 5.0f }, glm::normalize(glm::vec3{ 0.0f, 0.0f, -1.0f }), false);
 	this->armyPilot->getLocalTransform().setScale({0.05f, 0.05f, 0.05f });
 	this->armyPilot->addMeshes(this->armyPilotMeshes, this->geometryShader);
-	this->armyPilot->addComponent(new PointLight(25.0f, 0.5f, glm::vec3(1.0f, 0.0f, 0.0f), this->deferredRenderer->getPhongShader()));
+	this->armyPilot->addComponent(new PointLight(12.0f, 1.0f, glm::vec3(1.0f, 0.0f, 0.0f), this->deferredRenderer->getPhongShader()));
 	base->addChild(armyPilot);
 
 	// --------------------------- Arm ---------------------------
@@ -157,14 +157,14 @@ void EngineCore::update(const float & dt)
 		time = 0;
 	*/
 
-	Transform& tb = this->base->getWorldTransform();
+	/*Transform& tb = this->base->getWorldTransform();
 	tb.setRotation(tb.getRotation() + glm::vec3{ 0.0f, -dt, 0.0f });
 	
 	Transform& a1 = this->arm[1]->getWorldTransform();
 	a1.setRotation(a1.getRotation() + glm::vec3{ dt, 0.0f, dt });
 	Transform& a2 = this->arm[2]->getLocalTransform();
 	a2.setRotation(a2.getRotation() + glm::vec3{ -dt, 0.0f, dt });
-	
+	*/
 	/*Transform& t = this->e1->getWorldTransform();
 	t.setRotation(t.getRotation() + glm::vec3{ dt*1.5f, dt*1.5f, dt*1.5f });
 	*/

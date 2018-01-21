@@ -20,7 +20,7 @@ public:
 	virtual ~PointLight();
 
 	void init();
-	void update();
+	void update(const float& dt);
 
 private:
 	PointLightData data;

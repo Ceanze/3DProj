@@ -3,6 +3,7 @@
 #include "../../Entity.h"
 
 #include "../../../Shading/Deferred Rendering/PhongLS.h"
+#include "gtc\matrix_transform.hpp"
 
 PointLight::PointLight(const float& radius, const float& intensity, const glm::vec3& color, PhongLS* phongShader) : LightComponent(phongShader)
 {
@@ -21,7 +22,8 @@ void PointLight::init()
 	this->getShader()->addPointLight(&this->data);
 }
 
-void PointLight::update()
+void PointLight::update(const float& dt)
 {
-	this->data.positionRadius = glm::vec4(this->getEntity()->getWorldTransform().getTranslation(), this->radius);
+	glm::vec4 rotation = glm::vec4(this->getEntity()->getWorldTransform().getTranslation(), 1.0f) * this->getEntity()->getChainTransform().getMatrix();
+	this->data.positionRadius = glm::vec4(rotation[0], rotation[1], rotation[2], this->radius);
 }
