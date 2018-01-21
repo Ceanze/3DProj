@@ -1,11 +1,11 @@
 #include "LightComponent.h"
 
-std::vector<LightComponent*>* LightComponent::listOfLights = nullptr;
+PhongLS * LightComponent::phongShader = nullptr;
 
-LightComponent::LightComponent()
+LightComponent::LightComponent(PhongLS* phongShader)
 {
-	if (this->listOfLights != nullptr)
-		this->listOfLights->push_back(this);
+	if(phongShader != nullptr)
+		this->phongShader = phongShader;
 }
 
 
@@ -15,6 +15,7 @@ LightComponent::~LightComponent()
 
 void LightComponent::init()
 {
+	
 }
 
 void LightComponent::update(const float & dt)
@@ -25,7 +26,7 @@ void LightComponent::input(Display * display)
 {
 }
 
-void LightComponent::setListOfLights(std::vector<LightComponent*>* ptr)
+PhongLS * LightComponent::getShader()
 {
-	this->listOfLights = ptr;
+	return this->phongShader;
 }

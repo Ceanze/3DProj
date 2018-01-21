@@ -5,20 +5,22 @@
 
 #include <vector>
 
+class PhongLS;
+
 class LightComponent : public Component
 {
 public:
-	LightComponent();
+	LightComponent(PhongLS* phongShader);
 	virtual ~LightComponent();
 
 	virtual void init();
 	virtual void update(const float& dt);
 	virtual void input(Display* display);
 
-	void setListOfLights(std::vector<LightComponent*>* ptr);
+	PhongLS* getShader();
 
 private:
-	static std::vector<LightComponent*>* listOfLights;
+	static PhongLS* phongShader;
 };
 
 #endif

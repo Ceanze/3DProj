@@ -22,7 +22,6 @@ EngineCore::EngineCore()
 	this->geometryShader = new GeometryShader();
 	this->geometryNMShader = new GeometryNormalMapShader();
 	this->deferredRenderer = new DeferredRenderer(&this->display);
-	//this->deferredRenderer->setLightPointer(LightComponent());
 
 	this->camera = new Camera(&this->display, glm::vec3{0.0f, 0.0f, 10.0f});
 	this->geometryShader->setCamera(this->camera);
@@ -32,8 +31,8 @@ EngineCore::EngineCore()
 
 	this->base = new Entity({ 0.0f, 0.0f, -5.0f }, {1.0f, 0.0f, 0.0f});
 
-	this->m1 = new Mesh();
-	loader.load(this->m1, "Bunny/bunny.obj");
+	/*this->m1 = new Mesh();
+	loader.load(this->m1, "Bunny/bunny.obj");*/
 	this->m2 = new Mesh();
 	loader.load(this->m2, "Cube/Cube.obj", USE_NORMAL_MAP);
 
@@ -42,17 +41,18 @@ EngineCore::EngineCore()
 	loader.load(this->swordMeshes, "Sword2a/sword2a.obj");
 	
 	// --------------------------- Bunny ---------------------------
-	this->e1 = new Entity({ -3.0f, 1.f, -5.0f }, glm::normalize(glm::vec3{ 0.1f, 2.0f, -2.0f }), false);
+	/*this->e1 = new Entity({ -3.0f, 1.f, -5.0f }, glm::normalize(glm::vec3{ 0.1f, 2.0f, -2.0f }), false);
 	this->e1->addMesh(this->m1, this->geometryShader);
 	this->e1->addComponent(new testComponent());
-	this->e1->addComponent(new PointLight(25.0f, 0.5f));
-	this->e1->addComponent(this->camera);
+	
+	
 	base->addChild(e1);
-
+*/
 	// --------------------------- Bunny and Cube ---------------------------
 	this->e2 = new Entity({ 3.0f, -1.f, -5.0f }, glm::normalize(glm::vec3{ 2.0f, -0.0f, -1.0f }), false);
-	this->e2->addMesh(this->m1, this->geometryShader);
+	//this->e2->addMesh(this->m1, this->geometryShader);
 	this->e2->addMeshes(this->cubeMeshes, this->geometryNMShader);
+	this->e2->addComponent(this->camera);
 	base->addChild(e2);
 	
 	// --------------------------- Sword ---------------------------
@@ -66,6 +66,7 @@ EngineCore::EngineCore()
 	this->armyPilot = new Entity({ 0.0f, -5.f, 5.0f }, glm::normalize(glm::vec3{ 0.0f, 0.0f, -1.0f }), false);
 	this->armyPilot->getLocalTransform().setScale({0.05f, 0.05f, 0.05f });
 	this->armyPilot->addMeshes(this->armyPilotMeshes, this->geometryShader);
+	this->armyPilot->addComponent(new PointLight(25.0f, 0.5f, glm::vec3(1.0f, 0.0f, 0.0f), this->deferredRenderer->getPhongShader()));
 	base->addChild(armyPilot);
 
 	// --------------------------- Arm ---------------------------
@@ -97,7 +98,7 @@ EngineCore::~EngineCore()
 {
 	//delete this->testShader;
 	//delete this->phongShader;
-	delete this->m1;
+	//delete this->m1;
 	delete this->m2;
 	for (Mesh* m : this->cubeMeshes) delete m;
 	for (Mesh* m : this->armyPilotMeshes) delete m;
@@ -164,9 +165,9 @@ void EngineCore::update(const float & dt)
 	Transform& a2 = this->arm[2]->getLocalTransform();
 	a2.setRotation(a2.getRotation() + glm::vec3{ -dt, 0.0f, dt });
 	
-	Transform& t = this->e1->getWorldTransform();
+	/*Transform& t = this->e1->getWorldTransform();
 	t.setRotation(t.getRotation() + glm::vec3{ dt*1.5f, dt*1.5f, dt*1.5f });
-	
+	*/
 	this->base->update(dt);
 	
 }

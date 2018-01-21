@@ -5,15 +5,26 @@
 
 #include "glm.hpp"
 
+
+
 class PointLight : public LightComponent
 {
 public:
-	PointLight(const float& radius, const float& intensity, const glm::vec3& color = glm::vec3(1.0f, 1.0f, 1.0f));
+	struct PointLightData
+	{
+		glm::vec4 positionRadius;
+		glm::vec4 colorIntensity;
+	};
+public:
+	PointLight(const float& radius, const float& intensity, const glm::vec3& color = glm::vec3(1.0f, 1.0f, 1.0f), PhongLS* phongShader = nullptr);
 	virtual ~PointLight();
 
+	void init();
+	void update();
+
 private:
-	float intensity, radius;
-	glm::vec3 color;
+	PointLightData data;
+	float radius;
 };
 
 #endif
