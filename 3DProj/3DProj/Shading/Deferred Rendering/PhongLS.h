@@ -2,7 +2,7 @@
 #define PHONGSHADER_H
 
 #include "../ShaderProgram.h"
-#include "../../Entities/Components/Lightning/LightComponent.h"
+#include "../../Entities/Components/Lightning/PointLight.h"
 
 #include "glm.hpp"
 
@@ -14,15 +14,16 @@ public:
 	virtual ~PhongLS();
 
 	void updateUniforms(GLuint* textures, unsigned nrOf);
+	void updateLights();
 
-	std::vector<LightComponent*>* getLights();
+	void addPointLight(PointLight::PointLightData* data);
 private:
 	void selfUpdateUniforms(Node* entity);
 
-	std::vector<LightComponent*> lights;
+	std::vector<PointLight::PointLightData*> pointLights;
 
-	GLuint ssbo;
-	GLint positionLoc, normalLoc, albedoLoc, depthLoc, camLoc;
+	GLuint ubo, bindingPoint;
+	GLint positionLoc, normalLoc, albedoLoc, depthLoc, camLoc, nrOf;
 };
 
 #endif

@@ -82,9 +82,9 @@ void DeferredRenderer::setCamera(Camera * camera)
 	this->phongShader->setCamera(camera);
 }
 
-void DeferredRenderer::setLightPointer(LightComponent & component)
+PhongLS * DeferredRenderer::getPhongShader()
 {
-	component.setListOfLights(this->phongShader->getLights());
+	return this->phongShader;
 }
 
 void DeferredRenderer::renderGBuffer(Node * node)

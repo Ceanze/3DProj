@@ -21,7 +21,8 @@ public:
 	const FrameBuffer* getLBuffer() const;
 
 	void setCamera(Camera* camera);
-	void setLightPointer(LightComponent& component);
+
+	PhongLS* getPhongShader();
 
 private:
 	void renderGBuffer(Node* node);
