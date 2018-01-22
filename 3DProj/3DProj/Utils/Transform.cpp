@@ -73,7 +73,9 @@ void Transform::setDirection(const glm::vec3 & dir)
 
 glm::vec3 Transform::getTranslation() const
 {
-	return this->translation;
+	return glm::vec3(this->matrix[3][0],
+					 this->matrix[3][1],
+					 this->matrix[3][2]);
 }
 
 glm::vec3 Transform::getRotation() const

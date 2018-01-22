@@ -66,7 +66,7 @@ EngineCore::EngineCore()
 	this->armyPilot = new Entity({ 0.0f, -5.f, 5.0f }, glm::normalize(glm::vec3{ 0.0f, 0.0f, -1.0f }), false);
 	this->armyPilot->getLocalTransform().setScale({0.05f, 0.05f, 0.05f });
 	this->armyPilot->addMeshes(this->armyPilotMeshes, this->geometryShader);
-	this->armyPilot->addComponent(new PointLight(12.0f, 1.0f, glm::vec3(1.0f, 0.0f, 0.0f), this->deferredRenderer->getPhongShader()));
+	this->armyPilot->addComponent(new PointLight(40.0f, 1.0f, glm::vec3(1.0f, 0.0f, 0.0f), this->deferredRenderer->getPhongShader()));
 	base->addChild(armyPilot);
 
 	// --------------------------- Arm ---------------------------

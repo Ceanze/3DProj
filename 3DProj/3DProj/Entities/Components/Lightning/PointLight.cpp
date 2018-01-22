@@ -24,6 +24,6 @@ void PointLight::init()
 
 void PointLight::update(const float& dt)
 {
-	glm::vec4 rotation = glm::vec4(this->getEntity()->getWorldTransform().getTranslation(), 1.0f) * this->getEntity()->getChainTransform().getMatrix();
-	this->data.positionRadius = glm::vec4(rotation[0], rotation[1], rotation[2], this->radius);
+	//glm::vec4 rotation = glm::vec4(this->getEntity()->getChainTransform().getTranslation(), 1.0f);
+	this->data.positionRadius = glm::vec4(this->getEntity()->getChainTransform().getTranslation(), this->radius);
 }
