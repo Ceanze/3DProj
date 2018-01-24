@@ -59,6 +59,31 @@ void DeferredRenderer::render(Node * node)
 	glUseProgram(0);
 }
 
+void DeferredRenderer::render(Node * node, Terrain * terrain)
+{
+	this->gBuffer->bind();
+	node->render();
+	terrain->render();
+	this->gBuffer->unbind();
+	renderLightBuffer();
+
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT);
+	glViewport(0, 0, this->displayWidth, this->displayHeight); // Change this to display!
+
+	glUseProgram(this->quadShader->getID());
+
+	this->quadTextures[0] = this->lightningBuffer->getTexture(0);
+	this->quadTextures[1] = this->lightningBuffer->getTexture(1);
+	this->quadTextures[2] = this->gBuffer->getTexture(2);
+	this->quadShader->updateUniforms(quadTextures, 3);
+
+	glBindVertexArray(this->quadVAO);
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+	glBindVertexArray(0);
+	glUseProgram(0);
+}
+
 void DeferredRenderer::resize(const Display * display)
 {
 	this->gBuffer->resize(display->getWidth(), display->getHeight());

@@ -6,9 +6,11 @@
 
 #include "Shader.h"
 
+
 #include "../Entities/Node.h"
 #include "../Entities/Components/Camera/Camera.h"
 #include "../Core/GL Utils/FrameBuffer.h"
+
 
 class ShaderProgram
 {
@@ -20,6 +22,7 @@ public:
 	void addShader(const Shader& shader);
 	void link(bool shouldDeleteShaders = true);
 
+	void updateUniforms();
 	void updateUniforms(Node* entity);
 
 	const GLuint getID() const;

@@ -6,6 +6,7 @@
 #include "../ImGui/imgui_impl_glfw_gl3.h"
 #include "..\Entities\Components\Movement\testComponent.h"
 #include "..\Entities\Components\Lightning\PointLight.h"
+#include "../Terrain/Terrain.h"
 
 #include "ResourceManager.h"
 
@@ -14,7 +15,8 @@
 /*-------------- END TEMP ------------------*/
 
 EngineCore::EngineCore()
-	:	display("test window")
+	:	display("test window"),
+		terrain(20, 10)
 {
 	/*---------------- TEMP --------------------*/
 	// Create Shader
@@ -28,6 +30,8 @@ EngineCore::EngineCore()
 	this->geometryNMShader->setCamera(this->camera);
 	this->deferredRenderer->setCamera(this->camera);
 	//this->testShader->setCamera(this->camera);
+	
+	this->terrain.setShader(this->geometryShader);
 
 	this->base = new Entity({ 0.0f, 0.0f, -5.0f }, {1.0f, 0.0f, 0.0f});
 
@@ -179,7 +183,7 @@ void EngineCore::render()
 	glClearColor(0, 0, 0, 1);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	this->deferredRenderer->render(this->base);
+	this->deferredRenderer->render(this->base, &this->terrain);
 
 	// Draw ImGui elements.
 	ImGui::Render();
