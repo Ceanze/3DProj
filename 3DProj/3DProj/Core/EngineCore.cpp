@@ -25,7 +25,7 @@ EngineCore::EngineCore()
 	this->geometryNMShader = new GeometryNormalMapShader();
 	this->deferredRenderer = new DeferredRenderer(&this->display);
 
-	this->camera = new Camera(&this->display, glm::vec3{0.0f, 0.0f, 10.0f});
+	this->camera = new Camera(&this->display, glm::vec3{0.0f, 5.0f, 10.0f});
 	this->geometryShader->setCamera(this->camera);
 	this->geometryNMShader->setCamera(this->camera);
 	this->deferredRenderer->setCamera(this->camera);
@@ -33,7 +33,7 @@ EngineCore::EngineCore()
 	
 	this->terrain.setShader(this->geometryShader);
 
-	this->base = new Entity({ 0.0f, 0.0f, -5.0f }, {1.0f, 0.0f, 0.0f});
+	this->base = new Entity({ 0.0f, 5.0f, -5.0f }, {0.0f, 0.0f, 0.0f});
 
 	/*this->m1 = new Mesh();
 	loader.load(this->m1, "Bunny/bunny.obj");*/
@@ -53,66 +53,66 @@ EngineCore::EngineCore()
 	base->addChild(e1);
 */
 	// --------------------------- Bunny and Cube ---------------------------
-	this->e2 = new Entity({ 3.0f, -1.f, -5.0f }, glm::normalize(glm::vec3{ 2.0f, -0.0f, -1.0f }), false);
+	this->e2 = new Entity({ 3.0f, -1.f, -5.0f }, { 0.0f, 0.0f, 0.0f }, false);
 	//this->e2->addMesh(this->m1, this->geometryShader);
 	this->e2->addMeshes(this->cubeMeshes, this->geometryNMShader);
 	this->e2->addComponent(this->camera);
 	base->addChild(e2);
 	
 	// --------------------------- Sword ---------------------------
-	this->sword = new Entity({ 0.0f, -2.0f, -1.0f }, glm::normalize(glm::vec3{ 0.0f, 0.0f, -1.0f }), false);
+	this->sword = new Entity({ 0.0f, -2.0f, -1.0f }, { 0.0f, 0.0f, 0.0f }, false);
 	this->sword->getLocalTransform().setScale({ 2.0f, 2.0f, 2.0f });
 	this->sword->getLocalTransform().setRotation({ 0.0f, 0.0f, -3.1415f / 2.0f });
 	this->sword->addMeshes(this->swordMeshes, this->geometryShader);
 	base->addChild(sword);
 
 	// --------------------------- Army pilot ---------------------------
-	this->armyPilot = new Entity({ 0.0f, -5.f, 5.0f }, glm::normalize(glm::vec3{ 0.0f, 0.0f, -1.0f }), false);
+	this->armyPilot = new Entity({ 0.0f, -5.f, 5.0f }, { 0.0f, 0.0f, 0.0f }, false);
 	this->armyPilot->getLocalTransform().setScale({0.05f, 0.05f, 0.05f });
 	this->armyPilot->addMeshes(this->armyPilotMeshes, this->geometryShader);
 	//this->armyPilot->addComponent(new PointLight(40.0f, 1.0f, glm::vec3(1.0f, 1.0f, 1.0f), this->deferredRenderer->getPhongShader()));
 	base->addChild(armyPilot);
 
 	// --------------------------- Arm ---------------------------
-	Entity* temp = new Entity({ 0.0f, -3.0f, 0.0f }, { 0.0f, 0.0f, 1.0f });
+	Entity* temp = new Entity({ 0.0f, -3.0f, 0.0f }, { 0.0f, 0.0f, 0.0f });
 	temp->addMesh(this->m2, this->geometryNMShader);
 	base->addChild(temp);
 	this->arm.push_back(temp);
 
-	temp = new Entity({ 0.0f, 2.0f, 0.0f }, { 0.0f, 0.0f, 1.0f });
+	temp = new Entity({ 0.0f, 2.0f, 0.0f }, { 0.0f, 0.0f, 0.0f });
 	temp->addMesh(this->m2, this->geometryNMShader);
 	this->arm[this->arm.size() - 1]->addChild(temp);
 	this->arm.push_back(temp);
 
-	temp = new Entity({ 0.0f, 2.0f, 0.0f }, { 0.0f, 0.0f, 1.0f });
+	temp = new Entity({ 0.0f, 2.0f, 0.0f }, { 0.0f, 0.0f, 0.0f });
 	temp->addMesh(this->m2, this->geometryNMShader);
 	this->arm[this->arm.size() - 1]->addChild(temp);
 	this->arm.push_back(temp);
 
-	temp = new Entity({ 0.0f, 2.0f, 0.0f }, { 0.0f, 0.0f, 1.0f });
+	temp = new Entity({ 0.0f, 2.0f, 0.0f }, { 0.0f, 0.0f, 0.0f });
 	temp->addMesh(this->m2, this->geometryNMShader);
 	this->arm[this->arm.size() - 1]->addChild(temp);
 	this->arm.push_back(temp);
 
 	// ------------------------- Lights ---------------------------
-	this->lightBase = new Entity({ 0.0f, 6.0f, 0.0f }, { 0.0f, 0.0f, 1.0f });
+	this->lightBase = new Entity({ 0.0f, 6.0f, 0.0f }, { 0.0f, 0.0f, 0.0f });
 	this->base->addChild(this->lightBase);
 
-	temp = new Entity({ -4.0f, 0.0f, -6.0f }, { 0.0f, 0.0f, 1.0f });
+	temp = new Entity({ -4.0f, 0.0f, -6.0f }, { 0.0f, 0.0f, 0.0f });
 	temp->addComponent(new PointLight(50.0f, 1.0f, glm::vec3(1.0f, 0.0f, 0.0f), this->deferredRenderer->getPhongShader()));
 	temp->addMesh(this->m2, this->geometryNMShader);
 	temp->getLocalTransform().setScale({ 0.2f, 0.2f, 0.2f });
 	this->lightBase->addChild(temp);
 
 
-	temp = new Entity({ 4.0f, 0.0f, -6.0f }, { 0.0f, 0.0f, 1.0f });
+	temp = new Entity({ 4.0f, 0.0f, -6.0f }, { 0.0f, 0.0f, 0.0f });
 	temp->addComponent(new PointLight(50.0f, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f), this->deferredRenderer->getPhongShader()));
 	temp->addMesh(this->m2, this->geometryNMShader);
 	temp->getLocalTransform().setScale({ 0.2f, 0.2f, 0.2f });
 	this->lightBase->addChild(temp);
 
 
-	temp = new Entity({ -4.0f, 0.0f, 6.0f }, { 0.0f, 0.0f, 1.0f });
+	temp = new Entity({ -4.0f, 0.0f, 6.0f }, { 0.0f, 0.0f, 0.0f });
 	temp->addComponent(new PointLight(50.0f, 1.0f, glm::vec3(0.0f, 0.0f, 1.0f), this->deferredRenderer->getPhongShader()));
 	temp->addMesh(this->m2, this->geometryNMShader);
 	temp->getLocalTransform().setScale({ 0.2f, 0.2f, 0.2f });

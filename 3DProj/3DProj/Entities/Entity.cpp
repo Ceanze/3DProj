@@ -9,13 +9,13 @@
 Entity::Entity(const glm::vec3 & position, const glm::vec3 & direction, bool isDynamic)
 {
 	this->getWorldTransform().setTranslation(position);
-	this->getWorldTransform().setDirection(direction);
+	this->getWorldTransform().setRotation(direction);
 	this->isDynamic = isDynamic;
 }
 
 Entity::Entity(const glm::mat4 &matrix, bool isDynamic)
 {
-	this->getWorldTransform().setDirection({0.0f, 0.0f, 1.0f});
+	this->getWorldTransform().setRotation({0.0f, 0.0f, 0.0f});
 	this->isDynamic = isDynamic;
 }
 
