@@ -5,9 +5,9 @@
 newmtl unity_pilot_head_01
 illum 2
 d 1
-ka 0.588235 0.588235 0.588235
-kd 0.588235 0.588235 0.588235
-ks 0 0 0
+ka 0.2 0.2 0.2
+kd 0.6 0.6 0.6
+ks 0.0 0.0 0.0
 ke 0 0 0
 ns 0.0
 map_kd Tex/head01.png
@@ -15,9 +15,9 @@ map_kd Tex/head01.png
 newmtl unity_pilot_body_01
 illum 2
 d 1
-ka 0.588235 0.588235 0.588235
-kd 0.588235 0.588235 0.588235
-ks 0 0 0
+ka 0.2 0.2 0.2
+kd 0.6 0.6 0.6
+ks 0.0 0.0 0.0
 ke 0 0 0
 ns 0.0
 map_kd Tex/body01.png
@@ -25,9 +25,9 @@ map_kd Tex/body01.png
 newmtl m4
 illum 2
 d 1
-ka 1 1 1
+ka 0.2 0.2 0.2
 kd 1 1 1
 ks 1 1 1
 ke 0 0 0
-ns 20
+ns 80
 map_kd Tex/m4tex.png

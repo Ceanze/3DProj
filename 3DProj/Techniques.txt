@@ -1,4 +1,4 @@
-90  % Deferred Rendering
+100  % Deferred Rendering
 100 % Parsing and rendering an existing model format
 0   % Height-map terrain rendering, user can walk on the terrainusing WASD keys.
 100 % Normal Mapping

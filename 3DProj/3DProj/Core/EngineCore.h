@@ -52,11 +52,13 @@ private:
 	DeferredRenderer* deferredRenderer;
 
 	//TestShader* testShader;
+	Terrain terrain;
 	Entity* base;
 	Entity* e1;
 	Entity* e2;
 	Entity* armyPilot;
 	Entity* sword;
+	Entity* lightBase;
 	std::vector<Entity*> arm;
 	Mesh* m1;
 	Mesh* m2;

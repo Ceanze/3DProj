@@ -15,7 +15,7 @@ public:
 
 	void loadToGPU(GLuint shaderProgramID, GLenum usage = GL_STATIC_DRAW, bool useUvs = false);
 
-	void draw() const;
+	void draw();
 
 	GLuint getVAO() const;
 
@@ -34,6 +34,9 @@ public:
 	Material* material = nullptr;
 
 private:
+	void initMaterialUniformBlock(GLuint shaderProgramID);
+	void loadMaterialToGPU();
+
 	GLuint vao;
 	GLuint vbo;
 	GLuint indexBufferID;
@@ -45,6 +48,8 @@ private:
 
 	GLint textureLocation;
 	GLint normalMapLocation;
+
+	GLuint ubo, bindingPoint;
 };
 
 #endif

@@ -32,7 +32,7 @@ void Node::init()
 	selfInit();
 
 	for (Node* node : this->children)
-		node->selfInit();
+		node->init();
 }
 
 void Node::update(float dt)
@@ -53,7 +53,7 @@ void Node::input(Display * display)
 	this->selfInput(display);
 
 	for (Node* node : this->children)
-		node->selfInput(display);
+		node->input(display);
 	
 }
 

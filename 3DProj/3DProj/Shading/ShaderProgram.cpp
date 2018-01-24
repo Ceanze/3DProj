@@ -63,6 +63,24 @@ void ShaderProgram::setCamera(Camera * camera)
 	this->camera = camera;
 }
 
+void ShaderProgram::updateUniforms()
+{
+	GLuint camLoc = glGetUniformLocation(this->getID(), "camera");
+	if (camLoc != -1)
+	{
+		glUniformMatrix4fv(camLoc, 1, GL_FALSE, &(this->camera->getVP())[0][0]);
+	}
+	else Error::printError("Could not find 'camera' in shader!");
+
+	glm::mat4 identityMatrix(1.0f);
+
+	GLuint wmLoc = glGetUniformLocation(this->getID(), "wm");
+	if (wmLoc != -1)
+	{
+		glUniformMatrix4fv(wmLoc, 1, GL_FALSE, &identityMatrix[0][0]);
+	}
+}
+
 void ShaderProgram::updateUniforms(Node * entity)
 {
 	GLuint camLoc = glGetUniformLocation(this->getID(), "camera");

@@ -6,6 +6,8 @@
 #include "../../Shading/Deferred Rendering/QuadShader.h"
 #include "../../Shading/Deferred Rendering/PhongLS.h"
 #include "../../Entities/Components/Lightning/LightComponent.h"
+#include "../../Terrain/Terrain.h"
+
 
 class DeferredRenderer
 {
@@ -14,6 +16,7 @@ public:
 	virtual ~DeferredRenderer();
 
 	void render(Node* node);
+	void render(Node* node, Terrain* terrain);
 
 	void resize(const Display* display);
 

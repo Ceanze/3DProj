@@ -8,13 +8,11 @@ uniform sampler2D albedoTexture;
 
 out vec4 finalColor;
 
-const vec3 ambient = vec3(0.2, 0.2, 0.2);
-
 void main()
 {
-    float diffuse = texture(diffuseTexture, fragTextureCoord).x;
-    float specular = texture(specularTexture, fragTextureCoord).x;
+    vec3 diffuse = texture(diffuseTexture, fragTextureCoord).xyz;
+    vec3 specular = texture(specularTexture, fragTextureCoord).xyz;
     vec3 materialColor = texture(albedoTexture, fragTextureCoord).xyz;
 
-    finalColor = min(vec4(materialColor * ambient + materialColor * diffuse + materialColor * specular, 1.0f), 1);
+    finalColor = min(vec4(materialColor * diffuse + materialColor * specular, 1.0f), 1.0);
 }

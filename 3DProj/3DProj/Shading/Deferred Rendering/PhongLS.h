@@ -23,7 +23,7 @@ private:
 	std::vector<PointLight::PointLightData*> pointLights;
 
 	GLuint ubo, bindingPoint;
-	GLint positionLoc, normalLoc, albedoLoc, depthLoc, camLoc, nrOf;
+	GLint positionLoc, normalLoc, kdALoc, ksNsLoc, albedoLoc, depthLoc, camLoc, nrOf;
 };
 
 #endif

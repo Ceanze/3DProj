@@ -12,6 +12,14 @@ PhongLS::PhongLS() : ShaderProgram({ "Deferred Rendering/PhongLS.vs", GL_VERTEX_
 	if (normalLoc == -1)
 		Error::printError("Could not find normalLoc");
 
+	this->kdALoc = glGetUniformLocation(this->getID(), "kd_a_Texture");
+	if (kdALoc == -1)
+		Error::printError("Could not find kd_a_Texture");
+
+	this->ksNsLoc = glGetUniformLocation(this->getID(), "ks_ns_Texture");
+	if (ksNsLoc == -1)
+		Error::printError("Could not find ks_ns_Texture");
+
 	this->camLoc = glGetUniformLocation(this->getID(), "camPos");
 	if (camLoc == -1)
 		Error::printError("Could not find camPos in PhongLS");
@@ -22,9 +30,8 @@ PhongLS::PhongLS() : ShaderProgram({ "Deferred Rendering/PhongLS.vs", GL_VERTEX_
 
 	this->bindingPoint = 0;
 	glGenBuffers(1, &this->ubo);
-	glBindBuffer(GL_UNIFORM_BUFFER, ubo);
-	glUniformBlockBinding(this->getID(), this->ubo, this->bindingPoint);
-	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+	GLuint uboIndex = glGetUniformBlockIndex(this->getID(), "Lights");
+	glUniformBlockBinding(this->getID(), uboIndex, this->bindingPoint);
 }
 
 PhongLS::~PhongLS()
@@ -44,6 +51,14 @@ void PhongLS::updateUniforms(GLuint* textures, unsigned nrOf)
 	glUniform1i(this->normalLoc, 1);
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, textures[1]);
+
+	glUniform1i(this->kdALoc, 2);
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_2D, textures[3]);
+
+	glUniform1i(this->ksNsLoc, 3);
+	glActiveTexture(GL_TEXTURE3);
+	glBindTexture(GL_TEXTURE_2D, textures[4]);
 }
 
 void PhongLS::updateLights()
@@ -67,7 +82,7 @@ void PhongLS::updateLights()
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 	
-	glUniform1i(nrOf, 1);
+	glUniform1i(nrOf, this->pointLights.size() > 5 ? 5 : this->pointLights.size());
 }
 
 void PhongLS::addPointLight(PointLight::PointLightData* data)
