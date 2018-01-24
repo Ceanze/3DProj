@@ -4,13 +4,13 @@
 
 QuadShader::QuadShader() : ShaderProgram({ "Deferred Rendering/QuadDR.vs", GL_VERTEX_SHADER }, { "Deferred Rendering/QuadDR.fs", GL_FRAGMENT_SHADER })
 {
-	this->normalLoc = glGetUniformLocation(this->getID(), "diffuseTexture");
-	if (normalLoc == -1)
-		Error::printError("Could not find normalLoc");
+	this->diffuseLoc = glGetUniformLocation(this->getID(), "diffuseTexture");
+	if (diffuseLoc == -1)
+		Error::printError("Could not find diffuseTexture");
 
-	this->positionLoc = glGetUniformLocation(this->getID(), "specularTexture");
-	if (positionLoc == -1)
-		Error::printError("Could not find positionLoc");
+	this->specularLoc = glGetUniformLocation(this->getID(), "specularTexture");
+	if (specularLoc == -1)
+		Error::printError("Could not find specularTexture");
 
 	this->albedoLoc = glGetUniformLocation(this->getID(), "albedoTexture");
 	if (albedoLoc == -1)
@@ -23,11 +23,11 @@ QuadShader::~QuadShader()
 
 void QuadShader::updateUniforms(GLuint* textures, unsigned nrOf)
 {
-	glUniform1i(this->positionLoc, 0);
+	glUniform1i(this->diffuseLoc, 0);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, textures[0]);
 
-	glUniform1i(this->normalLoc, 1);
+	glUniform1i(this->specularLoc, 1);
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, textures[1]);
 
