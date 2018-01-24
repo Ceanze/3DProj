@@ -66,7 +66,7 @@ EngineCore::EngineCore()
 	this->armyPilot = new Entity({ 0.0f, -5.f, 5.0f }, glm::normalize(glm::vec3{ 0.0f, 0.0f, -1.0f }), false);
 	this->armyPilot->getLocalTransform().setScale({0.05f, 0.05f, 0.05f });
 	this->armyPilot->addMeshes(this->armyPilotMeshes, this->geometryShader);
-	this->armyPilot->addComponent(new PointLight(40.0f, 1.0f, glm::vec3(1.0f, 0.0f, 0.0f), this->deferredRenderer->getPhongShader()));
+	//this->armyPilot->addComponent(new PointLight(40.0f, 1.0f, glm::vec3(1.0f, 1.0f, 1.0f), this->deferredRenderer->getPhongShader()));
 	base->addChild(armyPilot);
 
 	// --------------------------- Arm ---------------------------
@@ -89,6 +89,30 @@ EngineCore::EngineCore()
 	temp->addMesh(this->m2, this->geometryNMShader);
 	this->arm[this->arm.size() - 1]->addChild(temp);
 	this->arm.push_back(temp);
+
+	// ------------------------- Lights ---------------------------
+	this->lightBase = new Entity({ 0.0f, 6.0f, 0.0f }, { 0.0f, 0.0f, 1.0f });
+	this->base->addChild(this->lightBase);
+
+	temp = new Entity({ -4.0f, 0.0f, -6.0f }, { 0.0f, 0.0f, 1.0f });
+	temp->addComponent(new PointLight(50.0f, 1.0f, glm::vec3(1.0f, 0.0f, 0.0f), this->deferredRenderer->getPhongShader()));
+	temp->addMesh(this->m2, this->geometryNMShader);
+	temp->getLocalTransform().setScale({ 0.2f, 0.2f, 0.2f });
+	this->lightBase->addChild(temp);
+
+
+	temp = new Entity({ 4.0f, 0.0f, -6.0f }, { 0.0f, 0.0f, 1.0f });
+	temp->addComponent(new PointLight(50.0f, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f), this->deferredRenderer->getPhongShader()));
+	temp->addMesh(this->m2, this->geometryNMShader);
+	temp->getLocalTransform().setScale({ 0.2f, 0.2f, 0.2f });
+	this->lightBase->addChild(temp);
+
+
+	temp = new Entity({ -4.0f, 0.0f, 6.0f }, { 0.0f, 0.0f, 1.0f });
+	temp->addComponent(new PointLight(50.0f, 1.0f, glm::vec3(0.0f, 0.0f, 1.0f), this->deferredRenderer->getPhongShader()));
+	temp->addMesh(this->m2, this->geometryNMShader);
+	temp->getLocalTransform().setScale({ 0.2f, 0.2f, 0.2f });
+	this->lightBase->addChild(temp);
 
 	this->base->init();
 	/*-------------- END TEMP ------------------*/
@@ -168,6 +192,10 @@ void EngineCore::update(const float & dt)
 	/*Transform& t = this->e1->getWorldTransform();
 	t.setRotation(t.getRotation() + glm::vec3{ dt*1.5f, dt*1.5f, dt*1.5f });
 	*/
+
+	Transform& lightT = this->lightBase->getWorldTransform();
+	lightT.setRotation(lightT.getRotation() + glm::vec3{ 0.0f, -dt, 0.0f });
+
 	this->base->update(dt);
 	
 }

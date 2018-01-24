@@ -1,6 +1,7 @@
 #include "Mesh.h"
 
 #include <cassert>
+#include <string>
 
 #include "../../Error.h"
 
@@ -71,6 +72,8 @@ void Mesh::loadToGPU(GLuint shaderProgramID, GLenum usage, bool useUvs)
 			Error::printError("Could not find 'normalMap' in shader");
 	}
 
+	initMaterialUniformBlock(shaderProgramID);
+
 	// Indices
 	glGenBuffers(1, &(this->indexBufferID));
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->indexBufferID);
@@ -79,8 +82,10 @@ void Mesh::loadToGPU(GLuint shaderProgramID, GLenum usage, bool useUvs)
 	glBindVertexArray(0);
 }
 
-void Mesh::draw() const
+void Mesh::draw()
 {
+	loadMaterialToGPU();
+
 	glUniform1i(this->textureLocation, 0);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, this->material->texture->getTexture());
@@ -100,4 +105,30 @@ void Mesh::draw() const
 GLuint Mesh::getVAO() const
 {
 	return this->vao;
+}
+
+void Mesh::initMaterialUniformBlock(GLuint shaderProgramID)
+{
+	this->bindingPoint = 1;
+	GLuint uboIndex = glGetUniformBlockIndex(shaderProgramID, "Material");
+	glUniformBlockBinding(shaderProgramID, uboIndex, this->bindingPoint);
+
+	glGenBuffers(1, &this->ubo);
+}
+
+void Mesh::loadMaterialToGPU()
+{
+	const float ambient = (this->material->ka.x+this->material->ka.y+this->material->ka.z)/3.0f;
+	struct MaterialData
+	{
+		glm::vec4 kd_a;
+		glm::vec4 ks_ns;
+	} materialData = { glm::vec4(this->material->kd, ambient), glm::vec4(this->material->ks, this->material->ns)};
+	
+	glBindBuffer(GL_UNIFORM_BUFFER, this->ubo);
+
+	glBufferData(GL_UNIFORM_BUFFER, sizeof(MaterialData), &materialData, GL_DYNAMIC_DRAW);
+	glBindBufferBase(GL_UNIFORM_BUFFER, this->bindingPoint, this->ubo);
+
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }

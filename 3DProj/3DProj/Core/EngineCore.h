@@ -57,6 +57,7 @@ private:
 	Entity* e2;
 	Entity* armyPilot;
 	Entity* sword;
+	Entity* lightBase;
 	std::vector<Entity*> arm;
 	Mesh* m1;
 	Mesh* m2;
