@@ -15,6 +15,15 @@ ShaderProgram::ShaderProgram(const Shader & vertexShader, const Shader & fragmen
 	link();
 }
 
+ShaderProgram::ShaderProgram(const Shader & vertexShader, const Shader & fragmentShader, const Shader & geometryShader)
+{
+	this->id = glCreateProgram();
+	addShader(vertexShader);
+	addShader(fragmentShader);
+	addShader(geometryShader);
+	link();
+}
+
 ShaderProgram::~ShaderProgram()
 {
 	glDeleteProgram(this->id);
@@ -61,7 +70,7 @@ void ShaderProgram::updateUniforms(Node * entity)
 	{
 		glUniformMatrix4fv(camLoc, 1, GL_FALSE, &(this->camera->getVP())[0][0]);
 	}
-	else Error::printError("Could not find 'camear' in shader!");
+	else Error::printError("Could not find 'camera' in shader!");
 
 	selfUpdateUniforms(entity);
 }

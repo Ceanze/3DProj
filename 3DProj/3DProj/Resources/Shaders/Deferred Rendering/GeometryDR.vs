@@ -4,17 +4,17 @@ layout(location = 0) in vec3 vertexPosition;
 layout(location = 1) in vec3 vertexNormal;
 layout(location = 2) in vec2 vertexUvs;
 
-uniform mat4 camera;
+
 uniform mat4 wm;
 
-out vec3 fragPosition;
-out vec3 fragNormal;
-out vec2 fragTextureCoord; 
+out vec3 geometryPosition;
+out vec3 geometryNormal;
+out vec2 geometryTextureCoord; 
 
 void main()
 {
-    fragPosition = (wm*vec4(vertexPosition, 1)).xyz;
-    fragNormal = (wm*vec4(vertexNormal, 0)).xyz;
-    fragTextureCoord = vertexUvs;
-    gl_Position = camera*vec4(fragPosition, 1);
+    geometryPosition = (wm*vec4(vertexPosition, 1)).xyz;
+    geometryNormal = (wm*vec4(vertexNormal, 0)).xyz;
+    geometryTextureCoord = vertexUvs;
+    //gl_Position = vec4(geometryPosition, 1);
 }
