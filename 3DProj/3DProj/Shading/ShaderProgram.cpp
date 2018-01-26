@@ -7,6 +7,13 @@ ShaderProgram::ShaderProgram()
 	this->id = glCreateProgram();
 }
 
+ShaderProgram::ShaderProgram(const Shader & computeShader)
+{
+	this->id = glCreateProgram();
+	addShader(computeShader);
+	link();
+}
+
 ShaderProgram::ShaderProgram(const Shader & vertexShader, const Shader & fragmentShader)
 {
 	this->id = glCreateProgram();

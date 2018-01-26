@@ -5,6 +5,8 @@
 #include "../GL Utils/FrameBuffer.h"
 #include "../../Shading/Deferred Rendering/QuadShader.h"
 #include "../../Shading/Deferred Rendering/PhongLS.h"
+#include "../../Shading/Deferred Rendering/CombineShader.h"
+#include "../../Shading/Deferred Rendering/BlurShader.h"
 #include "../../Entities/Components/Lightning/LightComponent.h"
 #include "../../Terrain/Terrain.h"
 
@@ -12,13 +14,13 @@
 class DeferredRenderer
 {
 public:
-	DeferredRenderer(const Display* display);
+	DeferredRenderer(Display* display);
 	virtual ~DeferredRenderer();
 
 	void render(Node* node);
 	void render(Node* node, Terrain* terrain);
 
-	void resize(const Display* display);
+	void resize(Display* display);
 
 	const FrameBuffer* getGBuffer() const;
 	const FrameBuffer* getLBuffer() const;
@@ -30,20 +32,26 @@ public:
 private:
 	void renderGBuffer(Node* node);
 	void renderLightBuffer();
+	void renderCombineBuffer();
+	void renderBlur();
 	void createQuad();
 
 	QuadShader* quadShader;
 	PhongLS* phongShader;
+	CombineShader* combineShader;
+	BlurShader* blurShader;
 
-	GLuint* quadTextures;
+	GLuint* combineTextures;
 
 	FrameBuffer* gBuffer;
 	FrameBuffer* lightningBuffer;
+	FrameBuffer* combineBuffer;
+	FrameBuffer* blurBuffer;
 
 	GLuint quadVAO;
 	GLuint quadVBO;
 
-	unsigned int displayWidth, displayHeight;
+	Display* display;
 };
 
 #endif
