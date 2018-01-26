@@ -4,7 +4,7 @@
 
 #include "../ImGui/imgui.h"
 #include "../ImGui/imgui_impl_glfw_gl3.h"
-#include "..\Entities\Components\Movement\testComponent.h"
+#include "..\Entities\Components\Movement\Movement.h"
 #include "..\Entities\Components\Lightning\PointLight.h"
 #include "../Terrain/Terrain.h"
 
@@ -16,7 +16,7 @@
 
 EngineCore::EngineCore()
 	:	display("test window"),
-		terrain(20, 10)
+		terrain(100, 50)
 {
 	/*---------------- TEMP --------------------*/
 	// Create Shader
@@ -71,6 +71,7 @@ EngineCore::EngineCore()
 	this->armyPilot->getLocalTransform().setScale({0.05f, 0.05f, 0.05f });
 	this->armyPilot->addMeshes(this->armyPilotMeshes, this->geometryShader);
 	//this->armyPilot->addComponent(new PointLight(40.0f, 1.0f, glm::vec3(1.0f, 1.0f, 1.0f), this->deferredRenderer->getPhongShader()));
+	this->armyPilot->addComponent(new Movement());
 	base->addChild(armyPilot);
 
 	// --------------------------- Arm ---------------------------

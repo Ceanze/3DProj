@@ -54,9 +54,6 @@ void main()
 		specular += specularFactor*lightFactor;
 	}
 
-	//diffuseOut /= nrOfPointLights;
-	//specular /= nrOfPointLights;
-
 	finalDiffuse = vec4(diffuseOut*kd_a.xyz + ambient, 1.0);
 	finalSpecular = vec4(specular*ks_ns.xyz, 1.0);
 }

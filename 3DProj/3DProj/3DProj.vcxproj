@@ -173,7 +173,7 @@
     <ClCompile Include="Shading\ShaderProgram.cpp" />
     <ClCompile Include="Loaders\StateLoader.cpp" />
     <ClCompile Include="Shading\TestShader.cpp" />
-    <ClCompile Include="Entities\Components\Movement\testComponent.cpp" />
+    <ClCompile Include="Entities\Components\Movement\Movement.cpp" />
     <ClCompile Include="Terrain\Terrain.cpp" />
     <ClCompile Include="Utils\Transform.cpp" />
   </ItemGroup>
@@ -218,7 +218,7 @@
     <ClInclude Include="Shading\ShaderProgram.h" />
     <ClInclude Include="Loaders\StateLoader.h" />
     <ClInclude Include="Shading\TestShader.h" />
-    <ClInclude Include="Entities\Components\Movement\testComponent.h" />
+    <ClInclude Include="Entities\Components\Movement\Movement.h" />
     <ClInclude Include="Stb\stb_image.h" />
     <ClInclude Include="Terrain\Terrain.h" />
     <ClInclude Include="Utils\Transform.h" />
