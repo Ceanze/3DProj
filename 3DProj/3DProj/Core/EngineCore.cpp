@@ -16,7 +16,7 @@
 
 EngineCore::EngineCore()
 	:	display("test window"),
-		terrain(20, 10)
+		terrain(64, 1)
 {
 	/*---------------- TEMP --------------------*/
 	// Create Shader
