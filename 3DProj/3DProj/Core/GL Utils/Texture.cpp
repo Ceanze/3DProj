@@ -100,6 +100,11 @@ unsigned int Texture::getHeight(unsigned int index) const
 	return this->textureInfos[index].height;
 }
 
+const std::vector<TextureInfo>& Texture::getTextureData() const
+{
+	return this->textureInfos;
+}
+
 void Texture::init(unsigned int numTextures, unsigned int width, unsigned int height, void * data, GLuint dataType, GLuint externalFormat, GLuint internalFormat)
 {
 	this->textureIndex = 0;

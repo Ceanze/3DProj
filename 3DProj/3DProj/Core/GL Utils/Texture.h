@@ -29,6 +29,8 @@ public:
 	unsigned int getWidth(unsigned int index = 0) const;
 	unsigned int getHeight(unsigned int index = 0) const;
 
+	const std::vector<TextureInfo>& getTextureData() const;
+
 private:
 	void init(unsigned int numTextures, unsigned int width, unsigned int height, void* data, GLuint dataType = GL_UNSIGNED_BYTE, GLuint externalFormat = GL_RGBA, GLuint internalFormat = GL_RGBA);
 
