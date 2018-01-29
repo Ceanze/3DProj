@@ -1,9 +1,9 @@
-100  % Deferred Rendering
+100 % Deferred Rendering
 100 % Parsing and rendering an existing model format
-0   % Height-map terrain rendering, user can walk on the terrainusing WASD keys.
+50  % Height-map terrain rendering, user can walk on the terrainusing WASD keys.
 100 % Normal Mapping
 0   % Shadow Mapping
 0   % View frustum culling against a quadtree
-0   % Back face culling using Geometry Shader
-0   % Gaussian Filter
+100 % Back face culling using Geometry Shader
+100 % Gaussian Filter
 0   % Mouse picking (or something)
