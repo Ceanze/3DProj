@@ -16,6 +16,7 @@ class ShaderProgram
 {
 public:
 	ShaderProgram();
+	ShaderProgram(const Shader& computeShader);
 	ShaderProgram(const Shader& vertexShader, const Shader& fragmentShader);
 	ShaderProgram(const Shader& vertexShader, const Shader& fragmentShader, const Shader& geometryShader);
 	virtual ~ShaderProgram();

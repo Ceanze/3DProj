@@ -16,7 +16,7 @@
 
 EngineCore::EngineCore()
 	:	display("test window"),
-		terrain(100, 50)
+		terrain()
 {
 	/*---------------- TEMP --------------------*/
 	// Create Shader
@@ -236,6 +236,7 @@ void EngineCore::renderGui()
 		if (ImGui::Button("Deferred Rendering")) show_dr_window ^= 1;
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 		ImGui::Text("Click 'C' to toggle camera on and off.");
+		ImGui::Text("Click 'B' to toggle blur on and off.");
 	}
 
 	if (show_node_tree_window)

@@ -20,7 +20,7 @@ public:
 	FrameBuffer(unsigned int width, unsigned int height);
 	virtual ~FrameBuffer();
 
-	void createTextures(const std::vector<FBO_ATTATCHMENT_TYPE>& attachments);
+	void createTextures(const std::vector<std::pair<FBO_ATTATCHMENT_TYPE, GLuint>>& attachments);
 
 	void resize(unsigned int width, unsigned int height);
 	void bind();
@@ -33,7 +33,7 @@ public:
 	unsigned int getHeight() const;
 
 private:
-	void createFramebuffer(const std::vector<FBO_ATTATCHMENT_TYPE>& attachments);
+	void createFramebuffer(const std::vector<std::pair<FBO_ATTATCHMENT_TYPE, GLuint>>& attachments);
 
 	GLuint fbo;
 	Texture* textures;

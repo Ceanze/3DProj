@@ -67,7 +67,7 @@ std::map<std::string, Material*> MTLLoader::load(const std::string & name, bool 
 						if (strTemp[0] == '-')
 						{
 							// Options.
-							Error::printError("Option for map_Kd in mtl file is not suported!");
+							Error::printError("Option for map_Kd in mtl file is not supported!");
 						}
 						else
 						{
@@ -90,7 +90,7 @@ std::map<std::string, Material*> MTLLoader::load(const std::string & name, bool 
 						if (strTemp[0] == '-')
 						{
 							// Options.
-							Error::printError("Option for map_bump in mtl file is not suported!");
+							Error::printError("Option for map_bump in mtl file is not supported!");
 						}
 						else
 						{

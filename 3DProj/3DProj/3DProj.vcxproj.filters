@@ -105,6 +105,9 @@
     <ClCompile Include="Shading\Deferred Rendering\PhongLS.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Entities\Components\Movement\testComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="Core\GL Utils\Texture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -126,7 +129,16 @@
     <ClCompile Include="Terrain\Terrain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Entities\Components\Movement\Movement.cpp">
+    <ClCompile Include="Shading\Deferred Rendering\CombineShader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Shading\Deferred Rendering\BlurShader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Terrain\QuadTree.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="QUADTREE.CPP">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -236,6 +248,9 @@
     <ClInclude Include="Shading\Deferred Rendering\PhongLS.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Entities\Components\Movement\testComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="Core\GL Utils\Texture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -260,7 +275,13 @@
     <ClInclude Include="Terrain\Terrain.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Entities\Components\Movement\Movement.h">
+    <ClInclude Include="Shading\Deferred Rendering\CombineShader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Shading\Deferred Rendering\BlurShader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Terrain\QuadTree.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
