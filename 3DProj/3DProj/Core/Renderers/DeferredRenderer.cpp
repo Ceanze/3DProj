@@ -11,23 +11,28 @@ DeferredRenderer::DeferredRenderer(Display* display)
 	this->display = display;
 
 	this->gBuffer = new FrameBuffer(display->getWidth(), display->getHeight());
-	this->gBuffer->createTextures(std::vector<FrameBuffer::FBO_ATTATCHMENT_TYPE>{ 
-		FrameBuffer::FBO_COLOR_ATTACHMENT, FrameBuffer::FBO_COLOR_ATTACHMENT, FrameBuffer::FBO_COLOR_ATTACHMENT, FrameBuffer::FBO_COLOR_ATTACHMENT, FrameBuffer::FBO_COLOR_ATTACHMENT, FrameBuffer::FBO_DEPTH_ATTACHMENT
+	this->gBuffer->createTextures(std::vector<std::pair<FrameBuffer::FBO_ATTATCHMENT_TYPE, GLuint>>{ 
+		{ FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16F },
+		{ FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16F }, 
+		{ FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16F }, 
+		{ FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16F }, 
+		{ FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16F }, 
+		{ FrameBuffer::FBO_DEPTH_ATTACHMENT, GL_RGBA16F }
 	});
 
 	this->lightningBuffer = new FrameBuffer(display->getWidth(), display->getHeight());
-	this->lightningBuffer->createTextures(std::vector<FrameBuffer::FBO_ATTATCHMENT_TYPE>{
-		FrameBuffer::FBO_COLOR_ATTACHMENT, FrameBuffer::FBO_COLOR_ATTACHMENT
+	this->lightningBuffer->createTextures(std::vector<std::pair<FrameBuffer::FBO_ATTATCHMENT_TYPE, GLuint>>{
+		{ FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16F }, { FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16F }
 	});
 
 	this->combineBuffer = new FrameBuffer(display->getWidth(), display->getHeight());
-	this->combineBuffer->createTextures(std::vector<FrameBuffer::FBO_ATTATCHMENT_TYPE>{
-		FrameBuffer::FBO_COLOR_ATTACHMENT
+	this->combineBuffer->createTextures(std::vector<std::pair<FrameBuffer::FBO_ATTATCHMENT_TYPE, GLuint>>{
+		{ FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16F }
 	});
 
 	this->blurBuffer = new FrameBuffer(display->getWidth(), display->getHeight());
-	this->blurBuffer->createTextures(std::vector<FrameBuffer::FBO_ATTATCHMENT_TYPE>{
-		FrameBuffer::FBO_COLOR_ATTACHMENT
+	this->blurBuffer->createTextures(std::vector<std::pair<FrameBuffer::FBO_ATTATCHMENT_TYPE, GLuint>>{
+		{ FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16F }
 	});
 
 	this->phongShader = new PhongLS();
