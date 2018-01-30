@@ -6,11 +6,12 @@
 
 #include "../Shading/ShaderProgram.h"
 #include "../Core/GL Utils/Texture.h"
+#include "../Terrain/QuadTree.h"
 
 #include <vector>
 
 #define MAX_PIXEL_COLOR 256
-#define MAX_HEIGHT 2
+#define MAX_HEIGHT 10
 
 struct Vertex
 {
@@ -22,7 +23,7 @@ struct Vertex
 class Terrain
 {
 public:
-	Terrain(const unsigned& size, const unsigned& offset);
+	Terrain();
 	~Terrain();
 
 	void render();
@@ -31,21 +32,16 @@ public:
 private:
 	void loadTexture(const std::string& path, Texture** texture);
 	void generateTerrain();
-	void generateTerrainFlat();
 	void generateVerticies();
-	void generateIndicies(const unsigned& x, const unsigned& z, const unsigned& rowLength);
-	void generateNormals();
+	void generateIndicies(const unsigned& x, const unsigned& z);
+	const glm::vec3& generateNormals(const unsigned& x, const unsigned& z, unsigned char* data);
 
-	float getHeight(const unsigned char& r);
-
-	void generateQuad(const unsigned& x, const unsigned& z, const unsigned& rowLength, const glm::vec3& start);
-	void setPosAndUvs(const glm::vec3& start, const unsigned& x, const unsigned & y, const unsigned& z, const glm::vec2& uvs);
+	float getHeight(const unsigned& x, const unsigned& z, unsigned char* data);
 
 	void loadToGPU();
 
 	GLuint addVao();
 	GLuint addVertexVbo();
-	GLuint addNormalsVbo();
 	GLuint addEbo();
 
 	bool flatShading;
@@ -53,11 +49,13 @@ private:
 	GLuint vao, vertexVbo, normalVbo, ebo;
 	GLuint vPosLocation, normalLocation, uvsLocation;
 
-	unsigned size, offset;
+	unsigned size, offset, rowLength;
 
 	std::vector<glm::vec3> normals;
 	std::vector<Vertex> verticies;
 	std::vector<GLuint> indicies;
+
+	QuadTree quadTree;
 
 	ShaderProgram* shader;
 	Texture* heightMap;

@@ -22,7 +22,7 @@ Texture::Texture(unsigned int width, unsigned int height, unsigned int numTextur
 
 Texture::Texture(unsigned int width, unsigned int height, void* data, unsigned int numTextures)
 {
-	init(numTextures, width, height, data);
+	init(numTextures, width, height, data, GL_UNSIGNED_BYTE, GL_RGBA, GL_RGBA);
 }
 
 Texture::Texture(unsigned int width, unsigned int height, void * data, GLuint dataType, GLuint externalFormat, GLuint internalFormat, unsigned int numTextures)

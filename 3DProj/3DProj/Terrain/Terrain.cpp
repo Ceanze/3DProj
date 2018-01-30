@@ -3,26 +3,33 @@
 #include "../Error.h"
 #include "../Core/ResourceManager.h"
 
-Terrain::Terrain(const unsigned & size, const unsigned& offset)
+Terrain::Terrain()
+	: quadTree(1)
 {
-	this->flatShading = false;
-	this->size = size;
-	this->offset = offset;
-
 	this->heightMap = nullptr;
-	this->loadTexture("./Resources/Textures/heightmaptest.png", &this->heightMap);
+	this->loadTexture("./Resources/Textures/heightmap.png", &this->heightMap);
+
+	this->flatShading = false;
+	this->size = this->heightMap->getWidth()*2;
+	this->offset = 2;
+	this->rowLength = this->size / this->offset;
+
+	
+	
 
 	this->texture = nullptr;
 	this->loadTexture("./Resources/Textures/stone.jpg", &this->texture);
 	this->texture->bind();
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+
+	glGenerateMipmap(GL_TEXTURE_2D);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
 	this->texture->unbind();
 
-	if (this->flatShading)
-		this->generateTerrainFlat();
-	else
-		this->generateTerrain();
+	this->generateTerrain();
 }
 
 Terrain::~Terrain()
@@ -30,7 +37,6 @@ Terrain::~Terrain()
 	delete this->texture;
 	delete this->heightMap;
 	glDeleteBuffers(1, &this->vertexVbo);
-	glDeleteBuffers(1, &this->normalVbo);
 	glDeleteVertexArrays(1, &this->vao);
 }
 
@@ -45,12 +51,14 @@ void Terrain::render()
 	glBindVertexArray(this->vao );
 	this->shader->updateUniforms();
 
-	if (this->flatShading)
+	/*if (this->flatShading)
 		glDrawArrays(GL_TRIANGLES, 0, this->verticies.size());
 	else
-		glDrawElements(GL_TRIANGLES, this->indicies.size(), GL_UNSIGNED_INT, 0);
-	glBindVertexArray(0);
+		glDrawElements(GL_TRIANGLES, this->indicies.size(), GL_UNSIGNED_INT, 0);*/
 
+	this->quadTree.render();
+
+	glBindVertexArray(0);
 	glUseProgram(0);
 }
 
@@ -75,30 +83,11 @@ void Terrain::loadTexture(const std::string& path, Texture** texture)
 void Terrain::generateTerrain()
 {
 	this->generateVerticies();
-	this->generateNormals();
-
-}
-
-void Terrain::generateTerrainFlat()
-{
-	glm::vec3 start(-(int)this->size / 2, 0, -(int)this->size / 2);
-
-	const unsigned rowLength = this->size / this->offset;
-
-	for (unsigned x = 0; x <= rowLength; x++)
-	{
-		for (unsigned z = 0; z <= rowLength; z++)
-		{
-			this->generateQuad(x, z, rowLength, start);
-		}
-	}
 }
 
 void Terrain::generateVerticies()
 {
 	glm::vec3 start(-(int)this->size / 2, 0, -(int)this->size / 2);
-
-	const unsigned rowLength = this->size / this->offset;
 
 	Vertex vertex;
 	unsigned char hMapPixel;
@@ -112,84 +101,79 @@ void Terrain::generateVerticies()
 	{ 
 		for (unsigned z = 0; z <= rowLength; z++)
 		{
-			hMapPixel = data[(x * rowLength + z) * 4];
-			
-			vertex.position = start + glm::vec3(offset * x, this->getHeight(hMapPixel), offset * z);
+			vertex.position = start + glm::vec3(offset * x, this->getHeight(x, z, data), offset * z);
+			vertex.normal = this->generateNormals(x, z, data);
 			vertex.uvs = glm::vec2(x, z);
 			this->verticies.push_back(vertex);
 
 			if (x >= 1 & z >= 1)
 			{
-				this->generateIndicies(x - 1, z - 1, rowLength);
+				this->generateIndicies(x - 1, z - 1);
 			}
 		}
 	}
 
-	
 }
 
-void Terrain::generateIndicies(const unsigned& x, const unsigned& z, const unsigned& rowLength)
+void Terrain::generateIndicies(const unsigned& x, const unsigned& z)
 {
-	//triangle 1
-	this->indicies.push_back(z + x * (rowLength + 1));
-	this->indicies.push_back(z + 1 + x * (rowLength + 1));
-	this->indicies.push_back(z + x * (rowLength + 1) + (rowLength + 1));
+	Triangle tri1, tri2;
+	tri1.p1 = z + x * (this->rowLength + 1);
+	tri1.p2 = z + 1 + x * (this->rowLength + 1);
+	tri1.p3 = z + x * (this->rowLength + 1) + (this->rowLength + 1);
 
-	this->generateNormals();
+	tri2.p1 = z + 1 + x * (this->rowLength + 1) + (this->rowLength + 1);
+	tri2.p2 = z + x * (this->rowLength + 1) + (this->rowLength + 1);
+	tri2.p3 = z + 1 + x * (this->rowLength + 1);
 
-	//triangle 2
-	this->indicies.push_back(z + 1 + x * (rowLength + 1) + (rowLength + 1));
-	this->indicies.push_back(z + x * (rowLength + 1) + (rowLength + 1));
-	this->indicies.push_back(z + 1 + x * (rowLength + 1));
+	unsigned quadLength = (this->rowLength + 1) / 2;
 
-	this->generateNormals();
-}
-
-void Terrain::generateNormals()
-{
-	/*glm::vec3 v1 = this->verticies[this->indicies[this->indicies.size() - 2]].position - this->verticies[this->indicies[this->indicies.size() - 3]].position;
-	glm::vec3 v2 = this->verticies[this->indicies[this->indicies.size() - 1]].position - this->verticies[this->indicies[this->indicies.size() - 3]].position;
-
-	glm::vec3 normal = glm::normalize(glm::cross(v1, v2));
-
-	for (unsigned i = 0; i < 3; i++)
+	if (x + 1 < quadLength && z + 1 < quadLength)
 	{
-		this->normals.push_back(normal);
-	}*/
-
-	for (int i = 0; i < this->verticies.size(); i++) {
-		this->normals.push_back(glm::vec3(0.0f, 1.0f, 0.0f));
+		this->quadTree.addTriangleToChild(0, tri1);
+		this->quadTree.addTriangleToChild(0, tri2);
 	}
+	else if (x + 1 < quadLength && z + 1 > quadLength)
+	{
+		this->quadTree.addTriangleToChild(1, tri1);
+		this->quadTree.addTriangleToChild(1, tri2);
+	}
+	else if (x + 1 > quadLength && z + 1 < quadLength)
+	{
+		this->quadTree.addTriangleToChild(2, tri1);
+		this->quadTree.addTriangleToChild(2, tri2);
+	}
+	else
+	{
+		this->quadTree.addTriangleToChild(3, tri1);
+		this->quadTree.addTriangleToChild(3, tri2);
+	}
+
 }
 
-float Terrain::getHeight(const unsigned char & r)
+const glm::vec3& Terrain::generateNormals(const unsigned& x, const unsigned& z, unsigned char* data)
 {
-	float height = ((float)r / MAX_PIXEL_COLOR) * MAX_HEIGHT;
+	float LH, RH, UH, DH;
+
+	LH = this->getHeight(x, z + 1, data);
+	RH = this->getHeight(x, z - 1, data);
+	UH = this->getHeight(x + 1, z, data);
+	DH = this->getHeight(x - 1, z, data);
+
+	return glm::normalize(glm::vec3(LH - RH, 2.f, DH - UH));
+}
+
+float Terrain::getHeight(const unsigned& x, const unsigned& z, unsigned char* data)
+{
+	if ((x < 0 || x > rowLength) || (z < 0 || z > rowLength))
+		return 0;
+
+	float height = data[(x * this->rowLength + z) * 4];
+
+	height = ((float)height / MAX_PIXEL_COLOR) * MAX_HEIGHT;
 
 	return height;
 }
-
-void Terrain::generateQuad(const unsigned & x, const unsigned & z, const unsigned & rowLength, const glm::vec3& start)
-{
-	this->setPosAndUvs(start, offset * x, sin(x+z) * 10, offset * z, glm::vec2(x, z));
-	this->setPosAndUvs(start, offset * x, sin(x + z) * 10, offset * z + offset, glm::vec2(x, z + 1));
-	this->setPosAndUvs(start, offset * x + offset, sin(x + z) * 10, offset * z, glm::vec2(x + 1, z));
-
-	this->setPosAndUvs(start, offset * x, sin(x + z) * 10, offset * z + offset, glm::vec2(x, z + 1));
-	this->setPosAndUvs(start, offset * x + offset, sin(x + z) * 10, offset * z + offset, glm::vec2(x + 1, z + 1));
-	this->setPosAndUvs(start, offset * x + offset, sin(x + z) * 10, offset * z, glm::vec2(x + 1, z));
-}
-
-void Terrain::setPosAndUvs(const glm::vec3& start, const unsigned & x, const unsigned & y, const unsigned & z, const glm::vec2& uvs)
-{
-	Vertex vertex;
-	vertex.position = start + glm::vec3(x, y, z);
-	vertex.normal = glm::vec3(0.0f, 1.0f, 0.0f);
-	vertex.uvs = uvs;
-	this->verticies.push_back(vertex);
-}
-
-
 
 void Terrain::loadToGPU()
 {
@@ -197,7 +181,6 @@ void Terrain::loadToGPU()
 	this->vertexVbo = addVertexVbo();
 	if (!this->flatShading)
 	{ 
-		this->normalVbo = addNormalsVbo();
 		this->ebo = addEbo();
 	}
 }
@@ -225,16 +208,12 @@ GLuint Terrain::addVertexVbo()
 	glEnableVertexAttribArray(vPosLocation);
 	glVertexAttribPointer(vPosLocation, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (char*)nullptr);
 
-	if (this->flatShading)
-	{
-		this->normalLocation = glGetAttribLocation(this->shader->getID(), "vertexNormal");
-		if (this->normalLocation == -1)
-			Error::printError("Terrain couldn't find 'vertexNormal' in GeometryDR.vs");
-		glEnableVertexAttribArray(this->normalLocation);
-	}
+	this->normalLocation = glGetAttribLocation(this->shader->getID(), "vertexNormal");
+	if (this->normalLocation == -1)
+		Error::printError("Terrain couldn't find 'vertexNormal' in GeometryDR.vs");
 	glEnableVertexAttribArray(this->normalLocation);
-	glVertexAttribPointer(this->normalLocation, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (char*)(sizeof(GLfloat) * 3));
 
+	glVertexAttribPointer(this->normalLocation, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (char*)(sizeof(GLfloat) * 3));
 
 	this->uvsLocation = glGetAttribLocation(this->shader->getID(), "vertexUvs");
 	if (this->uvsLocation == -1)
@@ -250,37 +229,19 @@ GLuint Terrain::addVertexVbo()
 	return vbo;
 }
 
-GLuint Terrain::addNormalsVbo()
-{
-	GLuint vbo;
-
-	glBindVertexArray(this->vao);
-	glGenBuffers(1, &vbo);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBufferData(GL_ARRAY_BUFFER, this->normals.size() * sizeof(glm::vec3), &this->normals[0], GL_STATIC_DRAW);
-
-	this->normalLocation = glGetAttribLocation(this->shader->getID(), "vertexNormal");
-	if (this->normalLocation == -1)
-		Error::printError("Terrain couldn't find 'vertexNormal' in GeometryDR.vs");
-
-	glEnableVertexAttribArray(normalLocation);
-
-	glVertexAttribPointer(normalLocation, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (char*)(sizeof(GLfloat) * 0));
-
-	return vbo;
-}
-
 GLuint Terrain::addEbo()
 {
 	glBindVertexArray(this->vao);
 
-	GLuint ebo;
+	//GLuint ebo;
 
-	glGenBuffers(1, &ebo);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint)*this->indicies.size(), &this->indicies[0], GL_STATIC_DRAW);
+	//glGenBuffers(1, &ebo);
+	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint)*this->indicies.size(), &this->indicies[0], GL_STATIC_DRAW);
 
-	glBindVertexArray(0);
+	//glBindVertexArray(0);
 
-	return ebo;
+	this->quadTree.addEbo();
+
+	return 0;
 }

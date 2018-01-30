@@ -24,7 +24,7 @@ void FrameBuffer::createTextures(const std::vector<FBO_ATTATCHMENT_TYPE>& attach
 	{
 		textureInfos.push_back(TextureInfo(this->width, this->height, nullptr, GL_FLOAT, 
 			(attachments[i] == FBO_DEPTH_ATTACHMENT) ? GL_DEPTH_COMPONENT : GL_RGB, 
-			(attachments[i] == FBO_DEPTH_ATTACHMENT) ? GL_DEPTH_COMPONENT24 : GL_RGBA32F));
+			(attachments[i] == FBO_DEPTH_ATTACHMENT) ? GL_DEPTH_COMPONENT24 : GL_RGBA16F));
 
 		if (attachments[i] == FBO_COLOR_ATTACHMENT)
 			this->hasColorAttachment = true;

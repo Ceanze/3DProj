@@ -51,7 +51,7 @@ void main()
 		vec3 r = reflect(fragNormal, lightDirection);
 		vec3 v = normalize(camPos - fragPos);
 		float specularFactor = pow(max(dot(r, v), 0.0), s+0.01);
-		specular += specularFactor*lightFactor;
+		specular += diffuseFactor*specularFactor*lightFactor;
 	}
 
 	//diffuseOut /= nrOfPointLights;
