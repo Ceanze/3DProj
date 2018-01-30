@@ -44,14 +44,11 @@ private:
 	GLuint addVertexVbo();
 	GLuint addEbo();
 
-	bool flatShading;
-
-	GLuint vao, vertexVbo, normalVbo, ebo;
+	GLuint vao, vertexVbo, ebo;
 	GLuint vPosLocation, normalLocation, uvsLocation;
 
 	unsigned size, offset, rowLength;
 
-	std::vector<glm::vec3> normals;
 	std::vector<Vertex> verticies;
 	std::vector<GLuint> indicies;
 

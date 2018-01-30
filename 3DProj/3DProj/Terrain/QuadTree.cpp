@@ -38,7 +38,6 @@ void QuadTree::render()
 	for (int i = 0; i < CHILDREN_AMOUNT && this->hasChildren == true; i++)
 		this->children[i]->render();
 
-
 	if (this->triangles.size() > 0)
 	{
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->ebo);

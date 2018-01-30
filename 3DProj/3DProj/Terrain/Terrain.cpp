@@ -9,14 +9,6 @@ Terrain::Terrain()
 	this->heightMap = nullptr;
 	this->loadTexture("./Resources/Textures/heightmap.png", &this->heightMap);
 
-	this->flatShading = false;
-	this->size = this->heightMap->getWidth()*2;
-	this->offset = 2;
-	this->rowLength = this->size / this->offset;
-
-	
-	
-
 	this->texture = nullptr;
 	this->loadTexture("./Resources/Textures/stone.jpg", &this->texture);
 	this->texture->bind();
@@ -27,6 +19,10 @@ Terrain::Terrain()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
+	this->size = this->heightMap->getWidth()*2;
+	this->offset = 2;
+	this->rowLength = this->size / this->offset;
+	
 	this->texture->unbind();
 
 	this->generateTerrain();
@@ -50,11 +46,6 @@ void Terrain::render()
 
 	glBindVertexArray(this->vao );
 	this->shader->updateUniforms();
-
-	/*if (this->flatShading)
-		glDrawArrays(GL_TRIANGLES, 0, this->verticies.size());
-	else
-		glDrawElements(GL_TRIANGLES, this->indicies.size(), GL_UNSIGNED_INT, 0);*/
 
 	this->quadTree.render();
 
@@ -101,6 +92,7 @@ void Terrain::generateVerticies()
 	{ 
 		for (unsigned z = 0; z <= rowLength; z++)
 		{
+			
 			vertex.position = start + glm::vec3(offset * x, this->getHeight(x, z, data), offset * z);
 			vertex.normal = this->generateNormals(x, z, data);
 			vertex.uvs = glm::vec2(x, z);
@@ -128,7 +120,7 @@ void Terrain::generateIndicies(const unsigned& x, const unsigned& z)
 
 	unsigned quadLength = (this->rowLength + 1) / 2;
 
-	if (x + 1 < quadLength && z + 1 < quadLength)
+	if (x + 1 <= quadLength && z + 1 <= quadLength)
 	{
 		this->quadTree.addTriangleToChild(0, tri1);
 		this->quadTree.addTriangleToChild(0, tri2);
@@ -179,10 +171,7 @@ void Terrain::loadToGPU()
 {
 	this->vao = addVao();
 	this->vertexVbo = addVertexVbo();
-	if (!this->flatShading)
-	{ 
-		this->ebo = addEbo();
-	}
+	this->ebo = addEbo();
 }
 
 GLuint Terrain::addVao()
@@ -220,9 +209,6 @@ GLuint Terrain::addVertexVbo()
 		Error::printError("Terrain couldn't find 'vertexUvs' in GeometryDR.vs");
 	glEnableVertexAttribArray(uvsLocation);
 	glVertexAttribPointer(uvsLocation, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (char*)(sizeof(GLfloat) * 6));
-
-
-
 	
 	glBindVertexArray(0);
 
@@ -232,14 +218,6 @@ GLuint Terrain::addVertexVbo()
 GLuint Terrain::addEbo()
 {
 	glBindVertexArray(this->vao);
-
-	//GLuint ebo;
-
-	//glGenBuffers(1, &ebo);
-	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint)*this->indicies.size(), &this->indicies[0], GL_STATIC_DRAW);
-
-	//glBindVertexArray(0);
 
 	this->quadTree.addEbo();
 
