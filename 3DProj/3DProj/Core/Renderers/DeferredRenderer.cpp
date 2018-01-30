@@ -13,26 +13,26 @@ DeferredRenderer::DeferredRenderer(Display* display)
 	this->gBuffer = new FrameBuffer(display->getWidth(), display->getHeight());
 	this->gBuffer->createTextures(std::vector<std::pair<FrameBuffer::FBO_ATTATCHMENT_TYPE, GLuint>>{ 
 		{ FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16F },
-		{ FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16F }, 
-		{ FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16F }, 
-		{ FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16F }, 
-		{ FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16F }, 
+		{ FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16F },
+		{ FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16F },
+		{ FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16F },
+		{ FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16F },
 		{ FrameBuffer::FBO_DEPTH_ATTACHMENT, GL_RGBA16F }
 	});
 
 	this->lightningBuffer = new FrameBuffer(display->getWidth(), display->getHeight());
 	this->lightningBuffer->createTextures(std::vector<std::pair<FrameBuffer::FBO_ATTATCHMENT_TYPE, GLuint>>{
-		{ FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16F }, { FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16F }
+		{ FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16 }, { FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16 }
 	});
 
 	this->combineBuffer = new FrameBuffer(display->getWidth(), display->getHeight());
 	this->combineBuffer->createTextures(std::vector<std::pair<FrameBuffer::FBO_ATTATCHMENT_TYPE, GLuint>>{
-		{ FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16F }
+		{ FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16 }
 	});
 
 	this->blurBuffer = new FrameBuffer(display->getWidth(), display->getHeight());
 	this->blurBuffer->createTextures(std::vector<std::pair<FrameBuffer::FBO_ATTATCHMENT_TYPE, GLuint>>{
-		{ FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16F }
+		{ FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16 }
 	});
 
 	this->phongShader = new PhongLS();
@@ -83,6 +83,8 @@ void DeferredRenderer::resize(Display * display)
 	this->display = display;
 	this->gBuffer->resize(display->getWidth(), display->getHeight());
 	this->lightningBuffer->resize(display->getWidth(), display->getHeight());
+	this->combineBuffer->resize(display->getWidth(), display->getHeight());
+	this->blurBuffer->resize(display->getWidth(), display->getHeight());
 }
 
 const FrameBuffer * DeferredRenderer::getGBuffer() const
