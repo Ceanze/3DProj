@@ -54,6 +54,7 @@ void Transform::setScale(const glm::vec3 & scale)
 void Transform::setDirection(const glm::vec3 & dir)
 {
 	const glm::vec3 f = dir;
+	this->direction = dir;
 	glm::vec3 r;
 
 	if (glm::abs(glm::dot(f,glm::vec3(0.0f, 1.0f, 0.0f))) > 0.99f)
@@ -86,6 +87,30 @@ glm::vec3 Transform::getRotation() const
 glm::vec3 Transform::getScale() const
 {
 	return this->scale;
+}
+
+glm::vec3 Transform::getDirection() const
+{
+	//glm::vec3 direction = {1.0f, 0.0f, 0.0f};
+	////direction.x = cos(this->rotation.z)*cos(this->rotation.y);
+	////direction.y = sin(this->rotation.z)*sin(this->rotation.x);
+	////direction.z = sin(this->rotation.y)*cos(this->rotation.x);
+
+	//const float cosX = glm::cos(rotation.x);
+	//const float sinX = glm::sin(rotation.x);
+	//const glm::mat3 rotX = glm::mat3{ { 1.0f, 0.0f, 0.0f },{ 0.0f, cosX, sinX },{ 0.0f, -sinX, cosX } };
+
+	//const float cosY = glm::cos(rotation.y);
+	//const float sinY = glm::sin(rotation.y);
+	//const glm::mat3 rotY = glm::mat3{ { cosY, 0.0f, -sinY },{ 0.0f, 1.0f, 0.0f },{ sinY, 0.0f, cosY } };
+
+	//const float cosZ = glm::cos(rotation.z);
+	//const float sinZ = glm::sin(rotation.z);
+	//const glm::mat3 rotZ = glm::mat3{ { cosZ, sinZ, 0.0f },{ -sinZ, cosZ, 0.0f },{ 0.0f, 0.0f, 1.0f } };
+	//const glm::mat3 m = rotZ*rotY*rotX;
+
+	//return m*direction;
+	return this->direction;
 }
 
 void Transform::setMatrix(const glm::mat4 & matrix)

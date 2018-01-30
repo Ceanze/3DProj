@@ -7,7 +7,7 @@
 class Movement : public Component
 {
 public:
-	Movement(unsigned forward = GLFW_KEY_UP, unsigned = GLFW_KEY_LEFT, unsigned backward = GLFW_KEY_DOWN, unsigned = GLFW_KEY_RIGHT);
+	Movement(float speed = 5, unsigned forward = GLFW_KEY_UP, unsigned left = GLFW_KEY_LEFT, unsigned backward = GLFW_KEY_DOWN, unsigned right = GLFW_KEY_RIGHT);
 	~Movement();
 
 	void init();

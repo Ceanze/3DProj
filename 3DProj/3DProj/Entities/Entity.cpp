@@ -6,10 +6,10 @@
 
 #include "../Error.h"
 
-Entity::Entity(const glm::vec3 & position, const glm::vec3 & direction, bool isDynamic)
+Entity::Entity(const glm::vec3 & position, const glm::vec3 & rotation, bool isDynamic)
 {
 	this->getWorldTransform().setTranslation(position);
-	this->getWorldTransform().setRotation(direction);
+	this->getWorldTransform().setRotation(rotation);
 	this->isDynamic = isDynamic;
 }
 
@@ -44,6 +44,11 @@ void Entity::addComponent(Component* component)
 {
 	component->setEntity(this);
 	this->components.push_back(component);
+}
+
+Component * Entity::getComponent(unsigned int index)
+{
+	return this->components[index];
 }
 
 std::vector<Mesh*> & Entity::getMeshes()

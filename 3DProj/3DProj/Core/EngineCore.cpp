@@ -25,7 +25,7 @@ EngineCore::EngineCore()
 	this->geometryNMShader = new GeometryNormalMapShader();
 	this->deferredRenderer = new DeferredRenderer(&this->display);
 
-	this->camera = new Camera(&this->display, glm::vec3{0.0f, 5.0f, 10.0f});
+	this->camera = new Camera(&this->display, glm::vec3{0.0f, 0.0f, 0.0f});
 	this->geometryShader->setCamera(this->camera);
 	this->geometryNMShader->setCamera(this->camera);
 	this->deferredRenderer->setCamera(this->camera);
@@ -53,10 +53,11 @@ EngineCore::EngineCore()
 	base->addChild(e1);
 */
 	// --------------------------- Bunny and Cube ---------------------------
-	this->e2 = new Entity({ 3.0f, -1.f, -5.0f }, { 0.0f, 0.0f, 0.0f }, false);
+	this->e2 = new Entity({ 0.0f, 3.0f, 10.0f }, { 0.0f, 0.0f, 0.0f }, false);
 	//this->e2->addMesh(this->m1, this->geometryShader);
 	this->e2->addMeshes(this->cubeMeshes, this->geometryNMShader);
 	this->e2->addComponent(this->camera);
+	this->e2->addComponent(new Movement(10, GLFW_KEY_W, GLFW_KEY_A, GLFW_KEY_S, GLFW_KEY_D));
 	base->addChild(e2);
 	
 	// --------------------------- Sword ---------------------------
@@ -71,7 +72,7 @@ EngineCore::EngineCore()
 	this->armyPilot->getLocalTransform().setScale({0.05f, 0.05f, 0.05f });
 	this->armyPilot->addMeshes(this->armyPilotMeshes, this->geometryShader);
 	//this->armyPilot->addComponent(new PointLight(40.0f, 1.0f, glm::vec3(1.0f, 1.0f, 1.0f), this->deferredRenderer->getPhongShader()));
-	this->armyPilot->addComponent(new Movement());
+	//this->armyPilot->addComponent(new Movement());
 	base->addChild(armyPilot);
 
 	// --------------------------- Arm ---------------------------
@@ -119,6 +120,7 @@ EngineCore::EngineCore()
 	temp->getLocalTransform().setScale({ 0.2f, 0.2f, 0.2f });
 	this->lightBase->addChild(temp);
 
+	this->base->update(0.16f);
 	this->base->init();
 	/*-------------- END TEMP ------------------*/
 }

@@ -16,12 +16,14 @@ public:
 	glm::vec3 getTranslation() const;
 	glm::vec3 getRotation() const;
 	glm::vec3 getScale() const;
+	glm::vec3 getDirection() const;
 
 	void setMatrix(const glm::mat4& matrix);
 
 	glm::mat4 getMatrix() const;
 
 private:
+	glm::vec3 direction;
 	glm::mat4 matrix;
 	glm::vec3 translation;
 	glm::vec3 rotation;
