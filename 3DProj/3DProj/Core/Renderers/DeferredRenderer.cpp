@@ -170,7 +170,7 @@ void DeferredRenderer::renderBlur()
 		glUseProgram(0);
 
 		this->blurBuffer->unbind();
-
+		
 		// -------------------------------------------------------------------------------------
 
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
