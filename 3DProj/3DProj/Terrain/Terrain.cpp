@@ -22,10 +22,12 @@ Terrain::Terrain()
 	this->size = this->heightMap->getWidth()*2;
 	this->offset = 2;
 	this->rowLength = this->size / this->offset;
-	
+	this->start = glm::vec3(-(int)this->size / 2, 0, -(int)this->size / 2);
 	this->texture->unbind();
 
 	this->generateTerrain();
+
+	float hTest = this->getHeight(0.0f, 0.0f);
 }
 
 Terrain::~Terrain()
@@ -62,6 +64,19 @@ void Terrain::setShader(ShaderProgram * shader)
 	this->loadToGPU();
 }
 
+float Terrain::getHeight(const float & x, const float & z)
+{
+	Vertex* vtx;
+	unsigned newX, newZ;
+
+	newX = x / (this->size / 2);
+	newZ = z / (this->size / 2);
+
+	vtx = this->getTriangle(newX, newZ);
+
+	return vtx[0].position.y;
+}
+
 void Terrain::loadTexture(const std::string& path, Texture** texture)
 {
 	char hasFailed = ResourceManager::loadTexture(path, texture);
@@ -78,8 +93,6 @@ void Terrain::generateTerrain()
 
 void Terrain::generateVerticies()
 {
-	glm::vec3 start(-(int)this->size / 2, 0, -(int)this->size / 2);
-
 	Vertex vertex;
 	unsigned char hMapPixel;
 
@@ -93,7 +106,7 @@ void Terrain::generateVerticies()
 		for (unsigned z = 0; z <= rowLength; z++)
 		{
 			
-			vertex.position = start + glm::vec3(offset * x, this->getHeight(x, z, data), offset * z);
+			vertex.position = this->start + glm::vec3(offset * x, this->getHeight(x, z, data), offset * z);
 			vertex.normal = this->generateNormals(x, z, data);
 			vertex.uvs = glm::vec2(x, z);
 			this->verticies.push_back(vertex);
@@ -165,6 +178,22 @@ float Terrain::getHeight(const unsigned& x, const unsigned& z, unsigned char* da
 	height = ((float)height / MAX_PIXEL_COLOR) * MAX_HEIGHT;
 
 	return height;
+}
+
+Vertex * Terrain::getTriangle(const float & normalizedX, const float & normalizedZ)
+{
+	Vertex temp[3];
+
+	unsigned halfRowlength = (this->rowLength / 2) + 1;
+
+	unsigned index = (halfRowlength + halfRowlength * this->rowLength + 1)
+		+ std::round(normalizedZ * halfRowlength) + std::round(normalizedX * halfRowlength * (this->rowLength + 1));
+
+	temp[0] = this->verticies[index];
+	temp[1] = this->verticies[index + this->rowLength + 1];
+	temp[2] = this->verticies[index + 1];
+
+	return temp;
 }
 
 void Terrain::loadToGPU()

@@ -29,6 +29,8 @@ public:
 	void render();
 	void setShader(ShaderProgram* shader);
 
+	float getHeight(const float& x, const float& z);
+
 private:
 	void loadTexture(const std::string& path, Texture** texture);
 	void generateTerrain();
@@ -37,6 +39,7 @@ private:
 	const glm::vec3& generateNormals(const unsigned& x, const unsigned& z, unsigned char* data);
 
 	float getHeight(const unsigned& x, const unsigned& z, unsigned char* data);
+	Vertex* getTriangle(const float& normalizedX, const float& normalizedZ);
 
 	void loadToGPU();
 
@@ -48,6 +51,7 @@ private:
 	GLuint vPosLocation, normalLocation, uvsLocation;
 
 	unsigned size, offset, rowLength;
+	glm::vec3 start;
 
 	std::vector<Vertex> verticies;
 	std::vector<GLuint> indicies;
