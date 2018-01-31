@@ -23,12 +23,16 @@ void main()
         vec3 pointToCam = camPos - geometryPosition[i];
         if(dot(pointToCam, normal) > 0)
         {
-            fragPosition = geometryPosition[i];
+            fragPosition = geometryPosition[i].xyz;
             fragTextureCoord = geometryTextureCoord[i];
             fragNormal = geometryNormal[i];
-            gl_Position = camera*vec4(geometryPosition[i], 1);
+            gl_Position = camera*vec4(fragPosition, 1.0);
             EmitVertex();
         }
     }
     EndPrimitive();
+
+    
+
+
 }

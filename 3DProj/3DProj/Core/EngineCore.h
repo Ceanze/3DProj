@@ -44,6 +44,9 @@ private:
 	void renderLSTextures();
 	void renderTexture(ImTextureID texID, float ratio, bool nextLine);
 
+	void attachCamera(Camera* camera);
+	void swapCamera();
+
 	Display display;
 
 	/*---------------- TEMP --------------------*/
@@ -67,6 +70,8 @@ private:
 	std::vector<Mesh*> armyPilotMeshes;
 	ObjLoader loader;
 	Camera* camera;
+	Camera* camera2;
+	Camera* activeCamera;
 	/*-------------- END TEMP ------------------*/
 };
 

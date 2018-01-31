@@ -26,10 +26,9 @@ EngineCore::EngineCore()
 	this->deferredRenderer = new DeferredRenderer(&this->display);
 
 	this->camera = new Camera(&this->display, glm::vec3{0.0f, 0.0f, 0.0f});
-	this->geometryShader->setCamera(this->camera);
-	this->geometryNMShader->setCamera(this->camera);
-	this->deferredRenderer->setCamera(this->camera);
-	//this->testShader->setCamera(this->camera);
+	this->camera2 = new Camera(&this->display, glm::vec3{0.0f, 10.0f, 0.0f});
+	this->activeCamera = this->camera2;
+	attachCamera(this->activeCamera);
 	
 	this->terrain.setShader(this->geometryShader);
 
@@ -71,8 +70,8 @@ EngineCore::EngineCore()
 	this->armyPilot = new Entity({ 0.0f, -5.f, 5.0f }, { 0.0f, 0.0f, 0.0f }, false);
 	this->armyPilot->getLocalTransform().setScale({0.05f, 0.05f, 0.05f });
 	this->armyPilot->addMeshes(this->armyPilotMeshes, this->geometryShader);
-	//this->armyPilot->addComponent(new PointLight(40.0f, 1.0f, glm::vec3(1.0f, 1.0f, 1.0f), this->deferredRenderer->getPhongShader()));
-	//this->armyPilot->addComponent(new Movement());
+	this->armyPilot->addComponent(this->camera2);
+	this->armyPilot->addComponent(new Movement(10));
 	base->addChild(armyPilot);
 
 	// --------------------------- Arm ---------------------------
@@ -93,6 +92,8 @@ EngineCore::EngineCore()
 
 	temp = new Entity({ 0.0f, 2.0f, 0.0f }, { 0.0f, 0.0f, 0.0f });
 	temp->addMesh(this->m2, this->geometryNMShader);
+	//temp->addComponent(this->camera2);
+	//temp->addComponent(new Movement(10, GLFW_KEY_W, GLFW_KEY_A, GLFW_KEY_S, GLFW_KEY_D));
 	this->arm[this->arm.size() - 1]->addChild(temp);
 	this->arm.push_back(temp);
 
@@ -224,6 +225,24 @@ void EngineCore::render()
 
 void EngineCore::input(Display* display)
 {
+	static bool isVClicked = 0;
+	static bool isVPressed = false;
+	if (glfwGetKey(display->getWindowPtr(), GLFW_KEY_V) != GLFW_PRESS)
+	{
+		if (isVPressed)
+		{
+			isVPressed = false;
+			isVClicked ^= 1;
+		}
+	}
+	else isVPressed = true;
+
+	if (isVClicked)
+	{
+		swapCamera();
+		isVClicked ^= 1;
+	}
+
 	base->input(display);
 }
 
@@ -235,7 +254,7 @@ void EngineCore::renderGui()
 		if (ImGui::Button("Node tree Window")) show_node_tree_window ^= 1;
 		if (ImGui::Button("Deferred Rendering")) show_dr_window ^= 1;
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-		ImGui::Text("Click 'C' to toggle camera on and off.");
+		ImGui::Text("Click 'C' to toggle camera on and off and 'V' to swap camera");
 		ImGui::Text("Click 'B' to toggle blur on and off.");
 	}
 
@@ -244,6 +263,16 @@ void EngineCore::renderGui()
 		ImGui::Begin("Node tree Window", &show_node_tree_window);
 		if (ImGui::TreeNode("Base Node level 0"))
 		{
+			if (ImGui::TreeNode("Active Camera"))
+			{
+				glm::vec3 pos = this->activeCamera->getPosition();
+				ImGui::DragFloat3("Position", &pos[0], 0.01f, -100.0f, 100.0f);
+				glm::vec3 dir = this->activeCamera->getDirection();
+				ImGui::DragFloat3("Direction", &dir[0], 0.01f, -100.0f, 100.0f);
+				float fov = this->activeCamera->getFOV();
+				ImGui::DragFloat("fov", &fov, 0.01f, -100.0f, 100.0f);
+				ImGui::TreePop();
+			}
 			renderNodeGUI(this->base);
 			ImGui::TreePop();
 		}
@@ -268,13 +297,14 @@ void EngineCore::renderNodeGUI(Node* e, int level)
 		ImGui::DragFloat3("Position", &pos[0], 0.01f, -100.0f, 100.0f);
 		t.setTranslation(pos);
 
-		glm::vec3 rot = t.getRotation();
+		Transform& t2 = e->getLocalTransform();
+		glm::vec3 rot = t2.getRotation();
 		ImGui::DragFloat3("Rotation", &rot[0], 0.01f, 0.0f, 2 * 3.1415f);
-		t.setRotation(rot);
+		t2.setRotation(rot);
 
-		glm::vec3 scale = t.getScale();
+		glm::vec3 scale = t2.getScale();
 		ImGui::DragFloat3("Scale", &scale[0], 0.01f, 0.01f, 100.0f);
-		t.setScale(scale);
+		t2.setScale(scale);
 		ImGui::TreePop();
 	}
 
@@ -361,5 +391,23 @@ void EngineCore::renderTexture(ImTextureID texID, float ratio, bool nextLine)
 		ImGui::Image(texID, ImVec2(170 * ratio, 170), ImVec2(0, 1), ImVec2(1, 0), ImVec4(1, 1, 1, 1), ImVec4(1, 1, 1, 1));
 		ImGui::EndTooltip();
 	}
+}
+
+void EngineCore::attachCamera(Camera* camera)
+{
+	camera->activate();
+	this->geometryShader->setCamera(camera);
+	this->geometryNMShader->setCamera(camera);
+	this->deferredRenderer->setCamera(camera);
+}
+
+void EngineCore::swapCamera()
+{
+	this->activeCamera->deactivate();
+	if (this->activeCamera == this->camera)
+		this->activeCamera = this->camera2;
+	else
+		this->activeCamera = this->camera;
+	attachCamera(this->activeCamera);
 }
 

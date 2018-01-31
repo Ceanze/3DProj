@@ -5,7 +5,6 @@
 #include "../GL Utils/FrameBuffer.h"
 #include "../../Shading/Deferred Rendering/QuadShader.h"
 #include "../../Shading/Deferred Rendering/PhongLS.h"
-#include "../../Shading/Deferred Rendering/CombineShader.h"
 #include "../../Shading/Deferred Rendering/BlurShader.h"
 #include "../../Entities/Components/Lightning/LightComponent.h"
 #include "../../Terrain/Terrain.h"
@@ -32,20 +31,15 @@ public:
 private:
 	void renderGBuffer(Node* node);
 	void renderLightBuffer();
-	void renderCombineBuffer();
 	void renderBlur();
 	void createQuad();
 
 	QuadShader* quadShader;
 	PhongLS* phongShader;
-	CombineShader* combineShader;
 	BlurShader* blurShader;
 
-	GLuint* combineTextures;
-
 	FrameBuffer* gBuffer;
-	FrameBuffer* lightningBuffer;
-	FrameBuffer* combineBuffer;
+	FrameBuffer* lightingBuffer;
 	FrameBuffer* blurBuffer;
 
 	GLuint quadVAO;

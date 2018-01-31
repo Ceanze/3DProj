@@ -11,6 +11,7 @@ Camera::Camera(Display * display, glm::vec3 relativePosition, float fov, float z
 	this->display = display;
 	this->relativePosition = relativePosition;
 	updateProj(fov, zNear, zFar);
+	this->active = false;
 }
 
 Camera::~Camera()
@@ -19,6 +20,9 @@ Camera::~Camera()
 
 void Camera::init()
 {
+	this->isCClicked = 0;
+	this->isCPressed = false;
+
 	setRelativePosition(this->relativePosition);
 	lookAt(glm::vec3(0.0f, 0.0f, 0.0f));
 
@@ -34,58 +38,40 @@ void Camera::update(const float & dt)
 
 void Camera::input(Display * display)
 {
-	// -------------------------- TEMP --------------------------
-	static bool isCClicked = 0;
-	static bool isCPressed = false;
-	if (glfwGetKey(this->display->getWindowPtr(), GLFW_KEY_C) != GLFW_PRESS)
+	if (this->active)
 	{
-		if (isCPressed)
+		if (glfwGetKey(this->display->getWindowPtr(), GLFW_KEY_C) != GLFW_PRESS)
 		{
-			isCPressed = false;
-			isCClicked ^= 1;
+			if (isCPressed)
+			{
+				isCPressed = false;
+				isCClicked ^= 1;
+				glfwSetCursorPos(this->display->getWindowPtr(), this->display->getWidth() / 2, this->display->getHeight() / 2);
+			}
+		}
+		else isCPressed = true;
+
+		if (isCClicked)
+		{
+			double xPos, yPos, sensitivity = 0.5f;
+
+			// --------------------------------- Move Cursor ---------------------------------
+			glfwGetCursorPos(this->display->getWindowPtr(), &xPos, &yPos);
+			xPos -= this->display->getWidth() / 2;
+			yPos -= this->display->getHeight() / 2;
+			if (xPos != 0.0 || yPos != 0.0)
+			{
+				this->yawPitchRoll.x += xPos*dt*sensitivity;
+				this->yawPitchRoll.y -= yPos*dt*sensitivity;
+
+				rotate(this->yawPitchRoll.x, this->yawPitchRoll.y, this->yawPitchRoll.z);
+			}
+
 			glfwSetCursorPos(this->display->getWindowPtr(), this->display->getWidth() / 2, this->display->getHeight() / 2);
+			// -------------------------------------------------------------------------------
+
 		}
 	}
-	else isCPressed = true;
-	// ----------------------------------------------------------
-
-	if (isCClicked)
-	{
-		double xPos, yPos, sensitivity = 0.5f;
-
-		// --------------------------------- Move Cursor ---------------------------------
-		glfwGetCursorPos(this->display->getWindowPtr(), &xPos, &yPos);
-		xPos -= this->display->getWidth() / 2;
-		yPos -= this->display->getHeight() / 2;
-		if (xPos != 0.0 || yPos != 0.0)
-		{
-			this->yawPitchRoll.x += xPos*dt*sensitivity;
-			this->yawPitchRoll.y -= yPos*dt*sensitivity;
-
-			rotate(this->yawPitchRoll.x, this->yawPitchRoll.y, this->yawPitchRoll.z);
-		}
-
-		glfwSetCursorPos(this->display->getWindowPtr(), this->display->getWidth() / 2, this->display->getHeight() / 2);
-		// -------------------------------------------------------------------------------
-
-	}
-
-	if (glfwGetKey(this->display->getWindowPtr(), GLFW_KEY_E) == GLFW_PRESS)
-		setRelativePosition(this->relativePosition + (0.2f)*this->getEntity()->getLocalTransform().getDirection());
-	if (glfwGetKey(this->display->getWindowPtr(), GLFW_KEY_Q) == GLFW_PRESS)
-		setRelativePosition(this->relativePosition - (0.2f)*this->getEntity()->getLocalTransform().getDirection());
-
-	// -------------------------------- Move position --------------------------------
-	//static const float CAMERA_SPEED = 10.0f;
-	//if (glfwGetKey(this->display->getWindowPtr(), GLFW_KEY_W) == GLFW_PRESS)
-	//	move(this->f*CAMERA_SPEED*dt);
-	//if (glfwGetKey(this->display->getWindowPtr(), GLFW_KEY_S) == GLFW_PRESS)
-	//	move(-this->f*CAMERA_SPEED*dt);
-	//if (glfwGetKey(this->display->getWindowPtr(), GLFW_KEY_D) == GLFW_PRESS)
-	//	move(this->r*CAMERA_SPEED*dt);
-	//if (glfwGetKey(this->display->getWindowPtr(), GLFW_KEY_A) == GLFW_PRESS)
-	//	move(-this->r*CAMERA_SPEED*dt);
-	// -------------------------------------------------------------------------------
 }
 
 void Camera::lookAt(const glm::vec3 & target)
@@ -102,25 +88,12 @@ void Camera::lookAt(const glm::vec3 & target)
 	this->getEntity()->getLocalTransform().setDirection(this->f);
 }
 
-//void Camera::setPosition(const glm::vec3 & position)
-//{
-//	this->worldPosition = position;
-//	updateView(f, r, u, getWorldPosition());
-//}
-
 void Camera::setRelativePosition(const glm::vec3 & relativePosition)
 {
 	this->relativePosition = relativePosition;
 	setWorldPosition();
-	//this->worldPosition = glm::vec3(0, 8, 5);
 	updateView(this->f, this->r, this->u, this->worldPosition);
 }
-
-//void Camera::move(const glm::vec3 & offset)
-//{
-//	this->position += offset;
-//	setPosition(this->position);
-//}
 
 void Camera::rotate(float yaw, float pitch, float roll)
 {
@@ -141,6 +114,17 @@ void Camera::rotate(float yaw, float pitch, float roll)
 void Camera::updateProj()
 {
 	updateProj(this->fov, this->zNear, this->zFar);
+}
+
+void Camera::activate()
+{
+	this->active = true;
+	glfwSetCursorPos(this->display->getWindowPtr(), this->display->getWidth() / 2, this->display->getHeight() / 2);
+}
+
+void Camera::deactivate()
+{
+	this->active = false;
 }
 
 float Camera::getFOV() const

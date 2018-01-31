@@ -166,7 +166,6 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Terrain\QuadTree.cpp" />
     <ClCompile Include="Shading\Deferred Rendering\BlurShader.cpp" />
-    <ClCompile Include="Shading\Deferred Rendering\CombineShader.cpp" />
     <ClCompile Include="Shading\Deferred Rendering\GeometryNormalMapShader.cpp" />
     <ClCompile Include="Shading\Deferred Rendering\PhongLS.cpp" />
     <ClCompile Include="Shading\Deferred Rendering\GeometryShader.cpp" />
@@ -214,7 +213,6 @@
     <ClInclude Include="Loaders\ObjLoader.h" />
     <ClInclude Include="Terrain\QuadTree.h" />
     <ClInclude Include="Shading\Deferred Rendering\BlurShader.h" />
-    <ClInclude Include="Shading\Deferred Rendering\CombineShader.h" />
     <ClInclude Include="Shading\Deferred Rendering\GeometryNormalMapShader.h" />
     <ClInclude Include="Shading\Deferred Rendering\PhongLS.h" />
     <ClInclude Include="Shading\Deferred Rendering\GeometryShader.h" />

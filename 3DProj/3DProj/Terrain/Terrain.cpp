@@ -7,7 +7,7 @@ Terrain::Terrain()
 	: quadTree(1)
 {
 	this->heightMap = nullptr;
-	this->loadTexture("./Resources/Textures/heightmapTest.png", &this->heightMap);
+	this->loadTexture("./Resources/Textures/heightmap.png", &this->heightMap);
 
 	this->texture = nullptr;
 	this->loadTexture("./Resources/Textures/stone.jpg", &this->texture);
@@ -27,7 +27,7 @@ Terrain::Terrain()
 
 	this->generateTerrain();
 
-	//float hTest = this->getHeight(0.0f, 0.0f);
+	float hTest = this->getHeight(2.0f, 0.0f);
 }
 
 Terrain::~Terrain()
@@ -184,10 +184,12 @@ Vertex * Terrain::getTriangle(const float & normalizedX, const float & normalize
 {
 	Vertex temp[3];
 
-	unsigned halfRowlength = (this->rowLength / 2) + 1;
+	unsigned halfRowlength = (this->rowLength + 1) / 2;
 
-	unsigned index = (halfRowlength + halfRowlength * this->rowLength + 1)
-		+ std::round(normalizedZ * halfRowlength) + std::round(normalizedX * halfRowlength * (this->rowLength + 1));
+	unsigned index = std::floor(((float)(this->rowLength + 1)*(this->rowLength + 1) / 2))
+								+ normalizedZ * halfRowlength
+								+ normalizedX * halfRowlength * (this->rowLength + 1);
+	
 
 	temp[0] = this->verticies[index];
 	temp[1] = this->verticies[index + this->rowLength + 1];

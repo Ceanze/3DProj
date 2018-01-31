@@ -12,6 +12,10 @@ PhongLS::PhongLS() : ShaderProgram({ "Deferred Rendering/PhongLS.vs", GL_VERTEX_
 	if (normalLoc == -1)
 		Error::printError("Could not find normalLoc");
 
+	this->albedoLoc = glGetUniformLocation(this->getID(), "albedoTexture");
+	if (albedoLoc == -1)
+		Error::printError("Could not find albedoTexture");
+
 	this->kdALoc = glGetUniformLocation(this->getID(), "kd_a_Texture");
 	if (kdALoc == -1)
 		Error::printError("Could not find kd_a_Texture");
@@ -52,12 +56,16 @@ void PhongLS::updateUniforms(GLuint* textures, unsigned nrOf)
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, textures[1]);
 
-	glUniform1i(this->kdALoc, 2);
+	glUniform1i(this->albedoLoc, 2);
 	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_2D, textures[2]);
+
+	glUniform1i(this->kdALoc, 3);
+	glActiveTexture(GL_TEXTURE3);
 	glBindTexture(GL_TEXTURE_2D, textures[3]);
 
-	glUniform1i(this->ksNsLoc, 3);
-	glActiveTexture(GL_TEXTURE3);
+	glUniform1i(this->ksNsLoc, 4);
+	glActiveTexture(GL_TEXTURE4);
 	glBindTexture(GL_TEXTURE_2D, textures[4]);
 }
 
