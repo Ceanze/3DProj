@@ -70,6 +70,11 @@ void Camera::input(Display * display)
 
 	}
 
+	if (glfwGetKey(this->display->getWindowPtr(), GLFW_KEY_E) == GLFW_PRESS)
+		setRelativePosition(this->relativePosition + (0.2f)*this->getEntity()->getLocalTransform().getDirection());
+	if (glfwGetKey(this->display->getWindowPtr(), GLFW_KEY_Q) == GLFW_PRESS)
+		setRelativePosition(this->relativePosition - (0.2f)*this->getEntity()->getLocalTransform().getDirection());
+
 	// -------------------------------- Move position --------------------------------
 	//static const float CAMERA_SPEED = 10.0f;
 	//if (glfwGetKey(this->display->getWindowPtr(), GLFW_KEY_W) == GLFW_PRESS)
@@ -94,7 +99,7 @@ void Camera::lookAt(const glm::vec3 & target)
 	this->yawPitchRoll.z = atan2(this->u.y, this->f.x);
 
 	updateView(this->f, this->r, this->u, this->worldPosition);
-	//this->getEntity()->getLocalTransform().setRotation(this->yawPitchRoll);
+	this->getEntity()->getLocalTransform().setDirection(this->f);
 }
 
 //void Camera::setPosition(const glm::vec3 & position)

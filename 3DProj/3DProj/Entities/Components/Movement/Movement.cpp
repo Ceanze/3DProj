@@ -15,6 +15,16 @@ Movement::Movement(float speed, unsigned forward, unsigned left, unsigned backwa
 	this->right = right;
 }
 
+Movement::Movement(Terrain * terrain, float speed, unsigned forward, unsigned left, unsigned backward, unsigned right)
+{
+	this->terrain = terrain;
+	this->speed = speed;
+	this->forward = forward;
+	this->left = left;
+	this->backward = backward;
+	this->right = right;
+}
+
 
 Movement::~Movement()
 {
@@ -36,6 +46,9 @@ void Movement::input(Display * display)
 	//	direction = dynamic_cast<Camera*>(this->getEntity()->getComponent())->getDirection(); //.getDirection();
 	glm::vec3 forward = this->getEntity()->getLocalTransform().getDirection();
 	glm::vec3 right = glm::normalize(glm::cross(forward, GLOBAL_UP_VECTOR));
+	glm::vec3 position = this->getEntity()->getWorldTransform().getTranslation();
+
+	//setHeight(this->terrain->getHeight(position.x, position.z));
 
 	// -------------------------------- Move position --------------------------------
 	if (glfwGetKey(display->getWindowPtr(), this->forward) == GLFW_PRESS)
@@ -47,4 +60,9 @@ void Movement::input(Display * display)
 	if (glfwGetKey(display->getWindowPtr(), this->left) == GLFW_PRESS)
 		this->getEntity()->getWorldTransform().setTranslation(this->getEntity()->getWorldTransform().getTranslation() - this->speed*right*dt);
 	// -------------------------------------------------------------------------------
+}
+
+void Movement::setHeight(float height)
+{
+
 }
