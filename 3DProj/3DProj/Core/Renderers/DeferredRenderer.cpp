@@ -20,14 +20,9 @@ DeferredRenderer::DeferredRenderer(Display* display)
 		{ FrameBuffer::FBO_DEPTH_ATTACHMENT, GL_RGBA16F }
 	});
 
-	this->lightningBuffer = new FrameBuffer(display->getWidth(), display->getHeight());
-	this->lightningBuffer->createTextures(std::vector<std::pair<FrameBuffer::FBO_ATTATCHMENT_TYPE, GLuint>>{
-		{ FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16 }, { FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16 }
-	});
-
-	this->combineBuffer = new FrameBuffer(display->getWidth(), display->getHeight());
-	this->combineBuffer->createTextures(std::vector<std::pair<FrameBuffer::FBO_ATTATCHMENT_TYPE, GLuint>>{
-		{ FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16 }
+	this->lightingBuffer = new FrameBuffer(display->getWidth(), display->getHeight());
+	this->lightingBuffer->createTextures(std::vector<std::pair<FrameBuffer::FBO_ATTATCHMENT_TYPE, GLuint>>{
+		{ FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16F }
 	});
 
 	this->blurBuffer = new FrameBuffer(display->getWidth(), display->getHeight());
@@ -36,12 +31,7 @@ DeferredRenderer::DeferredRenderer(Display* display)
 	});
 
 	this->phongShader = new PhongLS();
-
-	this->combineTextures = new GLuint[3];
-	this->combineShader = new CombineShader();
-
 	this->blurShader = new BlurShader();
-
 	this->quadShader = new QuadShader();
 	createQuad();
 }
@@ -49,12 +39,9 @@ DeferredRenderer::DeferredRenderer(Display* display)
 DeferredRenderer::~DeferredRenderer()
 {
 	delete this->blurBuffer;
-	delete this->lightningBuffer;
+	delete this->lightingBuffer;
 	delete this->gBuffer;
 	delete this->quadShader;
-	delete[] this->combineTextures;
-	delete this->combineShader;
-	delete this->combineBuffer;
 	delete this->phongShader;
 	delete this->blurShader;
 }
@@ -63,7 +50,6 @@ void DeferredRenderer::render(Node * node)
 {
 	renderGBuffer(node);
 	renderLightBuffer();
-	renderCombineBuffer();
 	renderBlur();
 }
 
@@ -74,7 +60,6 @@ void DeferredRenderer::render(Node * node, Terrain * terrain)
 	terrain->render();
 	this->gBuffer->unbind();
 	renderLightBuffer();
-	renderCombineBuffer();
 	renderBlur();
 }
 
@@ -82,8 +67,7 @@ void DeferredRenderer::resize(Display * display)
 {
 	this->display = display;
 	this->gBuffer->resize(display->getWidth(), display->getHeight());
-	this->lightningBuffer->resize(display->getWidth(), display->getHeight());
-	this->combineBuffer->resize(display->getWidth(), display->getHeight());
+	this->lightingBuffer->resize(display->getWidth(), display->getHeight());
 	this->blurBuffer->resize(display->getWidth(), display->getHeight());
 }
 
@@ -94,7 +78,7 @@ const FrameBuffer * DeferredRenderer::getGBuffer() const
 
 const FrameBuffer * DeferredRenderer::getLBuffer() const
 {
-	return this->lightningBuffer;
+	return this->lightingBuffer;
 }
 
 void DeferredRenderer::setCamera(Camera * camera)
@@ -116,8 +100,8 @@ void DeferredRenderer::renderGBuffer(Node * node)
 
 void DeferredRenderer::renderLightBuffer()
 {
-	this->lightningBuffer->bind();
-
+	this->lightingBuffer->bind();
+	
 	glUseProgram(this->phongShader->getID());
 	this->phongShader->updateUniforms(this->gBuffer->getTextures(), this->gBuffer->getNumTextures());
 
@@ -126,26 +110,7 @@ void DeferredRenderer::renderLightBuffer()
 	glBindVertexArray(0);
 	glUseProgram(0);
 
-	this->lightningBuffer->unbind();
-}
-
-void DeferredRenderer::renderCombineBuffer()
-{
-	this->combineBuffer->bind();
-
-	glUseProgram(this->combineShader->getID());
-
-	this->combineTextures[0] = this->lightningBuffer->getTexture(0);
-	this->combineTextures[1] = this->lightningBuffer->getTexture(1);
-	this->combineTextures[2] = this->gBuffer->getTexture(2);
-	this->combineShader->updateUniforms(combineTextures, 3);
-
-	glBindVertexArray(this->quadVAO);
-	glDrawArrays(GL_TRIANGLES, 0, 6);
-	glBindVertexArray(0);
-	glUseProgram(0);
-
-	this->combineBuffer->unbind();
+	this->lightingBuffer->unbind();
 }
 
 void DeferredRenderer::renderBlur()
@@ -167,9 +132,9 @@ void DeferredRenderer::renderBlur()
 		this->blurBuffer->bind();
 
 		glUseProgram(this->blurShader->getID());
-		this->blurShader->sendTextureSize(glm::vec2(this->combineBuffer->getWidth(), this->combineBuffer->getHeight()));
+		this->blurShader->sendTextureSize(glm::vec2(this->lightingBuffer->getWidth(), this->lightingBuffer->getHeight()));
 		this->blurShader->sendDirection({ 1.0f, 0.0f });
-		this->blurShader->updateUniforms(this->combineBuffer->getTextures(), 1);
+		this->blurShader->updateUniforms(this->lightingBuffer->getTextures(), 1);
 
 		glBindVertexArray(this->quadVAO);
 		glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -196,7 +161,7 @@ void DeferredRenderer::renderBlur()
 		glViewport(0, 0, this->display->getWidth(), this->display->getHeight());
 
 		glUseProgram(this->quadShader->getID());
-		this->quadShader->updateUniforms(this->combineBuffer->getTextures(), 1);
+		this->quadShader->updateUniforms(this->lightingBuffer->getTextures(), 1);
 	}
 
 	glBindVertexArray(this->quadVAO);

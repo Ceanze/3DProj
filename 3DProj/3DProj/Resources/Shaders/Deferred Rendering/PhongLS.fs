@@ -16,11 +16,11 @@ uniform int nrOfPointLights;
 
 uniform sampler2D positionTexture;
 uniform sampler2D normalTexture;
+uniform sampler2D albedoTexture;
 uniform sampler2D kd_a_Texture;
 uniform sampler2D ks_ns_Texture;
 
-layout(location=0) out vec4 finalDiffuse;
-layout(location=1) out vec4 finalSpecular;
+out vec4 finalColor;
 
 in vec2 fragTextureCoord;
 uniform vec3 camPos;
@@ -54,6 +54,10 @@ void main()
 		specular += diffuseFactor*specularFactor*lightFactor;
 	}
 
-	finalDiffuse = vec4(diffuseOut*kd_a.xyz + ambient, 1.0);
-	finalSpecular = vec4(specular*ks_ns.xyz, 1.0);
+	vec3 finalDiffuse = diffuseOut*kd_a.xyz + ambient;
+	vec3 finalSpecular = specular*ks_ns.xyz;
+
+	vec3 materialColor = texture(albedoTexture, fragTextureCoord).xyz;
+
+	finalColor = vec4(materialColor*(ambient + finalDiffuse + finalSpecular), 1.0);
 }

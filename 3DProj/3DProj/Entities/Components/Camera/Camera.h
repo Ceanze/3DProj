@@ -18,12 +18,13 @@ public:
 	void input(Display* display);
 
 	void lookAt(const glm::vec3& target);
-	//void setPosition(const glm::vec3& position);
 	void setRelativePosition(const glm::vec3& relativePosition);
-	//void move(const glm::vec3& offset);
 	void rotate(float yaw, float pitch, float roll);
 
 	void updateProj();
+
+	void activate();
+	void deactivate();
 
 	float getFOV() const;
 	glm::vec3 getPosition() const;
@@ -48,6 +49,10 @@ private:
 	glm::vec3 f, r, u;
 	float fov, zNear, zFar;
 	float dt;
+
+	bool isCClicked;
+	bool isCPressed;
+	bool active;
 };
 
 #endif

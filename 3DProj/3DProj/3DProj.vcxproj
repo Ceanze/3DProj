@@ -23,7 +23,7 @@
     <ProjectGuid>{E153C5BA-4A29-4DD9-B332-0C76B7F3E036}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>My3DProj</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -164,10 +164,8 @@
     <ClCompile Include="Loaders\MTLLoader.cpp" />
     <ClCompile Include="Loaders\ObjLoader.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="QUADTREE.CPP" />
     <ClCompile Include="Terrain\QuadTree.cpp" />
     <ClCompile Include="Shading\Deferred Rendering\BlurShader.cpp" />
-    <ClCompile Include="Shading\Deferred Rendering\CombineShader.cpp" />
     <ClCompile Include="Shading\Deferred Rendering\GeometryNormalMapShader.cpp" />
     <ClCompile Include="Shading\Deferred Rendering\PhongLS.cpp" />
     <ClCompile Include="Shading\Deferred Rendering\GeometryShader.cpp" />
@@ -215,7 +213,6 @@
     <ClInclude Include="Loaders\ObjLoader.h" />
     <ClInclude Include="Terrain\QuadTree.h" />
     <ClInclude Include="Shading\Deferred Rendering\BlurShader.h" />
-    <ClInclude Include="Shading\Deferred Rendering\CombineShader.h" />
     <ClInclude Include="Shading\Deferred Rendering\GeometryNormalMapShader.h" />
     <ClInclude Include="Shading\Deferred Rendering\PhongLS.h" />
     <ClInclude Include="Shading\Deferred Rendering\GeometryShader.h" />
