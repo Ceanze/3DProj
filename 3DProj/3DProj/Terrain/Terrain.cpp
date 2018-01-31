@@ -74,6 +74,11 @@ float Terrain::getHeight(const float & x, const float & z)
 
 	vtx = this->getTriangle(newX, newZ);
 
+	if (vtx == nullptr)
+	{
+		return 0;
+	}
+
 	return vtx[0].position.y;
 }
 
@@ -184,16 +189,21 @@ Vertex * Terrain::getTriangle(const float & normalizedX, const float & normalize
 {
 	Vertex temp[3];
 
+	if (std::abs(normalizedZ) < 1 && std::abs(normalizedX) < 1)
+	{
+		return nullptr;
+	}
 	unsigned halfRowlength = (this->rowLength + 1) / 2;
 
 	unsigned index = std::floor(((float)(this->rowLength + 1)*(this->rowLength + 1) / 2))
-								+ normalizedZ * halfRowlength
-								+ normalizedX * halfRowlength * (this->rowLength + 1);
-	
+		+ normalizedZ * halfRowlength
+		+ normalizedX * halfRowlength * (this->rowLength + 1);
+
 
 	temp[0] = this->verticies[index];
 	temp[1] = this->verticies[index + this->rowLength + 1];
 	temp[2] = this->verticies[index + 1];
+	
 
 	return temp;
 }
