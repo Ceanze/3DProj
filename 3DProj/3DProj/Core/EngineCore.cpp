@@ -71,7 +71,7 @@ EngineCore::EngineCore()
 	this->armyPilot->getLocalTransform().setScale({0.05f, 0.05f, 0.05f });
 	this->armyPilot->addMeshes(this->armyPilotMeshes, this->geometryShader);
 	this->armyPilot->addComponent(this->camera2);
-	this->armyPilot->addComponent(new Movement(10));
+	//this->armyPilot->addComponent(new Movement(10));
 	base->addChild(armyPilot);
 
 	// --------------------------- Arm ---------------------------
