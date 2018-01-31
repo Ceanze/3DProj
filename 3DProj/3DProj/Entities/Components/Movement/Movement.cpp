@@ -67,6 +67,4 @@ void Movement::setHeight(float height)
 {
 	glm::vec3 position = this->getEntity()->getWorldTransform().getTranslation();
 	this->getEntity()->getWorldTransform().setTranslation(glm::vec3(position.x, height, position.z));
-	Error::printError("Height: " + std::to_string(height));
-
 }
