@@ -164,7 +164,6 @@
     <ClCompile Include="Loaders\MTLLoader.cpp" />
     <ClCompile Include="Loaders\ObjLoader.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="QUADTREE.CPP" />
     <ClCompile Include="Terrain\QuadTree.cpp" />
     <ClCompile Include="Shading\Deferred Rendering\BlurShader.cpp" />
     <ClCompile Include="Shading\Deferred Rendering\CombineShader.cpp" />

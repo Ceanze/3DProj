@@ -135,9 +135,6 @@
     <ClCompile Include="Terrain\QuadTree.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="QUADTREE.CPP">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Entities\Components\Movement\Movement.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
