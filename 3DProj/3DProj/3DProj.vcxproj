@@ -150,6 +150,7 @@
     <ClCompile Include="Core\States\GameState.cpp" />
     <ClCompile Include="Core\States\State.cpp" />
     <ClCompile Include="Core\States\StateManager.cpp" />
+    <ClCompile Include="Entities\Components\Lightning\DirectionalLight.cpp" />
     <ClCompile Include="Entities\Components\Lightning\LightComponent.cpp" />
     <ClCompile Include="Entities\Components\Lightning\PointLight.cpp" />
     <ClCompile Include="Entities\Entity.cpp" />
@@ -200,6 +201,7 @@
     <ClInclude Include="Core\States\GameState.h" />
     <ClInclude Include="Core\States\State.h" />
     <ClInclude Include="Core\States\StateManager.h" />
+    <ClInclude Include="Entities\Components\Lightning\DirectionalLight.h" />
     <ClInclude Include="Entities\Components\Lightning\LightComponent.h" />
     <ClInclude Include="Entities\Components\Lightning\PointLight.h" />
     <ClInclude Include="Entities\Entity.h" />

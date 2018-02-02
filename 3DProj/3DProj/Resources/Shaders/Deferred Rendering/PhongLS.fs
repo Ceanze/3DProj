@@ -6,10 +6,17 @@ struct PointLightData
 	vec4 colorIntensity;
 };
 
+struct DirectionalLightData
+{
+	vec4 direction;
+	vec4 colorIntensity;
+};
+
 #define MAX_LIGHTS 5
 layout(std140) uniform Lights
 {
   PointLightData pointLightData[MAX_LIGHTS];
+  DirectionalLightData directionalLightData;
 };
 
 uniform int nrOfPointLights;
@@ -55,6 +62,19 @@ void main()
 		float specularFactor = pow(max(dot(r, v), 0.0), s+0.01);
 		specular += diffuseFactor*specularFactor*lightFactor;
 	}
+
+	// Directonal Light
+	// Diffuse part
+	vec3 lightDirection = directionalLightData.direction.xyz;
+	float diffuseFactor = max(dot(fragNormal, lightDirection), 0.0);
+	diffuseOut += diffuseFactor*directionalLightData.colorIntensity.xyz;
+
+	// Specular part
+	float s = ks_ns.w;
+	vec3 r = reflect(fragNormal, lightDirection);
+	vec3 v = normalize(camPos - fragPos);
+	float specularFactor = pow(max(dot(r, v), 0.0), s+0.01);
+	specular += diffuseFactor*specularFactor;
 
 	ambient = isBackground ? vec3(0.0) : ambient;
 	finalDiffuse = vec4(ambient + diffuseOut*kd_a.xyz, 1.0);

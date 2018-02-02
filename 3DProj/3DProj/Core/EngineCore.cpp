@@ -33,6 +33,7 @@ EngineCore::EngineCore()
 	this->terrain.setShader(this->geometryShader);
 
 	this->base = new Entity({ 0.0f, 5.0f, -5.0f }, {0.0f, 0.0f, 0.0f});
+	this->base->addComponent(new DirectionalLight(glm::normalize(glm::vec3(-3.0f, -5.0f, 1.0f)), 1.0f, glm::vec3(1.0f), this->deferredRenderer->getPhongShader()));
 
 	/*this->m1 = new Mesh();
 	loader.load(this->m1, "Bunny/bunny.obj");*/
@@ -154,6 +155,7 @@ void EngineCore::init()
 	glfwSetInputMode(display.getWindowPtr(), GLFW_STICKY_KEYS, GL_TRUE);
 	while (glfwGetKey(display.getWindowPtr(), GLFW_KEY_ESCAPE) != GLFW_PRESS && glfwWindowShouldClose(display.getWindowPtr()) == 0)
 	{
+
 		if (this->display.sizeUpdated)
 		{
 			this->camera->updateProj();

@@ -3,6 +3,7 @@
 
 #include "../ShaderProgram.h"
 #include "../../Entities/Components/Lightning/PointLight.h"
+#include "../../Entities/Components/Lightning/DirectionalLight.h"
 
 #include "glm.hpp"
 
@@ -17,10 +18,12 @@ public:
 	void updateLights();
 
 	void addPointLight(PointLight::PointLightData* data);
+	void setDirectionalLight(DirectionalLight::DirectionalLightData* data);
 private:
 	void selfUpdateUniforms(Node* entity);
 
 	std::vector<PointLight::PointLightData*> pointLights;
+	DirectionalLight::DirectionalLightData* directionalLight;
 
 	GLuint ubo, bindingPoint;
 	GLint positionLoc, normalLoc, kdALoc, ksNsLoc, camLoc, nrOf;

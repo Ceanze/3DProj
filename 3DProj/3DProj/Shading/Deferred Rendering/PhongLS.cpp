@@ -66,7 +66,8 @@ void PhongLS::updateLights()
 	struct LightData
 	{
 		PointLight::PointLightData data[5];
-	}lightData; 
+		DirectionalLight::DirectionalLightData dirData;
+	} lightData; 
 
 	for (int i = 0; i < this->pointLights.size(); i++)
 	{
@@ -75,6 +76,7 @@ void PhongLS::updateLights()
 			lightData.data[i] = *this->pointLights[i];
 		}
 	}
+	lightData.dirData = *this->directionalLight;
 
 	glBindBuffer(GL_UNIFORM_BUFFER, this->ubo);
 	glBufferData(GL_UNIFORM_BUFFER, sizeof(LightData), &lightData, GL_DYNAMIC_DRAW);
@@ -88,6 +90,11 @@ void PhongLS::updateLights()
 void PhongLS::addPointLight(PointLight::PointLightData* data)
 {
 	this->pointLights.push_back(data);
+}
+
+void PhongLS::setDirectionalLight(DirectionalLight::DirectionalLightData * data)
+{
+	this->directionalLight = data;
 }
 
 void PhongLS::selfUpdateUniforms(Node * entity)
