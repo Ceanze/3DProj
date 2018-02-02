@@ -43,13 +43,28 @@ void Movement::update(const float & dt)
 
 void Movement::input(Display * display)
 {
+	static bool terrainLock = false;
+	static bool isKeyPressed = false;
+
+	if(glfwGetKey(display->getWindowPtr(), GLFW_KEY_SPACE) != GLFW_PRESS)
+	{
+		if (isKeyPressed)
+		{
+			terrainLock = !terrainLock;
+			isKeyPressed = false;
+		}
+	}
+	else isKeyPressed = true;
+
 	glm::vec3 forward = this->getEntity()->getLocalTransform().getDirection();
 	glm::vec3 right = glm::normalize(glm::cross(forward, GLOBAL_UP_VECTOR));
 	glm::vec3 position = this->getEntity()->getWorldTransform().getTranslation();
 
-	setHeight(this->terrain->getHeight(position.x, position.z));
-	//setHeight(15);
-
+	if (terrainLock) {
+		setHeight(this->terrain->getHeight(position.x, position.z));
+		forward = glm::vec3(forward.x, 0, forward.z);
+		right = glm::vec3(right.x, 0, right.z);
+	}
 
 	// -------------------------------- Move position --------------------------------
 	if (glfwGetKey(display->getWindowPtr(), this->forward) == GLFW_PRESS)
@@ -66,5 +81,5 @@ void Movement::input(Display * display)
 void Movement::setHeight(float height)
 {
 	glm::vec3 position = this->getEntity()->getWorldTransform().getTranslation();
-	this->getEntity()->getWorldTransform().setTranslation(glm::vec3(position.x, height, position.z));
+	this->getEntity()->getWorldTransform().setTranslation(glm::vec3(position.x, height + PLAYER_HEIGHT, position.z));
 }

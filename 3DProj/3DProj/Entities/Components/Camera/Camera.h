@@ -10,7 +10,8 @@
 class Camera : public Component
 {
 public:
-	Camera(Display* display, glm::vec3 relativePosition = glm::vec3(0.0, 0.0, 0.0), float fov = 0.7853975f, float zNear = ZNEAR, float zFar = ZFAR);
+	Camera(Display* display, glm::vec3 relativePosition = glm::vec3(0.f, 0.f, 0.f), float fov = 0.7853975f, float zNear = ZNEAR, float zFar = ZFAR);
+	Camera(Display* display, float width, float height, glm::vec3 relativePosition = glm::vec3(0.f, 0.f, 0.f), float fov = 0.7853975f, float zNear = ZNEAR, float zFar = ZFAR);
 	virtual ~Camera();
 
 	void init();
@@ -49,10 +50,12 @@ private:
 	glm::vec3 f, r, u;
 	float fov, zNear, zFar;
 	float dt;
+	float width, height;
 
 	bool isCClicked;
 	bool isCPressed;
 	bool active;
+	bool orthoCam;
 };
 
 #endif

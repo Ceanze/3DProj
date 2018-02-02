@@ -10,6 +10,18 @@ Camera::Camera(Display * display, glm::vec3 relativePosition, float fov, float z
 {
 	this->display = display;
 	this->relativePosition = relativePosition;
+	this->orthoCam = false;
+	updateProj(fov, zNear, zFar);
+	this->active = false;
+}
+
+Camera::Camera(Display * display, float width, float height, glm::vec3 relativePosition, float fov, float zNear, float zFar)
+{
+	this->display = display;
+	this->width = width;
+	this->height = height;
+	this->relativePosition = relativePosition;
+	this->orthoCam = true;
 	updateProj(fov, zNear, zFar);
 	this->active = false;
 }
@@ -152,7 +164,10 @@ void Camera::updateProj(float fov, float zNear, float zFar)
 	this->zNear = zNear;
 	this->zFar = zFar;
 	this->fov = fov;
-	this->proj = glm::perspective(fov, this->display->getRatio(), zNear, zFar);
+	if (this->orthoCam)
+		this->proj = glm::ortho(-this->width / 2, this->width / 2, -this->height / 2, this->height / 2, zNear, zFar);
+	else
+		this->proj = glm::perspective(fov, this->display->getRatio(), zNear, zFar);
 }
 
 void Camera::updateView(const glm::vec3 & f, const glm::vec3 & r, const glm::vec3 & u, const glm::vec3 & pos)
@@ -178,7 +193,7 @@ void Camera::setLocalPositionMat()
 void Camera::setWorldPosition()
 {
 	setLocalPositionMat();
-	glm::mat4 temp = this->getEntity()->getChainTransform().getMatrix()*this->localPositionMat;
+	glm::mat4 temp = this->getEntity()->getWorldTransform().getMatrix()*this->localPositionMat;
 
 	this->worldPosition = glm::vec3(temp[3][0], temp[3][1], temp[3][2]);
 	//this->worldPosition = glm::vec3(0.0, 5.0, 10.0);

@@ -6,11 +6,15 @@
 #include <glfw3.h>
 #include <glm.hpp>
 
+// ------------------- Modes --------------------
+#define RENDER_GUI
+
 // -------------- DEFAULT SETTINGS --------------
 #define DEFAULT_WIDTH			840
 #define DEFAULT_HEIGHT			680
 #define ZNEAR					0.1f
 #define ZFAR					100.0f
+#define PLAYER_HEIGHT			2.0f
 
 // ------------------- MODEL --------------------
 #define MODEL_PATH				"./Resources/Models/"

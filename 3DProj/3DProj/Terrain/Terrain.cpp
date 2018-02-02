@@ -10,7 +10,7 @@ Terrain::Terrain()
 	: quadTree(1)
 {
 	this->heightMap = nullptr;
-	this->loadTexture("./Resources/Textures/heightmapTest.png", &this->heightMap);
+	this->loadTexture("./Resources/Textures/heightmap.png", &this->heightMap);
 
 	this->texture = nullptr;
 	this->loadTexture("./Resources/Textures/stone.jpg", &this->texture);

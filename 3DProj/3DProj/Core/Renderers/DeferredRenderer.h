@@ -5,7 +5,10 @@
 #include "../GL Utils/FrameBuffer.h"
 #include "../../Shading/Deferred Rendering/QuadShader.h"
 #include "../../Shading/Deferred Rendering/PhongLS.h"
-#include "../../Shading/Deferred Rendering/BlurShader.h"
+#include "../../Shading/Deferred Rendering/CombineShader.h"
+#include "../../Shading/GlowShader.h"
+#include "../../Postprocessing/BlurFilter.h"
+#include "../../Postprocessing/BrightnessFilter.h"
 #include "../../Entities/Components/Lightning/LightComponent.h"
 #include "../../Terrain/Terrain.h"
 
@@ -23,6 +26,8 @@ public:
 
 	const FrameBuffer* getGBuffer() const;
 	const FrameBuffer* getLBuffer() const;
+	const FrameBuffer* getBrightnessBuffer() const;
+	const FrameBuffer* getBlurBuffer() const;
 
 	void setCamera(Camera* camera);
 
@@ -31,16 +36,25 @@ public:
 private:
 	void renderGBuffer(Node* node);
 	void renderLightBuffer();
-	void renderBlur();
+	void renderCombineBuffer();
+	void renderGlowBlurOrNormal();
+	
 	void createQuad();
 
 	QuadShader* quadShader;
 	PhongLS* phongShader;
-	BlurShader* blurShader;
+	CombineShader* combineShader;
+	GlowShader* glowShader;
+
+	GLuint texturesTempArr[3];
 
 	FrameBuffer* gBuffer;
 	FrameBuffer* lightingBuffer;
-	FrameBuffer* blurBuffer;
+	FrameBuffer* combineBuffer;
+	FrameBuffer* shadowBuffer;
+
+	BrightnessFilter* brightnessFilter;
+	BlurFilter* blurFilter;
 
 	GLuint quadVAO;
 	GLuint quadVBO;

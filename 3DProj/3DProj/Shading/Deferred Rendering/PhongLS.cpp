@@ -12,10 +12,6 @@ PhongLS::PhongLS() : ShaderProgram({ "Deferred Rendering/PhongLS.vs", GL_VERTEX_
 	if (normalLoc == -1)
 		Error::printError("Could not find normalLoc");
 
-	this->albedoLoc = glGetUniformLocation(this->getID(), "albedoTexture");
-	if (albedoLoc == -1)
-		Error::printError("Could not find albedoTexture");
-
 	this->kdALoc = glGetUniformLocation(this->getID(), "kd_a_Texture");
 	if (kdALoc == -1)
 		Error::printError("Could not find kd_a_Texture");
@@ -56,16 +52,12 @@ void PhongLS::updateUniforms(GLuint* textures, unsigned nrOf)
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, textures[1]);
 
-	glUniform1i(this->albedoLoc, 2);
+	glUniform1i(this->kdALoc, 2);
 	glActiveTexture(GL_TEXTURE2);
-	glBindTexture(GL_TEXTURE_2D, textures[2]);
-
-	glUniform1i(this->kdALoc, 3);
-	glActiveTexture(GL_TEXTURE3);
 	glBindTexture(GL_TEXTURE_2D, textures[3]);
 
-	glUniform1i(this->ksNsLoc, 4);
-	glActiveTexture(GL_TEXTURE4);
+	glUniform1i(this->ksNsLoc, 3);
+	glActiveTexture(GL_TEXTURE3);
 	glBindTexture(GL_TEXTURE_2D, textures[4]);
 }
 
@@ -74,7 +66,8 @@ void PhongLS::updateLights()
 	struct LightData
 	{
 		PointLight::PointLightData data[5];
-	}lightData; 
+		DirectionalLight::DirectionalLightData dirData;
+	} lightData; 
 
 	for (int i = 0; i < this->pointLights.size(); i++)
 	{
@@ -83,6 +76,7 @@ void PhongLS::updateLights()
 			lightData.data[i] = *this->pointLights[i];
 		}
 	}
+	lightData.dirData = *this->directionalLight;
 
 	glBindBuffer(GL_UNIFORM_BUFFER, this->ubo);
 	glBufferData(GL_UNIFORM_BUFFER, sizeof(LightData), &lightData, GL_DYNAMIC_DRAW);
@@ -96,6 +90,11 @@ void PhongLS::updateLights()
 void PhongLS::addPointLight(PointLight::PointLightData* data)
 {
 	this->pointLights.push_back(data);
+}
+
+void PhongLS::setDirectionalLight(DirectionalLight::DirectionalLightData * data)
+{
+	this->directionalLight = data;
 }
 
 void PhongLS::selfUpdateUniforms(Node * entity)

@@ -6,21 +6,28 @@ struct PointLightData
 	vec4 colorIntensity;
 };
 
+struct DirectionalLightData
+{
+	vec4 direction;
+	vec4 colorIntensity;
+};
+
 #define MAX_LIGHTS 5
 layout(std140) uniform Lights
 {
   PointLightData pointLightData[MAX_LIGHTS];
+  DirectionalLightData directionalLightData;
 };
 
 uniform int nrOfPointLights;
 
 uniform sampler2D positionTexture;
 uniform sampler2D normalTexture;
-uniform sampler2D albedoTexture;
 uniform sampler2D kd_a_Texture;
 uniform sampler2D ks_ns_Texture;
 
-out vec4 finalColor;
+layout(location = 0) out vec4 finalDiffuse;
+layout(location = 1) out vec4 finalSpecular;
 
 in vec2 fragTextureCoord;
 uniform vec3 camPos;
@@ -33,7 +40,9 @@ void main()
 	vec4 ks_ns = texture(ks_ns_Texture, fragTextureCoord);
 
 	vec3 fragPos = texture(positionTexture, fragTextureCoord).xyz;
-	vec3 fragNormal = normalize(texture(normalTexture, fragTextureCoord).xyz);
+	vec3 fragNormal = texture(normalTexture, fragTextureCoord).xyz;
+	bool isBackground = fragNormal.x == 0.0 && fragNormal.y == 0.0 && fragNormal.z == 0.0;
+	fragNormal = normalize(fragNormal);
 	vec3 specular = vec3(0.0, 0.0, 0.0);
 	vec3 diffuseOut = vec3(0.0, 0.0, 0.0);
    
@@ -54,10 +63,20 @@ void main()
 		specular += diffuseFactor*specularFactor*lightFactor;
 	}
 
-	vec3 finalDiffuse = diffuseOut*kd_a.xyz + ambient;
-	vec3 finalSpecular = specular*ks_ns.xyz;
+	// Directonal Light
+	// Diffuse part
+	vec3 lightDirection = -directionalLightData.direction.xyz;
+	float diffuseFactor = max(dot(fragNormal, lightDirection), 0.0);
+	diffuseOut += diffuseFactor*directionalLightData.colorIntensity.xyz;
 
-	vec3 materialColor = texture(albedoTexture, fragTextureCoord).xyz;
+	// Specular part
+	float s = ks_ns.w;
+	vec3 r = reflect(fragNormal, lightDirection);
+	vec3 v = normalize(camPos - fragPos);
+	float specularFactor = pow(max(dot(r, v), 0.0), s+0.01);
+	specular += diffuseFactor*specularFactor;
 
-	finalColor = vec4(materialColor*(ambient + finalDiffuse + finalSpecular), 1.0);
+	ambient = isBackground ? vec3(0.0) : ambient;
+	finalDiffuse = vec4(ambient + diffuseOut*kd_a.xyz, 1.0);
+	finalSpecular = vec4(specular*ks_ns.xyz, 1.0);
 }

@@ -150,6 +150,7 @@
     <ClCompile Include="Core\States\GameState.cpp" />
     <ClCompile Include="Core\States\State.cpp" />
     <ClCompile Include="Core\States\StateManager.cpp" />
+    <ClCompile Include="Entities\Components\Lightning\DirectionalLight.cpp" />
     <ClCompile Include="Entities\Components\Lightning\LightComponent.cpp" />
     <ClCompile Include="Entities\Components\Lightning\PointLight.cpp" />
     <ClCompile Include="Entities\Entity.cpp" />
@@ -164,6 +165,12 @@
     <ClCompile Include="Loaders\MTLLoader.cpp" />
     <ClCompile Include="Loaders\ObjLoader.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Postprocessing\BlurFilter.cpp" />
+    <ClCompile Include="Postprocessing\BrightnessFilter.cpp" />
+    <ClCompile Include="Shading\Deferred Rendering\CombineShader.cpp" />
+    <ClCompile Include="Shading\BrightnessShader.cpp" />
+    <ClCompile Include="Shading\GlowShader.cpp" />
+    <ClCompile Include="Shading\ShadowShader.cpp" />
     <ClCompile Include="Terrain\QuadTree.cpp" />
     <ClCompile Include="Shading\Deferred Rendering\BlurShader.cpp" />
     <ClCompile Include="Shading\Deferred Rendering\GeometryNormalMapShader.cpp" />
@@ -195,6 +202,7 @@
     <ClInclude Include="Core\States\GameState.h" />
     <ClInclude Include="Core\States\State.h" />
     <ClInclude Include="Core\States\StateManager.h" />
+    <ClInclude Include="Entities\Components\Lightning\DirectionalLight.h" />
     <ClInclude Include="Entities\Components\Lightning\LightComponent.h" />
     <ClInclude Include="Entities\Components\Lightning\PointLight.h" />
     <ClInclude Include="Entities\Entity.h" />
@@ -211,6 +219,12 @@
     <ClInclude Include="ImGui\stb_truetype.h" />
     <ClInclude Include="Loaders\MTLLoader.h" />
     <ClInclude Include="Loaders\ObjLoader.h" />
+    <ClInclude Include="Postprocessing\BlurFilter.h" />
+    <ClInclude Include="Postprocessing\BrightnessFilter.h" />
+    <ClInclude Include="Shading\Deferred Rendering\CombineShader.h" />
+    <ClInclude Include="Shading\BrightnessShader.h" />
+    <ClInclude Include="Shading\GlowShader.h" />
+    <ClInclude Include="Shading\ShadowShader.h" />
     <ClInclude Include="Terrain\QuadTree.h" />
     <ClInclude Include="Shading\Deferred Rendering\BlurShader.h" />
     <ClInclude Include="Shading\Deferred Rendering\GeometryNormalMapShader.h" />

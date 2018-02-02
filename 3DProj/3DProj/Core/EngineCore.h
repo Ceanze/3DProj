@@ -42,6 +42,8 @@ private:
 	void renderNodeGUI(Node* e, int level = 0);
 	void renderDRTextures();
 	void renderLSTextures();
+	void renderBrightnessTextures();
+	void renderBlurTextures();
 	void renderTexture(ImTextureID texID, float ratio, bool nextLine);
 
 	void attachCamera(Camera* camera);
@@ -71,6 +73,7 @@ private:
 	ObjLoader loader;
 	Camera* camera;
 	Camera* camera2;
+	Camera* shadowCamera;
 	Camera* activeCamera;
 	/*-------------- END TEMP ------------------*/
 };

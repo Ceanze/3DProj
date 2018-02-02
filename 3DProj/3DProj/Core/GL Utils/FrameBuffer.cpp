@@ -57,6 +57,16 @@ void FrameBuffer::unbind()
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
+void FrameBuffer::bindTexture(unsigned int index)
+{
+	this->textures->bind(index);
+}
+
+void FrameBuffer::unbindTexture()
+{
+	this->textures->unbind();
+}
+
 GLuint FrameBuffer::getTexture(unsigned int index) const
 {
 	return this->textures->getTexture(index);

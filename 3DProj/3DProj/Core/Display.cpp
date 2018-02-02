@@ -23,7 +23,9 @@ Display::Display(const std::string & title, unsigned int width, unsigned int hei
 
 Display::~Display()
 {
+#ifdef RENDER_GUI
 	ImGui_ImplGlfwGL3_Shutdown();
+#endif
 	glfwTerminate();
 	glfwDestroyWindow(this->window);
 }
@@ -118,6 +120,8 @@ void Display::init()
 	glfwSetWindowSizeCallback(this->window, resizeCallback);
 
 	// Setup ImGui binding
+#ifdef RENDER_GUI
 	ImGui_ImplGlfwGL3_Init(window, true);
+#endif
 }
 

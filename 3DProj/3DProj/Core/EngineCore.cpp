@@ -25,14 +25,16 @@ EngineCore::EngineCore()
 	this->geometryNMShader = new GeometryNormalMapShader();
 	this->deferredRenderer = new DeferredRenderer(&this->display);
 
+	this->shadowCamera = new Camera(&this->display, 20, 20);
 	this->camera = new Camera(&this->display, glm::vec3{0.0f, 0.0f, 0.0f});
 	this->camera2 = new Camera(&this->display, glm::vec3{0.0f, 10.0f, 0.0f});
-	this->activeCamera = this->camera2;
+	this->activeCamera = this->camera;
 	attachCamera(this->activeCamera);
 	
 	this->terrain.setShader(this->geometryShader);
-
-	this->base = new Entity({ 0.0f, 5.0f, -5.0f }, {0.0f, 0.0f, 0.0f});
+	this->base = new Entity({ 0.0f, 15.0f, -5.0f }, {0.0f, 0.0f, 0.0f});
+	this->base->addComponent(this->shadowCamera);
+	this->base->addComponent(new DirectionalLight(glm::normalize(glm::vec3(-3.0f, -5.0f, 1.0f)), 1.0f, glm::vec3(1.0f), this->deferredRenderer->getPhongShader()));
 
 	/*this->m1 = new Mesh();
 	loader.load(this->m1, "Bunny/bunny.obj");*/
@@ -54,7 +56,6 @@ EngineCore::EngineCore()
 	// --------------------------- Bunny and Cube ---------------------------
 	this->e2 = new Entity({ 0.0f, 3.0f, 10.0f }, { 0.0f, 0.0f, 0.0f }, false);
 	//this->e2->addMesh(this->m1, this->geometryShader);
-	this->e2->addMeshes(this->cubeMeshes, this->geometryNMShader);
 	this->e2->addComponent(this->camera);
 	this->e2->addComponent(new Movement(&this->terrain, 10, GLFW_KEY_W, GLFW_KEY_A, GLFW_KEY_S, GLFW_KEY_D));
 	base->addChild(e2);
@@ -91,7 +92,7 @@ EngineCore::EngineCore()
 	this->arm.push_back(temp);
 
 	temp = new Entity({ 0.0f, 2.0f, 0.0f }, { 0.0f, 0.0f, 0.0f });
-	temp->addMesh(this->m2, this->geometryNMShader);
+	temp->addMeshes(this->cubeMeshes, this->geometryNMShader);
 	//temp->addComponent(this->camera2);
 	//temp->addComponent(new Movement(10, GLFW_KEY_W, GLFW_KEY_A, GLFW_KEY_S, GLFW_KEY_D));
 	this->arm[this->arm.size() - 1]->addChild(temp);
@@ -100,7 +101,7 @@ EngineCore::EngineCore()
 	// ------------------------- Lights ---------------------------
 	this->lightBase = new Entity({ 0.0f, 6.0f, 0.0f }, { 0.0f, 0.0f, 0.0f });
 	this->base->addChild(this->lightBase);
-
+	/*
 	temp = new Entity({ -4.0f, 0.0f, -6.0f }, { 0.0f, 0.0f, 0.0f });
 	temp->addComponent(new PointLight(50.0f, 1.0f, glm::vec3(1.0f, 0.0f, 0.0f), this->deferredRenderer->getPhongShader()));
 	temp->addMesh(this->m2, this->geometryNMShader);
@@ -119,7 +120,7 @@ EngineCore::EngineCore()
 	temp->addComponent(new PointLight(50.0f, 1.0f, glm::vec3(0.0f, 0.0f, 1.0f), this->deferredRenderer->getPhongShader()));
 	temp->addMesh(this->m2, this->geometryNMShader);
 	temp->getLocalTransform().setScale({ 0.2f, 0.2f, 0.2f });
-	this->lightBase->addChild(temp);
+	this->lightBase->addChild(temp);*/
 
 	this->base->update(0.16f);
 	this->base->init();
@@ -149,28 +150,40 @@ void EngineCore::init()
 	auto currentTime = std::chrono::high_resolution_clock::now();
 	auto previousTime = currentTime;
 	float dt = 0.0f;
+	float timePassed = 0.0;
 
 	glfwSetInputMode(display.getWindowPtr(), GLFW_STICKY_KEYS, GL_TRUE);
 	while (glfwGetKey(display.getWindowPtr(), GLFW_KEY_ESCAPE) != GLFW_PRESS && glfwWindowShouldClose(display.getWindowPtr()) == 0)
 	{
+
 		if (this->display.sizeUpdated)
 		{
 			this->camera->updateProj();
+			this->camera2->updateProj();
 			this->deferredRenderer->resize(&this->display);
 			this->display.sizeUpdated = false;
 		}
 
 		glfwPollEvents();
+#ifdef RENDER_GUI
 		ImGui_ImplGlfwGL3_NewFrame();
-		
+#endif
 		// ------------------------------- GUI TEST ---------------------------------
+#ifdef RENDER_GUI
 		renderGui();
+#else
+		timePassed += dt;
+		if (timePassed > 1.0f)
+		{
+			printf("FPS: %f\n", 1.0f / dt);
+			timePassed = 0.0f;
+		}
+#endif
 		// ------------------------------------------------------------------------
-
 
 		// Compute deltat time (dt)
 		currentTime = std::chrono::high_resolution_clock::now();
-		float dt = std::chrono::duration<float>(currentTime-previousTime).count();
+		dt = std::chrono::duration<float>(currentTime-previousTime).count();
 		previousTime = currentTime;
 
 		this->input(&this->display);
@@ -218,7 +231,9 @@ void EngineCore::render()
 	this->deferredRenderer->render(this->base, &this->terrain);
 
 	// Draw ImGui elements.
+#ifdef RENDER_GUI
 	ImGui::Render();
+#endif
 	// Swap buffers
 	glfwSwapBuffers(display.getWindowPtr());
 }
@@ -256,6 +271,7 @@ void EngineCore::renderGui()
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 		ImGui::Text("Click 'C' to toggle camera on and off and 'V' to swap camera");
 		ImGui::Text("Click 'B' to toggle blur on and off.");
+		ImGui::Text("Click 'G' to toggle glow on and off.");
 	}
 
 	if (show_node_tree_window)
@@ -284,6 +300,8 @@ void EngineCore::renderGui()
 		ImGui::Begin("Deferred Rendering Window", &show_dr_window);
 		renderDRTextures();
 		renderLSTextures();
+		renderBrightnessTextures();
+		renderBlurTextures();
 		ImGui::End();
 	}
 }
@@ -367,7 +385,7 @@ void EngineCore::renderDRTextures()
 
 void EngineCore::renderLSTextures()
 {
-	if (ImGui::TreeNode("LightningBuffer"))
+	if (ImGui::TreeNode("LightingBuffer"))
 	{
 		const FrameBuffer* lBuffer = this->deferredRenderer->getLBuffer();
 		for (unsigned i = 0; i < lBuffer->getNumTextures(); i++)
@@ -375,6 +393,36 @@ void EngineCore::renderLSTextures()
 			ImTextureID texID = (ImTextureID)lBuffer->getTexture(i);
 			float ratio = (float)lBuffer->getWidth() / (float)lBuffer->getHeight();
 			renderTexture(texID, ratio, i != lBuffer->getNumTextures() - 1);
+		}
+		ImGui::TreePop();
+	}
+}
+
+void EngineCore::renderBrightnessTextures()
+{
+	if (ImGui::TreeNode("BrightnessBuffer"))
+	{
+		const FrameBuffer* brightnessBuffer = this->deferredRenderer->getBrightnessBuffer();
+		for (unsigned i = 0; i < brightnessBuffer->getNumTextures(); i++)
+		{
+			ImTextureID texID = (ImTextureID)brightnessBuffer->getTexture(i);
+			float ratio = (float)brightnessBuffer->getWidth() / (float)brightnessBuffer->getHeight();
+			renderTexture(texID, ratio, i != brightnessBuffer->getNumTextures() - 1);
+		}
+		ImGui::TreePop();
+	}
+}
+
+void EngineCore::renderBlurTextures()
+{
+	if (ImGui::TreeNode("BlurBuffer"))
+	{
+		const FrameBuffer* blurBuffer = this->deferredRenderer->getBlurBuffer();
+		for (unsigned i = 0; i < blurBuffer->getNumTextures(); i++)
+		{
+			ImTextureID texID = (ImTextureID)blurBuffer->getTexture(i);
+			float ratio = (float)blurBuffer->getWidth() / (float)blurBuffer->getHeight();
+			renderTexture(texID, ratio, i != blurBuffer->getNumTextures() - 1);
 		}
 		ImGui::TreePop();
 	}
