@@ -26,7 +26,9 @@ public:
 	void bind();
 	void unbind();
 
-	GLuint getTexture(unsigned int index) const;
+	void bindTexture(unsigned int index = 0);
+	void unbindTexture();
+	GLuint getTexture(unsigned int index = 0) const;
 	GLuint* getTextures();
 	unsigned int getNumTextures() const;
 	unsigned int getWidth() const;

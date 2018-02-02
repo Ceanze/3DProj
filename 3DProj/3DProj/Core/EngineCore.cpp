@@ -27,7 +27,7 @@ EngineCore::EngineCore()
 
 	this->camera = new Camera(&this->display, glm::vec3{0.0f, 0.0f, 0.0f});
 	this->camera2 = new Camera(&this->display, glm::vec3{0.0f, 10.0f, 0.0f});
-	this->activeCamera = this->camera2;
+	this->activeCamera = this->camera;
 	attachCamera(this->activeCamera);
 	
 	this->terrain.setShader(this->geometryShader);
@@ -149,6 +149,7 @@ void EngineCore::init()
 	auto currentTime = std::chrono::high_resolution_clock::now();
 	auto previousTime = currentTime;
 	float dt = 0.0f;
+	float timePassed = 0.0;
 
 	glfwSetInputMode(display.getWindowPtr(), GLFW_STICKY_KEYS, GL_TRUE);
 	while (glfwGetKey(display.getWindowPtr(), GLFW_KEY_ESCAPE) != GLFW_PRESS && glfwWindowShouldClose(display.getWindowPtr()) == 0)
@@ -156,21 +157,31 @@ void EngineCore::init()
 		if (this->display.sizeUpdated)
 		{
 			this->camera->updateProj();
+			this->camera2->updateProj();
 			this->deferredRenderer->resize(&this->display);
 			this->display.sizeUpdated = false;
 		}
 
 		glfwPollEvents();
+#ifdef RENDER_GUI
 		ImGui_ImplGlfwGL3_NewFrame();
-		
+#endif
 		// ------------------------------- GUI TEST ---------------------------------
+#ifdef RENDER_GUI
 		renderGui();
+#else
+		timePassed += dt;
+		if (timePassed > 1.0f)
+		{
+			printf("FPS: %f\n", 1.0f / dt);
+			timePassed = 0.0f;
+		}
+#endif
 		// ------------------------------------------------------------------------
-
 
 		// Compute deltat time (dt)
 		currentTime = std::chrono::high_resolution_clock::now();
-		float dt = std::chrono::duration<float>(currentTime-previousTime).count();
+		dt = std::chrono::duration<float>(currentTime-previousTime).count();
 		previousTime = currentTime;
 
 		this->input(&this->display);
@@ -218,7 +229,9 @@ void EngineCore::render()
 	this->deferredRenderer->render(this->base, &this->terrain);
 
 	// Draw ImGui elements.
+#ifdef RENDER_GUI
 	ImGui::Render();
+#endif
 	// Swap buffers
 	glfwSwapBuffers(display.getWindowPtr());
 }
@@ -256,6 +269,7 @@ void EngineCore::renderGui()
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 		ImGui::Text("Click 'C' to toggle camera on and off and 'V' to swap camera");
 		ImGui::Text("Click 'B' to toggle blur on and off.");
+		ImGui::Text("Click 'G' to toggle glow on and off.");
 	}
 
 	if (show_node_tree_window)
@@ -284,6 +298,8 @@ void EngineCore::renderGui()
 		ImGui::Begin("Deferred Rendering Window", &show_dr_window);
 		renderDRTextures();
 		renderLSTextures();
+		renderBrightnessTextures();
+		renderBlurTextures();
 		ImGui::End();
 	}
 }
@@ -367,7 +383,7 @@ void EngineCore::renderDRTextures()
 
 void EngineCore::renderLSTextures()
 {
-	if (ImGui::TreeNode("LightningBuffer"))
+	if (ImGui::TreeNode("LightingBuffer"))
 	{
 		const FrameBuffer* lBuffer = this->deferredRenderer->getLBuffer();
 		for (unsigned i = 0; i < lBuffer->getNumTextures(); i++)
@@ -375,6 +391,36 @@ void EngineCore::renderLSTextures()
 			ImTextureID texID = (ImTextureID)lBuffer->getTexture(i);
 			float ratio = (float)lBuffer->getWidth() / (float)lBuffer->getHeight();
 			renderTexture(texID, ratio, i != lBuffer->getNumTextures() - 1);
+		}
+		ImGui::TreePop();
+	}
+}
+
+void EngineCore::renderBrightnessTextures()
+{
+	if (ImGui::TreeNode("BrightnessBuffer"))
+	{
+		const FrameBuffer* brightnessBuffer = this->deferredRenderer->getBrightnessBuffer();
+		for (unsigned i = 0; i < brightnessBuffer->getNumTextures(); i++)
+		{
+			ImTextureID texID = (ImTextureID)brightnessBuffer->getTexture(i);
+			float ratio = (float)brightnessBuffer->getWidth() / (float)brightnessBuffer->getHeight();
+			renderTexture(texID, ratio, i != brightnessBuffer->getNumTextures() - 1);
+		}
+		ImGui::TreePop();
+	}
+}
+
+void EngineCore::renderBlurTextures()
+{
+	if (ImGui::TreeNode("BlurBuffer"))
+	{
+		const FrameBuffer* blurBuffer = this->deferredRenderer->getBlurBuffer();
+		for (unsigned i = 0; i < blurBuffer->getNumTextures(); i++)
+		{
+			ImTextureID texID = (ImTextureID)blurBuffer->getTexture(i);
+			float ratio = (float)blurBuffer->getWidth() / (float)blurBuffer->getHeight();
+			renderTexture(texID, ratio, i != blurBuffer->getNumTextures() - 1);
 		}
 		ImGui::TreePop();
 	}

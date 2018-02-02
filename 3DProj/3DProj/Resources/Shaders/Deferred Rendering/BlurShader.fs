@@ -8,7 +8,7 @@ uniform vec2 dir;
 
 out vec4 finalColor;
 
-#define SIZE 3
+#define SIZE 6
 #define STANDARD_DEVIATION 1.5
 
 float gaussian(float x)
@@ -37,7 +37,7 @@ void main()
     {
         int halfSize = lineSize/2;
         vec2 uv = fragTextureCoord+vec2(hstep*(i-halfSize)*dir.x, vstep*(i-halfSize)*dir.y);
-        outColor += texture(finalTexture, uv).xyz*blurArr[i>3?6-i:i]/sum;
+        outColor += texture(finalTexture, uv).xyz*(blurArr[i>halfSize?lineSize-1-i:i]/sum);
     }
 
     finalColor = min(vec4(outColor, 1.0f), 1.0);

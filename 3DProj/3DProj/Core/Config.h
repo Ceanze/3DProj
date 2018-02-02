@@ -6,6 +6,9 @@
 #include <glfw3.h>
 #include <glm.hpp>
 
+// ------------------- Modes --------------------
+#define RENDER_GUI
+
 // -------------- DEFAULT SETTINGS --------------
 #define DEFAULT_WIDTH			840
 #define DEFAULT_HEIGHT			680
