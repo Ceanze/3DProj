@@ -226,6 +226,7 @@
     <ClInclude Include="Stb\stb_image.h" />
     <ClInclude Include="Terrain\Terrain.h" />
     <ClInclude Include="Utils\Transform.h" />
+    <ClInclude Include="Utils\Utils.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\Deferred Rendering\GeometryDRNormalMap.fs" />
