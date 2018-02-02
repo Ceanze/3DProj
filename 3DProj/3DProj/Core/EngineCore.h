@@ -73,6 +73,7 @@ private:
 	ObjLoader loader;
 	Camera* camera;
 	Camera* camera2;
+	Camera* shadowCamera;
 	Camera* activeCamera;
 	/*-------------- END TEMP ------------------*/
 };

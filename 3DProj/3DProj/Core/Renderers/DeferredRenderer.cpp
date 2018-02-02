@@ -30,6 +30,11 @@ DeferredRenderer::DeferredRenderer(Display* display)
 		{ FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16F }
 	});
 
+	this->shadowBuffer = new FrameBuffer(display->getWidth(), display->getHeight());
+	this->shadowBuffer->createTextures(std::vector<std::pair<FrameBuffer::FBO_ATTATCHMENT_TYPE, GLuint>>{
+		{ FrameBuffer::FBO_DEPTH_ATTACHMENT, GL_RGBA16F }
+	});
+
 	this->brightnessFilter = new BrightnessFilter(display->getWidth(), display->getHeight());
 	this->blurFilter = new BlurFilter(display->getWidth(), display->getHeight(), 0.5f);
 
@@ -55,6 +60,8 @@ DeferredRenderer::~DeferredRenderer()
 	delete this->blurFilter;
 
 	delete this->glowShader;
+
+	delete this->shadowBuffer;
 }
 
 void DeferredRenderer::render(Node * node)

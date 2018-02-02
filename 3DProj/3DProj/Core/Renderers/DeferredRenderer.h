@@ -51,6 +51,7 @@ private:
 	FrameBuffer* gBuffer;
 	FrameBuffer* lightingBuffer;
 	FrameBuffer* combineBuffer;
+	FrameBuffer* shadowBuffer;
 
 	BrightnessFilter* brightnessFilter;
 	BlurFilter* blurFilter;
