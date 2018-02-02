@@ -65,7 +65,7 @@ void main()
 
 	// Directonal Light
 	// Diffuse part
-	vec3 lightDirection = directionalLightData.direction.xyz;
+	vec3 lightDirection = -directionalLightData.direction.xyz;
 	float diffuseFactor = max(dot(fragNormal, lightDirection), 0.0);
 	diffuseOut += diffuseFactor*directionalLightData.colorIntensity.xyz;
 

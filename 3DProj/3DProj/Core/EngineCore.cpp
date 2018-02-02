@@ -32,7 +32,7 @@ EngineCore::EngineCore()
 	
 	this->terrain.setShader(this->geometryShader);
 
-	this->base = new Entity({ 0.0f, 5.0f, -5.0f }, {0.0f, 0.0f, 0.0f});
+	this->base = new Entity({ 0.0f, 15.0f, -5.0f }, {0.0f, 0.0f, 0.0f});
 	this->base->addComponent(new DirectionalLight(glm::normalize(glm::vec3(-3.0f, -5.0f, 1.0f)), 1.0f, glm::vec3(1.0f), this->deferredRenderer->getPhongShader()));
 
 	/*this->m1 = new Mesh();
@@ -55,7 +55,6 @@ EngineCore::EngineCore()
 	// --------------------------- Bunny and Cube ---------------------------
 	this->e2 = new Entity({ 0.0f, 3.0f, 10.0f }, { 0.0f, 0.0f, 0.0f }, false);
 	//this->e2->addMesh(this->m1, this->geometryShader);
-	this->e2->addMeshes(this->cubeMeshes, this->geometryNMShader);
 	this->e2->addComponent(this->camera);
 	this->e2->addComponent(new Movement(&this->terrain, 10, GLFW_KEY_W, GLFW_KEY_A, GLFW_KEY_S, GLFW_KEY_D));
 	base->addChild(e2);
@@ -92,7 +91,7 @@ EngineCore::EngineCore()
 	this->arm.push_back(temp);
 
 	temp = new Entity({ 0.0f, 2.0f, 0.0f }, { 0.0f, 0.0f, 0.0f });
-	temp->addMesh(this->m2, this->geometryNMShader);
+	temp->addMeshes(this->cubeMeshes, this->geometryNMShader);
 	//temp->addComponent(this->camera2);
 	//temp->addComponent(new Movement(10, GLFW_KEY_W, GLFW_KEY_A, GLFW_KEY_S, GLFW_KEY_D));
 	this->arm[this->arm.size() - 1]->addChild(temp);
@@ -101,7 +100,7 @@ EngineCore::EngineCore()
 	// ------------------------- Lights ---------------------------
 	this->lightBase = new Entity({ 0.0f, 6.0f, 0.0f }, { 0.0f, 0.0f, 0.0f });
 	this->base->addChild(this->lightBase);
-
+	/*
 	temp = new Entity({ -4.0f, 0.0f, -6.0f }, { 0.0f, 0.0f, 0.0f });
 	temp->addComponent(new PointLight(50.0f, 1.0f, glm::vec3(1.0f, 0.0f, 0.0f), this->deferredRenderer->getPhongShader()));
 	temp->addMesh(this->m2, this->geometryNMShader);
@@ -120,7 +119,7 @@ EngineCore::EngineCore()
 	temp->addComponent(new PointLight(50.0f, 1.0f, glm::vec3(0.0f, 0.0f, 1.0f), this->deferredRenderer->getPhongShader()));
 	temp->addMesh(this->m2, this->geometryNMShader);
 	temp->getLocalTransform().setScale({ 0.2f, 0.2f, 0.2f });
-	this->lightBase->addChild(temp);
+	this->lightBase->addChild(temp);*/
 
 	this->base->update(0.16f);
 	this->base->init();
