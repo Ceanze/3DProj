@@ -2,12 +2,13 @@
 
 #include "../Error.h"
 #include "../Core/ResourceManager.h"
+#include <iostream>
 
 Terrain::Terrain()
 	: quadTree(1)
 {
 	this->heightMap = nullptr;
-	this->loadTexture("./Resources/Textures/heightmap.png", &this->heightMap);
+	this->loadTexture("./Resources/Textures/heightmapTest.png", &this->heightMap);
 
 	this->texture = nullptr;
 	this->loadTexture("./Resources/Textures/stone.jpg", &this->texture);
@@ -26,8 +27,6 @@ Terrain::Terrain()
 	this->texture->unbind();
 
 	this->generateTerrain();
-
-	float hTest = this->getHeight(0.0f, 0.0f);
 }
 
 Terrain::~Terrain()
@@ -67,12 +66,17 @@ void Terrain::setShader(ShaderProgram * shader)
 float Terrain::getHeight(const float & x, const float & z)
 {
 	Vertex* vtx;
-	unsigned newX, newZ;
+	float newX, newZ;
 
 	newX = x / (this->size / 2);
 	newZ = z / (this->size / 2);
 
 	vtx = this->getTriangle(newX, newZ);
+
+	if (vtx == nullptr)
+	{
+		return 0;
+	}
 
 	return vtx[0].position.y;
 }
@@ -183,15 +187,23 @@ float Terrain::getHeight(const unsigned& x, const unsigned& z, unsigned char* da
 Vertex * Terrain::getTriangle(const float & normalizedX, const float & normalizedZ)
 {
 	Vertex temp[3];
+	
+	if (std::abs(normalizedZ) > 1 || std::abs(normalizedX) > 1)
+	{
+		return nullptr;
+	}
+	unsigned halfRowlength = (this->rowLength + 1) / 2;
 
-	unsigned halfRowlength = (this->rowLength / 2) + 1;
+	unsigned index = std::floor(((float)(this->rowLength + 1)*(this->rowLength + 1) / 2))
+		+ std::floor(normalizedZ * halfRowlength)
+		+ std::floor(normalizedX * halfRowlength) * (this->rowLength + 1);
 
-	unsigned index = (halfRowlength + halfRowlength * this->rowLength + 1)
-		+ std::round(normalizedZ * halfRowlength) + std::round(normalizedX * halfRowlength * (this->rowLength + 1));
+	
 
 	temp[0] = this->verticies[index];
 	temp[1] = this->verticies[index + this->rowLength + 1];
 	temp[2] = this->verticies[index + 1];
+	
 
 	return temp;
 }

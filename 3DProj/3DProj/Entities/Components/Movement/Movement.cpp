@@ -3,6 +3,8 @@
 #include "..\..\Entity.h"
 #include "glfw3.h"
 #include "../../../Core/Config.h"
+#include "../../../Terrain/Terrain.h"
+#include "../../../Error.h"
 
 
 
@@ -41,14 +43,13 @@ void Movement::update(const float & dt)
 
 void Movement::input(Display * display)
 {
-	//glm::vec3 direction;
-	//if(this->getEntity()->getComponent() != nullptr)
-	//	direction = dynamic_cast<Camera*>(this->getEntity()->getComponent())->getDirection(); //.getDirection();
 	glm::vec3 forward = this->getEntity()->getLocalTransform().getDirection();
 	glm::vec3 right = glm::normalize(glm::cross(forward, GLOBAL_UP_VECTOR));
 	glm::vec3 position = this->getEntity()->getWorldTransform().getTranslation();
 
-	//setHeight(this->terrain->getHeight(position.x, position.z));
+	setHeight(this->terrain->getHeight(position.x, position.z));
+	//setHeight(15);
+
 
 	// -------------------------------- Move position --------------------------------
 	if (glfwGetKey(display->getWindowPtr(), this->forward) == GLFW_PRESS)
@@ -64,5 +65,6 @@ void Movement::input(Display * display)
 
 void Movement::setHeight(float height)
 {
-
+	glm::vec3 position = this->getEntity()->getWorldTransform().getTranslation();
+	this->getEntity()->getWorldTransform().setTranslation(glm::vec3(position.x, height, position.z));
 }

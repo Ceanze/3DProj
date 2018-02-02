@@ -56,7 +56,7 @@ EngineCore::EngineCore()
 	//this->e2->addMesh(this->m1, this->geometryShader);
 	this->e2->addMeshes(this->cubeMeshes, this->geometryNMShader);
 	this->e2->addComponent(this->camera);
-	this->e2->addComponent(new Movement(10, GLFW_KEY_W, GLFW_KEY_A, GLFW_KEY_S, GLFW_KEY_D));
+	this->e2->addComponent(new Movement(&this->terrain, 10, GLFW_KEY_W, GLFW_KEY_A, GLFW_KEY_S, GLFW_KEY_D));
 	base->addChild(e2);
 	
 	// --------------------------- Sword ---------------------------
@@ -71,7 +71,7 @@ EngineCore::EngineCore()
 	this->armyPilot->getLocalTransform().setScale({0.05f, 0.05f, 0.05f });
 	this->armyPilot->addMeshes(this->armyPilotMeshes, this->geometryShader);
 	this->armyPilot->addComponent(this->camera2);
-	this->armyPilot->addComponent(new Movement(10));
+	//this->armyPilot->addComponent(new Movement(10));
 	base->addChild(armyPilot);
 
 	// --------------------------- Arm ---------------------------
