@@ -81,5 +81,5 @@ void Movement::input(Display * display)
 void Movement::setHeight(float height)
 {
 	glm::vec3 position = this->getEntity()->getWorldTransform().getTranslation();
-	this->getEntity()->getWorldTransform().setTranslation(glm::vec3(position.x, height, position.z));
+	this->getEntity()->getWorldTransform().setTranslation(glm::vec3(position.x, height + PLAYER_HEIGHT, position.z));
 }
