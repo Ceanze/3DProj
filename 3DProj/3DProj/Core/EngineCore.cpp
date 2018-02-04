@@ -32,9 +32,13 @@ EngineCore::EngineCore()
 	attachCamera(this->activeCamera);
 	
 	this->terrain.setShader(this->geometryShader);
-	this->base = new Entity({ 0.0f, 15.0f, -5.0f }, {0.0f, 0.0f, 0.0f});
-	this->base->addComponent(this->shadowCamera);
-	this->base->addComponent(new DirectionalLight(glm::normalize(glm::vec3(-3.0f, -5.0f, 1.0f)), 1.0f, glm::vec3(1.0f), this->deferredRenderer->getPhongShader()));
+
+	this->base = new Entity({ 0.0f, 5.0f, -5.0f }, {0.0f, 0.0f, 0.0f});
+
+	this->directionalLight = new Entity({1.0f, 5.0f, 2.0f}, { 0.0f, 0.0f, 0.0f });
+	this->directionalLight->addComponent(this->shadowCamera);
+	this->directionalLight->addComponent(new DirectionalLight(glm::normalize(glm::vec3(-3.0f, -5.0f, 1.0f)), 1.0f, glm::vec3(1.0f), this->deferredRenderer->getPhongShader()));
+	this->base->addChild(this->directionalLight);
 
 	/*this->m1 = new Mesh();
 	loader.load(this->m1, "Bunny/bunny.obj");*/

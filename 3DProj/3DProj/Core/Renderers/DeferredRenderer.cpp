@@ -29,6 +29,10 @@ DeferredRenderer::DeferredRenderer(Display* display)
 	this->combineBuffer->createTextures(std::vector<std::pair<FrameBuffer::FBO_ATTATCHMENT_TYPE, GLuint>>{
 		{ FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16F }
 	});
+	this->combineBuffer->bindTexture(0);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	this->combineBuffer->unbindTexture();
 
 	this->shadowBuffer = new FrameBuffer(display->getWidth(), display->getHeight());
 	this->shadowBuffer->createTextures(std::vector<std::pair<FrameBuffer::FBO_ATTATCHMENT_TYPE, GLuint>>{
@@ -36,7 +40,7 @@ DeferredRenderer::DeferredRenderer(Display* display)
 	});
 
 	this->brightnessFilter = new BrightnessFilter(display->getWidth(), display->getHeight());
-	this->blurFilter = new BlurFilter(display->getWidth(), display->getHeight(), 0.5f);
+	this->blurFilter = new BlurFilter(display->getWidth(), display->getHeight(), 0.05f);
 
 	this->phongShader = new PhongLS();
 	this->combineShader = new CombineShader();

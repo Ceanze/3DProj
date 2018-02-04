@@ -9,8 +9,8 @@ BlurFilter::BlurFilter(unsigned int width, unsigned int height, float scale)
 		{ FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16 }
 	});
 	this->frameBufferV->bindTexture(0);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	this->frameBufferV->unbindTexture();
 	
 	this->frameBufferH = new FrameBuffer((unsigned int)(width*scale), (unsigned int)(height*scale));
@@ -38,12 +38,26 @@ void BlurFilter::resize(unsigned int newWidth, unsigned int newHeight)
 
 void BlurFilter::render(FrameBuffer* fb, GLuint quadVAO)
 {
+	this->frameBufferH->bind();
+
+	glUseProgram(this->blurShader->getID());
+	this->blurShader->sendTextureSize(glm::vec2(fb->getWidth(), fb->getHeight()));
+	this->blurShader->sendDirection({ 0.0f, 1.0f });
+	this->blurShader->updateUniforms(fb->getTextures(), 1);
+
+	glBindVertexArray(quadVAO);
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+	glBindVertexArray(0);
+	glUseProgram(0);
+
+	this->frameBufferH->unbind();
+
 	// Vertical blur
 	this->frameBufferV->bind();
 	glUseProgram(this->blurShader->getID());
-	this->blurShader->sendTextureSize(glm::vec2(fb->getWidth(), fb->getHeight()));
+	this->blurShader->sendTextureSize(glm::vec2(this->frameBufferH->getWidth(), this->frameBufferH->getHeight()));
 	this->blurShader->sendDirection({ 1.0f, 0.0f });
-	this->blurShader->updateUniforms(fb->getTextures(), 1);
+	this->blurShader->updateUniforms(this->frameBufferH->getTextures(), 1);
 
 	glBindVertexArray(quadVAO);
 	glDrawArrays(GL_TRIANGLES, 0, 6);
