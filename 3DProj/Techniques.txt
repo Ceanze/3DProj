@@ -6,4 +6,4 @@
 25  % View frustum culling against a quadtree
 100 % Back face culling using Geometry Shader
 100 % Gaussian Filter
-0   % Mouse picking (or something)
+90  % Glow-effect
