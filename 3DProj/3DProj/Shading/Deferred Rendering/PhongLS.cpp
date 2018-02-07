@@ -28,6 +28,14 @@ PhongLS::PhongLS() : ShaderProgram({ "Deferred Rendering/PhongLS.vs", GL_VERTEX_
 	if (nrOf == -1)
 		Error::printError("Couldn't find 'nrOfPointLights' in PhongLS");
 
+	this->shadowCameraLoc = glGetUniformLocation(this->getID(), "shadowCamera");
+	if(this->shadowCameraLoc == -1)
+		Error::printError("Couldn't find 'shadowCamera' in PhongLS");
+
+	this->shadowMapLoc = glGetUniformLocation(this->getID(), "shadowMap");
+	if (shadowMapLoc == -1)
+		Error::printError("Could not find 'shadowMap' in PhongLS");
+
 	this->bindingPoint = 0;
 	glGenBuffers(1, &this->ubo);
 	GLuint uboIndex = glGetUniformBlockIndex(this->getID(), "Lights");
@@ -54,10 +62,14 @@ void PhongLS::updateUniforms(GLuint* textures, unsigned nrOf)
 
 	glUniform1i(this->kdALoc, 2);
 	glActiveTexture(GL_TEXTURE2);
-	glBindTexture(GL_TEXTURE_2D, textures[3]);
+	glBindTexture(GL_TEXTURE_2D, textures[2]);
 
 	glUniform1i(this->ksNsLoc, 3);
 	glActiveTexture(GL_TEXTURE3);
+	glBindTexture(GL_TEXTURE_2D, textures[3]);
+
+	glUniform1i(this->shadowMapLoc, 4);
+	glActiveTexture(GL_TEXTURE4);
 	glBindTexture(GL_TEXTURE_2D, textures[4]);
 }
 
@@ -95,6 +107,11 @@ void PhongLS::addPointLight(PointLight::PointLightData* data)
 void PhongLS::setDirectionalLight(DirectionalLight::DirectionalLightData * data)
 {
 	this->directionalLight = data;
+}
+
+void PhongLS::setShadowCamera(const glm::mat4 & shadowCamera)
+{
+	glUniformMatrix4fv(this->shadowCameraLoc, 1, GL_FALSE, &shadowCamera[0][0]);
 }
 
 void PhongLS::selfUpdateUniforms(Node * entity)

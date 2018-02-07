@@ -25,19 +25,22 @@ EngineCore::EngineCore()
 	this->geometryNMShader = new GeometryNormalMapShader();
 	this->deferredRenderer = new DeferredRenderer(&this->display);
 
-	this->shadowCamera = new Camera(&this->display, 20, 20);
+	this->shadowCamera = new Camera(&this->display, 40, 40, {0.0f, 0.0f, 0.0f}, -10, 20);
+	this->deferredRenderer->setShadowCamera(this->shadowCamera);
 	this->camera = new Camera(&this->display, glm::vec3{0.0f, 0.0f, 0.0f});
 	this->camera2 = new Camera(&this->display, glm::vec3{0.0f, 10.0f, 0.0f});
 	this->activeCamera = this->camera;
+	this->camInc = 0;
 	attachCamera(this->activeCamera);
 	
 	this->terrain.setShader(this->geometryShader);
 
 	this->base = new Entity({ 0.0f, 5.0f, -5.0f }, {0.0f, 0.0f, 0.0f});
 
-	this->directionalLight = new Entity({1.0f, 5.0f, 2.0f}, { 0.0f, 0.0f, 0.0f });
+	this->directionalLight = new Entity({1.0f, 10.0f, 2.0f}, { 0.0f, 0.0f, 0.0f });
 	this->directionalLight->addComponent(this->shadowCamera);
-	this->directionalLight->addComponent(new DirectionalLight(glm::normalize(glm::vec3(-3.0f, -5.0f, 1.0f)), 1.0f, glm::vec3(1.0f), this->deferredRenderer->getPhongShader()));
+	const glm::vec3 lightDir = glm::normalize(glm::vec3(-3.0f, -5.0f, 1.0f));
+	this->directionalLight->addComponent(new DirectionalLight(lightDir, 1.0f, glm::vec3(1.0f), this->deferredRenderer->getPhongShader()));
 	this->base->addChild(this->directionalLight);
 
 	/*this->m1 = new Mesh();
@@ -128,6 +131,7 @@ EngineCore::EngineCore()
 
 	this->base->update(0.16f);
 	this->base->init();
+	this->shadowCamera->setDirection(lightDir);
 	/*-------------- END TEMP ------------------*/
 }
 
@@ -385,6 +389,18 @@ void EngineCore::renderDRTextures()
 		}
 		ImGui::TreePop();
 	}
+
+	if (ImGui::TreeNode("ShadowBuffer"))
+	{
+		const FrameBuffer* shadowBuffer = this->deferredRenderer->getShadowBuffer();
+		for (unsigned i = 0; i < shadowBuffer->getNumTextures(); i++)
+		{
+			ImTextureID texID = (ImTextureID)shadowBuffer->getTexture(i);
+			float ratio = (float)shadowBuffer->getWidth() / (float)shadowBuffer->getHeight();
+			renderTexture(texID, ratio, i != shadowBuffer->getNumTextures() - 1);
+		}
+		ImGui::TreePop();
+	}
 }
 
 void EngineCore::renderLSTextures()
@@ -456,10 +472,21 @@ void EngineCore::attachCamera(Camera* camera)
 void EngineCore::swapCamera()
 {
 	this->activeCamera->deactivate();
-	if (this->activeCamera == this->camera)
+	switch (this->camInc)
+	{
+	case 0:
 		this->activeCamera = this->camera2;
-	else
+		break;
+	case 1:
+		this->activeCamera = this->shadowCamera;
+		break;
+	case 2:
 		this->activeCamera = this->camera;
+		break;
+	}
+	this->camInc++;
+	if (this->camInc > 2)
+		this->camInc = 0;
 	attachCamera(this->activeCamera);
 }
 

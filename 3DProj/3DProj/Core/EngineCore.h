@@ -76,6 +76,7 @@ private:
 	Camera* camera2;
 	Camera* shadowCamera;
 	Camera* activeCamera;
+	unsigned int camInc;
 	/*-------------- END TEMP ------------------*/
 };
 

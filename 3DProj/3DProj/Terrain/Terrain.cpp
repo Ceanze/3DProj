@@ -39,21 +39,26 @@ Terrain::~Terrain()
 	glDeleteVertexArrays(1, &this->vao);
 }
 
-void Terrain::render()
+void Terrain::render(ShaderProgram* shadowShader)
 {
-	glUseProgram(this->shader->getID());
+	if(shadowShader == nullptr)
+		glUseProgram(this->shader->getID());
 
 	glUniform1i(this->textureLocation, 0);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, this->texture->getTexture());
 
 	glBindVertexArray(this->vao );
-	this->shader->updateUniforms();
+	if (shadowShader == nullptr)
+		this->shader->updateUniforms();
+	else 
+		shadowShader->updateUniforms();
 
 	this->quadTree.render();
 
 	glBindVertexArray(0);
-	glUseProgram(0);
+	if(shadowShader == nullptr)
+		glUseProgram(0);
 }
 
 void Terrain::setShader(ShaderProgram * shader)

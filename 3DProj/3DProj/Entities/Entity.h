@@ -24,7 +24,6 @@ public:
 	void addComponent(Component* component);
 	Component* getComponent(unsigned int index = 0);
 
-
 	std::vector<Mesh*>& getMeshes();
 private:
 	std::vector<Component*> components;
@@ -35,7 +34,7 @@ private:
 
 	void selfInit();
 	void selfUpdate(float dt);
-	void selfRender();
+	void selfRender(ShaderProgram* shadowShader);
 	void selfInput(Display* display);
 
 	bool isDynamic;

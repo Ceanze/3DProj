@@ -13,5 +13,6 @@ void main()
     vec3 diffuse = texture(diffuseTexture, fragTextureCoord).xyz;
     vec3 specular = texture(specularTexture, fragTextureCoord).xyz;
     vec3 materialColor = texture(albedoTexture, fragTextureCoord).xyz;
+    
     finalColor = min(vec4(materialColor*(diffuse + specular), 1.0f), 1.0);
 }
