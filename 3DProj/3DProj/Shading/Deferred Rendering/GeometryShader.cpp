@@ -29,4 +29,10 @@ void GeometryShader::selfUpdateUniforms(Node * node)
 	}
 	else
 		Error::printError("Could not find 'camPos' in geometryDR!");
+
+	GLint normalOrthoLoc = glGetUniformLocation(this->getID(), "normal_ortho");
+	if (normalOrthoLoc != -1)
+	{
+		glUniform4fv(normalOrthoLoc, 1, &(glm::vec4(getCamera()->getDirection(), (float)getCamera()->isCamOrtho()))[0]);
+	}
 }

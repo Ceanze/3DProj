@@ -154,6 +154,11 @@ void Camera::setDirection(const glm::vec3 & direction)
 	this->getEntity()->getLocalTransform().setDirection(this->f);
 }
 
+bool Camera::isCamOrtho() const
+{
+	return this->orthoCam;
+}
+
 float Camera::getFOV() const
 {
 	return this->fov;

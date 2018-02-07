@@ -28,6 +28,7 @@ public:
 	void deactivate();
 
 	void setDirection(const glm::vec3& direction);
+	bool isCamOrtho() const;
 
 	float getFOV() const;
 	glm::vec3 getPosition() const;

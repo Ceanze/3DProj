@@ -5,7 +5,7 @@
 #include "../Config.h"
 
 class Camera;
-class Box;
+class AABox;
 
 class Frustum
 {
@@ -28,7 +28,7 @@ public:
 	void init(glm::vec3 camPos);
 	void update(glm::vec3 camPos);
 	
-	bool checkBox(Box &box);
+	bool checkBox(AABox &box);
 };
 
 #endif
