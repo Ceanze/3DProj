@@ -1,6 +1,7 @@
 #include "Frustum.h"
 
 #include "../../Entities/Components/Camera/Camera.h"
+#include "AABox.h"
 
 void Frustum::calculateWidthAndHeight()
 {
@@ -52,7 +53,7 @@ void Frustum::update(glm::vec3 camPos)
 	this->camPos = camPos;
 }
 
-bool Frustum::checkBox(Box &box)
+bool Frustum::checkBox(AABox &box)
 {
 	int in, out;
 	bool result = false;
@@ -63,7 +64,7 @@ bool Frustum::checkBox(Box &box)
 		out = 0;
 		for (int j = 0; j < 8 && (in == 0 || out == 0); j++)
 		{
-			if (planes[i].distance(box.getVertex(j)) < 0)
+			if (planes[i].distance(box.getPoint(j)) < 0)
 				out++;
 			else
 				in++;
