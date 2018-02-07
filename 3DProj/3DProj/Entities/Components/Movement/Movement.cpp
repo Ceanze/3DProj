@@ -10,7 +10,9 @@
 
 Movement::Movement(float speed, unsigned forward, unsigned left, unsigned backward, unsigned right)
 {
-	this->speed = speed;
+
+	this->speed = this->normalSpeed = speed;
+	this->shiftSpeed = speed * 4;
 	this->forward = forward;
 	this->left = left;
 	this->backward = backward;
@@ -20,7 +22,8 @@ Movement::Movement(float speed, unsigned forward, unsigned left, unsigned backwa
 Movement::Movement(Terrain * terrain, float speed, unsigned forward, unsigned left, unsigned backward, unsigned right)
 {
 	this->terrain = terrain;
-	this->speed = speed;
+	this->speed = this->normalSpeed = speed;
+	this->shiftSpeed = speed * 4;
 	this->forward = forward;
 	this->left = left;
 	this->backward = backward;
@@ -56,14 +59,36 @@ void Movement::input(Display * display)
 	}
 	else isKeyPressed = true;
 
+
+	static bool ShiftLock = false;
+	static bool isShiftKeyPressed = false;
+
 	glm::vec3 forward = this->getEntity()->getLocalTransform().getDirection();
 	glm::vec3 right = glm::normalize(glm::cross(forward, GLOBAL_UP_VECTOR));
 	glm::vec3 position = this->getEntity()->getWorldTransform().getTranslation();
+
+	if (glfwGetKey(display->getWindowPtr(), GLFW_KEY_LEFT_SHIFT) != GLFW_PRESS)
+	{
+		if (isShiftKeyPressed)
+		{
+			ShiftLock = !ShiftLock;
+			isShiftKeyPressed = false;
+			this->speed = this->normalSpeed;
+		}
+	}
+	else isShiftKeyPressed = true;
 
 	if (terrainLock) {
 		setHeight(this->terrain->getHeight(position.x, position.z));
 		forward = glm::vec3(forward.x, 0, forward.z);
 		right = glm::vec3(right.x, 0, right.z);
+	}
+
+	if (isShiftKeyPressed)
+	{
+		this->speed = this->shiftSpeed;
+
+		ShiftLock = false;
 	}
 
 	// -------------------------------- Move position --------------------------------

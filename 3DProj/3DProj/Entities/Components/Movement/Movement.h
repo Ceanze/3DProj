@@ -19,7 +19,7 @@ public:
 	
 private:
 	Terrain* terrain;
-	float speed;
+	float speed, shiftSpeed, normalSpeed;
 	float dt;
 	unsigned forward, left, backward, right;
 

@@ -1,17 +1,48 @@
 #include "QuadTree.h"
 
 
-QuadTree::QuadTree(const unsigned & recursionLevel)
+QuadTree::QuadTree(const unsigned & recursionLevel, const glm::vec2 corners[4])
 {
 	this->hasChildren = false;
+
+	for (int i = 0; i < 4; i++)
+		this->corners[i] = corners[i];
+
 	if (recursionLevel > 0)
 	{
 		this->hasChildren = true;
 
 		this->children = new QuadTree*[4];
 
-		for (int i = 0; i < CHILDREN_AMOUNT; i++)
-			this->children[i] = new QuadTree(recursionLevel - 1);
+		this->quadSize = glm::length((corners[1] - corners[0]));
+
+		glm::vec2 v1 = { 0, 0 }, v2 = { 0, 0 };
+		v1 = (corners[1] - corners[0]) / 2.0f;
+		v2 = (corners[2] - corners[0]) / 2.0f;
+		glm::vec2 childCorners[4] = { corners[0], corners[0] + v1,  corners[0] + v2, corners[0] + v1 + v2 };
+		
+		this->children[0] = new QuadTree(recursionLevel - 1, childCorners);
+
+		childCorners[0] = corners[0] + v1;
+		childCorners[1] = corners[1];
+		childCorners[2] = corners[0] + v1 + v2;
+		childCorners[3] = corners[1] + v2;
+
+		this->children[1] = new QuadTree(recursionLevel - 1, childCorners);
+
+		childCorners[0] = corners[0] + v2;
+		childCorners[1] = corners[0] + v1 + v2;
+		childCorners[2] = corners[2];
+		childCorners[3] = corners[2] + v1;
+
+		this->children[2] = new QuadTree(recursionLevel - 1, childCorners);
+
+		childCorners[0] = corners[0] + v1 + v2;
+		childCorners[1] = corners[1] + v2;
+		childCorners[2] = corners[2] + v1;
+		childCorners[3] = corners[3];
+
+		this->children[3] = new QuadTree(recursionLevel - 1, childCorners);
 	}
 
 	
@@ -28,15 +59,34 @@ QuadTree::~QuadTree()
 	
 }
 
-void QuadTree::addTriangleToChild(const unsigned & child, const Triangle& triangle)
+void QuadTree::addTriangle(const glm::vec2 & pos, const Triangle& triangle)
 {
-	this->children[child]->triangles.push_back(triangle);
+	float childQuadSize = this->quadSize / 2.0f;
+
+	if (pos.x <= childQuadSize && pos.y <= childQuadSize)
+	{
+		this->children[0]->triangles.push_back(triangle);;
+	}
+	else if (pos.x < childQuadSize && pos.y > childQuadSize)
+	{
+		this->children[1]->triangles.push_back(triangle);
+	}
+	else if (pos.x > childQuadSize && pos.y < childQuadSize)
+	{
+		this->children[2]->triangles.push_back(triangle);
+	}
+	else
+	{
+		this->children[3]->triangles.push_back(triangle);
+	}
 }
 
 void QuadTree::render()
 {
-	for (int i = 0; i < CHILDREN_AMOUNT && this->hasChildren == true; i++)
-		this->children[i]->render();
+	/*for (int i = 0; i < CHILDREN_AMOUNT && this->hasChildren == true; i++)
+		this->children[i]->render();*/
+	if(this->hasChildren)
+		this->children[0]->render();
 
 	if (this->triangles.size() > 0)
 	{
