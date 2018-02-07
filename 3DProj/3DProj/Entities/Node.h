@@ -6,6 +6,7 @@
 
 #include "../Utils/Transform.h"
 
+class ShaderProgram;
 class Display;
 
 class Node
@@ -20,7 +21,7 @@ public:
 	void init();
 	void update(float dt);
 	void input(Display* display);
-	void render();
+	void render(ShaderProgram* shadowShader = nullptr);
 
 	Node* getParent();
 	std::vector<Node*>& getChildren();
@@ -31,7 +32,7 @@ public:
 
 private:
 	virtual void selfUpdate(float dt) = 0;
-	virtual void selfRender() = 0;
+	virtual void selfRender(ShaderProgram* shadowShader) = 0;
 	virtual void selfInput(Display* display) = 0;
 	virtual void selfInit() = 0;
 

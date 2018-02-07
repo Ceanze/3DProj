@@ -64,6 +64,7 @@ private:
 	Entity* armyPilot;
 	Entity* sword;
 	Entity* lightBase;
+	Entity* directionalLight;
 	std::vector<Entity*> arm;
 	Mesh* m1;
 	Mesh* m2;
@@ -75,6 +76,7 @@ private:
 	Camera* camera2;
 	Camera* shadowCamera;
 	Camera* activeCamera;
+	unsigned int camInc;
 	/*-------------- END TEMP ------------------*/
 };
 

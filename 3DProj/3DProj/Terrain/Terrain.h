@@ -26,7 +26,7 @@ public:
 	Terrain();
 	~Terrain();
 
-	void render();
+	void render(ShaderProgram* shadowShader = nullptr);
 	void setShader(ShaderProgram* shader);
 
 	float getHeight(const float& x, const float& z);

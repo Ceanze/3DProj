@@ -1,8 +1,8 @@
 #version 330
 
-out vec4 finalColor;
+out float finalColor;
 
 void main()
 {
-    finalColor = vec4(gl_FragCoord.z, 0.0, 0.0, 0.0);
+    finalColor = gl_FragCoord.z;
 }
