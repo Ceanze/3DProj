@@ -56,6 +56,7 @@ private:
 	FrameBuffer* lightingBuffer;
 	FrameBuffer* combineBuffer;
 	FrameBuffer* shadowBuffer;
+	float shadowResScale;
 
 	BrightnessFilter* brightnessFilter;
 	BlurFilter* blurFilter;

@@ -189,6 +189,16 @@ glm::mat4 Camera::getVP() const
 	return this->proj*this->view;
 }
 
+float Camera::getFarPlane() const
+{
+	return this->zFar;
+}
+
+float Camera::getNearPlane() const
+{
+	return this->zNear;
+}
+
 void Camera::updateProj(float fov, float zNear, float zFar)
 {
 	this->zNear = zNear;
@@ -219,7 +229,7 @@ void Camera::setLocalPositionMat()
 void Camera::setWorldPosition()
 {
 	setLocalPositionMat();
-	glm::mat4 temp = this->getEntity()->getWorldTransform().getMatrix()*this->localPositionMat;
+	glm::mat4 temp = this->getEntity()->getChainTransform().getMatrix()*this->localPositionMat;
 
 	this->worldPosition = glm::vec3(temp[3][0], temp[3][1], temp[3][2]);
 	//this->worldPosition = glm::vec3(0.0, 5.0, 10.0);

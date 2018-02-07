@@ -22,8 +22,8 @@ void main()
     vec3 pcp = p - camPos;
     vec3 pp = -dot(pcp, normal_ortho.xyz)*normal_ortho.xyz;
 
-    if(normal_ortho.w == 0.0 || dot(pp, normal) > 0)
-    {
+    //if(normal_ortho.w == 0.0 || dot(pp, normal) > 0)
+    //{
         for(int i = 0; i < gl_in.length(); i++)
         {
             vec3 pointToCam = camPos - geometryPosition[i];
@@ -36,7 +36,7 @@ void main()
                 EmitVertex();
             }
         }
-    }
+    //}
     EndPrimitive();
 
     
