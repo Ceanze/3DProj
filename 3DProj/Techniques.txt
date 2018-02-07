@@ -7,3 +7,5 @@
 100 % Back face culling using Geometry Shader
 100 % Gaussian Filter
 90  % Glow-effect
+
+Error when minimize window. (Trying to create a perspective matrix when window size is 0.)
