@@ -83,10 +83,9 @@ void QuadTree::addTriangle(const glm::vec2 & pos, const Triangle& triangle)
 
 void QuadTree::render()
 {
-	/*for (int i = 0; i < CHILDREN_AMOUNT && this->hasChildren == true; i++)
-		this->children[i]->render();*/
-	if(this->hasChildren)
-		this->children[0]->render();
+	for (int i = 0; i < CHILDREN_AMOUNT && this->hasChildren == true; i++)
+		this->children[i]->render();
+
 
 	if (this->triangles.size() > 0)
 	{
