@@ -30,6 +30,8 @@ public:
 	float getFOV() const;
 	glm::vec3 getPosition() const;
 	glm::vec3 getDirection() const;
+	glm::vec3 getUp() const;
+	glm::vec3 getRight() const;
 	glm::mat4 getVP() const;
 
 private:

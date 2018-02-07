@@ -154,6 +154,16 @@ glm::vec3 Camera::getDirection() const
 	return this->f;
 }
 
+glm::vec3 Camera::getUp() const
+{
+	return this->u;
+}
+
+glm::vec3 Camera::getRight() const
+{
+	return this->r;
+}
+
 glm::mat4 Camera::getVP() const
 {
 	return this->proj*this->view;
