@@ -153,6 +153,9 @@
     <ClCompile Include="Entities\Components\Lightning\DirectionalLight.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Shading\ShadowShader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="Core\Frustum Culling\Frustum.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -318,6 +321,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Entities\Components\Lightning\DirectionalLight.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Shading\ShadowShader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Core\Frustum Culling\Frustum.h">

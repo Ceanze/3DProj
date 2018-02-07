@@ -1,5 +1,7 @@
 #include "Terrain.h"
 
+#include "../Utils/Utils.h"
+#include "../glm/glm.hpp"
 #include "../Error.h"
 #include "../Core/ResourceManager.h"
 #include <iostream>
@@ -37,21 +39,26 @@ Terrain::~Terrain()
 	glDeleteVertexArrays(1, &this->vao);
 }
 
-void Terrain::render()
+void Terrain::render(ShaderProgram* shadowShader)
 {
-	glUseProgram(this->shader->getID());
+	if(shadowShader == nullptr)
+		glUseProgram(this->shader->getID());
 
 	glUniform1i(this->textureLocation, 0);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, this->texture->getTexture());
 
 	glBindVertexArray(this->vao );
-	this->shader->updateUniforms();
+	if (shadowShader == nullptr)
+		this->shader->updateUniforms();
+	else 
+		shadowShader->updateUniforms();
 
 	this->quadTree.render();
 
 	glBindVertexArray(0);
-	glUseProgram(0);
+	if(shadowShader == nullptr)
+		glUseProgram(0);
 }
 
 void Terrain::setShader(ShaderProgram * shader)
@@ -65,20 +72,58 @@ void Terrain::setShader(ShaderProgram * shader)
 
 float Terrain::getHeight(const float & x, const float & z)
 {
-	Vertex* vtx;
-	float newX, newZ;
+	//Vertex* vtx;
+	//float newX, newZ;
 
-	newX = x / (this->size / 2);
-	newZ = z / (this->size / 2);
+	////Normalizes x and z over the plane
+	//newX = x / (this->size / 2);
+	//newZ = z / (this->size / 2);
 
-	vtx = this->getTriangle(newX, newZ);
+	//vtx = this->getTriangle(newX, newZ);
 
-	if (vtx == nullptr)
+	//if (vtx == nullptr)
+	//{
+	//	return 0;
+	//}
+
+	////Normalizes x and z over the the triangle
+	//float sideX = fmod(x, (float)this->offset);
+	//float sideZ = fmod(z, (float)this->offset);
+
+	////Calculates values for intepolating
+	//newX = sideX + Tools::getSideX((1 - sideZ), Tools::PI / 4);
+	//newZ = sideZ - Tools::getSideX((sideX), Tools::PI / 4);
+
+	//float interp1 = Tools::interpolate(vtx[0].position.y, vtx[2].position.y, newX);
+	//float interp2 = Tools::interpolate(vtx[0].position.y, vtx[1].position.y, newZ);
+
+	//float t =  glm::length(glm::vec3(x, 0.0f, z) - vtx[1].position) / glm::length(vtx[2].position - vtx[1].position);
+
+	//delete[] vtx; 
+
+	float terrainX = this->start.x - x;
+	float terrainZ = this->start.y - z;
+	
+	glm::vec2 gridPos(floorf(terrainX / this->offset), floorf(terrainZ / this->offset));
+
+	if (gridPos.x >= this->rowLength || gridPos.y >= this->rowLength || gridPos.x < 0 || gridPos.y < 0)
 	{
-		return 0;
+		return 0.0f;
 	}
 
-	return vtx[0].position.y;
+	float xCoord = fmod(terrainX, this->offset) / this->offset;
+	float zCoord = fmod(terrainZ, this->offset) / this->offset;
+
+	if (xCoord <= (1 - zCoord))
+	{
+
+	}
+	else
+	{
+
+	}
+
+	return 0.0f;
 }
 
 void Terrain::loadTexture(const std::string& path, Texture** texture)
@@ -186,7 +231,7 @@ float Terrain::getHeight(const unsigned& x, const unsigned& z, unsigned char* da
 
 Vertex * Terrain::getTriangle(const float & normalizedX, const float & normalizedZ)
 {
-	Vertex temp[3];
+	Vertex* temp = new Vertex[3];
 	
 	if (std::abs(normalizedZ) > 1 || std::abs(normalizedX) > 1)
 	{

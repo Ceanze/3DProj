@@ -11,7 +11,7 @@ class Camera : public Component
 {
 public:
 	Camera(Display* display, glm::vec3 relativePosition = glm::vec3(0.f, 0.f, 0.f), float fov = 0.7853975f, float zNear = ZNEAR, float zFar = ZFAR);
-	Camera(Display* display, float width, float height, glm::vec3 relativePosition = glm::vec3(0.f, 0.f, 0.f), float fov = 0.7853975f, float zNear = ZNEAR, float zFar = ZFAR);
+	Camera(Display* display, float width, float height, glm::vec3 relativePosition = glm::vec3(0.f, 0.f, 0.f), float zNear = ZNEAR, float zFar = ZFAR);
 	virtual ~Camera();
 
 	void init();
@@ -26,6 +26,8 @@ public:
 
 	void activate();
 	void deactivate();
+
+	void setDirection(const glm::vec3& direction);
 
 	float getFOV() const;
 	glm::vec3 getPosition() const;

@@ -7,6 +7,7 @@
 #include "../../Shading/Deferred Rendering/PhongLS.h"
 #include "../../Shading/Deferred Rendering/CombineShader.h"
 #include "../../Shading/GlowShader.h"
+#include "../../Shading/ShadowShader.h"
 #include "../../Postprocessing/BlurFilter.h"
 #include "../../Postprocessing/BrightnessFilter.h"
 #include "../../Entities/Components/Lightning/LightComponent.h"
@@ -25,11 +26,13 @@ public:
 	void resize(Display* display);
 
 	const FrameBuffer* getGBuffer() const;
+	const FrameBuffer* getShadowBuffer() const;
 	const FrameBuffer* getLBuffer() const;
 	const FrameBuffer* getBrightnessBuffer() const;
 	const FrameBuffer* getBlurBuffer() const;
 
 	void setCamera(Camera* camera);
+	void setShadowCamera(Camera* shadowCamera);
 
 	PhongLS* getPhongShader();
 
@@ -45,12 +48,14 @@ private:
 	PhongLS* phongShader;
 	CombineShader* combineShader;
 	GlowShader* glowShader;
+	ShadowShader* shadowShader;
 
-	GLuint texturesTempArr[3];
+	GLuint texturesTempArr[5];
 
 	FrameBuffer* gBuffer;
 	FrameBuffer* lightingBuffer;
 	FrameBuffer* combineBuffer;
+	FrameBuffer* shadowBuffer;
 
 	BrightnessFilter* brightnessFilter;
 	BlurFilter* blurFilter;
