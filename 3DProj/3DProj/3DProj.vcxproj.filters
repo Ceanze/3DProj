@@ -317,6 +317,9 @@
     <ClInclude Include="Shading\ShadowShader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Utils\Utils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\Phong\TestShader.fs" />
