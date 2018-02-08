@@ -7,10 +7,14 @@
 
 Shader::Shader()
 {
+	this->name = "";
+	this->type = 0;
 }
 
 Shader::Shader(const std::string & name, GLuint type)
 {
+	this->name = name;
+	this->type = type;
 	create(name, type);
 	compile();
 }
@@ -55,4 +59,14 @@ void Shader::compile()
 const GLuint Shader::getID() const
 {
 	return this->id;
+}
+
+std::string Shader::getName() const
+{
+	return this->name;
+}
+
+GLuint Shader::getType() const
+{
+	return this->type;
 }

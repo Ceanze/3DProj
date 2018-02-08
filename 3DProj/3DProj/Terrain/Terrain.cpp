@@ -58,6 +58,8 @@ void Terrain::render(ShaderProgram* shadowShader)
 	if(shadowShader == nullptr)
 		glUseProgram(this->shader->getID());
 
+	glUniform1i(this->useNormalMapLoc, 0);
+
 	glUniform1i(this->textureLocation, 0);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, this->texture->getTexture());
@@ -134,7 +136,7 @@ void Terrain::loadTexture(const std::string& path, Texture** texture)
 	if (hasFailed == TEXTURE_FAILED)
 		Error::printError("Failed to load texture: " + path);
 	else if (hasFailed == TEXTURE_SUCCEEDED)
-		Error::printWarning("Loaded texture:  " + path);
+		Error::print("[Loaded texture]:", path);
 }
 
 void Terrain::generateTerrain()
@@ -233,26 +235,30 @@ GLuint Terrain::addVertexVbo()
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glBufferData(GL_ARRAY_BUFFER, this->verticies.size() * sizeof(Vertex), &this->verticies[0], GL_STATIC_DRAW);
 
-	this->vPosLocation = glGetAttribLocation(this->shader->getID(), "vertexPosition");
+	this->vPosLocation = 0;// glGetAttribLocation(this->shader->getID(), "vertexPosition");
 	if (this->vPosLocation == -1)
 		Error::printError("Terrain couldn't find 'vertexPosition' in GeometryDR.vs");
 
 	glEnableVertexAttribArray(vPosLocation);
 	glVertexAttribPointer(vPosLocation, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (char*)nullptr);
 
-	this->normalLocation = glGetAttribLocation(this->shader->getID(), "vertexNormal");
+	this->normalLocation = 1;// glGetAttribLocation(this->shader->getID(), "vertexNormal");
 	if (this->normalLocation == -1)
 		Error::printError("Terrain couldn't find 'vertexNormal' in GeometryDR.vs");
 	glEnableVertexAttribArray(this->normalLocation);
 
 	glVertexAttribPointer(this->normalLocation, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (char*)(sizeof(GLfloat) * 3));
 
-	this->uvsLocation = glGetAttribLocation(this->shader->getID(), "vertexUvs");
+	this->uvsLocation = 3;// glGetAttribLocation(this->shader->getID(), "vertexUvs");
 	if (this->uvsLocation == -1)
 		Error::printError("Terrain couldn't find 'vertexUvs' in GeometryDR.vs");
 	glEnableVertexAttribArray(uvsLocation);
 	glVertexAttribPointer(uvsLocation, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (char*)(sizeof(GLfloat) * 6));
 	
+	this->useNormalMapLoc = glGetUniformLocation(this->shader->getID(), "useNormalMap");
+	if (this->useNormalMapLoc == -1)
+		Error::printError("Could not find 'useNormalMap' in shader!");
+
 	glBindVertexArray(0);
 
 	return vbo;

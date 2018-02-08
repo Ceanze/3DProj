@@ -10,10 +10,9 @@ public:
 	virtual ~GlowShader();
 
 	void updateUniforms(GLuint* textures, unsigned nrOf);
+
 private:
 	void selfUpdateUniforms(Node* entity);
-
-	GLint textureLoc, glowLoc;
 };
 
 #endif

@@ -176,15 +176,12 @@
     <ClCompile Include="Shading\ShadowShader.cpp" />
     <ClCompile Include="Terrain\QuadTree.cpp" />
     <ClCompile Include="Shading\Deferred Rendering\BlurShader.cpp" />
-    <ClCompile Include="Shading\Deferred Rendering\GeometryNormalMapShader.cpp" />
     <ClCompile Include="Shading\Deferred Rendering\PhongLS.cpp" />
     <ClCompile Include="Shading\Deferred Rendering\GeometryShader.cpp" />
     <ClCompile Include="Shading\Deferred Rendering\QuadShader.cpp" />
-    <ClCompile Include="Shading\PhongShader.cpp" />
     <ClCompile Include="Shading\Shader.cpp" />
     <ClCompile Include="Shading\ShaderProgram.cpp" />
     <ClCompile Include="Loaders\StateLoader.cpp" />
-    <ClCompile Include="Shading\TestShader.cpp" />
     <ClCompile Include="Entities\Components\Movement\Movement.cpp" />
     <ClCompile Include="Terrain\Terrain.cpp" />
     <ClCompile Include="Utils\Transform.cpp" />
@@ -233,15 +230,12 @@
     <ClInclude Include="Shading\ShadowShader.h" />
     <ClInclude Include="Terrain\QuadTree.h" />
     <ClInclude Include="Shading\Deferred Rendering\BlurShader.h" />
-    <ClInclude Include="Shading\Deferred Rendering\GeometryNormalMapShader.h" />
     <ClInclude Include="Shading\Deferred Rendering\PhongLS.h" />
     <ClInclude Include="Shading\Deferred Rendering\GeometryShader.h" />
     <ClInclude Include="Shading\Deferred Rendering\QuadShader.h" />
-    <ClInclude Include="Shading\PhongShader.h" />
     <ClInclude Include="Shading\Shader.h" />
     <ClInclude Include="Shading\ShaderProgram.h" />
     <ClInclude Include="Loaders\StateLoader.h" />
-    <ClInclude Include="Shading\TestShader.h" />
     <ClInclude Include="Entities\Components\Movement\Movement.h" />
     <ClInclude Include="Stb\stb_image.h" />
     <ClInclude Include="Terrain\Terrain.h" />
@@ -249,11 +243,8 @@
     <ClInclude Include="Utils\Utils.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Shaders\Deferred Rendering\GeometryDRNormalMap.fs" />
-    <None Include="Resources\Shaders\Deferred Rendering\GeometryDRNormalMap.vs" />
     <None Include="Resources\Shaders\Deferred Rendering\PhongLS.fs" />
     <None Include="Resources\Shaders\Deferred Rendering\PhongLS.vs" />
-    <None Include="Resources\Shaders\Phong\TestShader.fs" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

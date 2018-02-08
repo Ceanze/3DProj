@@ -176,7 +176,7 @@ void DeferredRenderer::renderLightBuffer()
 	this->texturesTempArr[4] = this->shadowBuffer->getTexture(0);
 	this->phongShader->updateUniforms(this->texturesTempArr, 5);
 
-	this->phongShader->setShadowCamera(this->shadowShader->getCamera()->getVP());
+	this->phongShader->setShadowCamera(this->shadowShader->getCamera());
 
 	glBindVertexArray(this->quadVAO);
 	glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -194,7 +194,7 @@ void DeferredRenderer::renderCombineBuffer()
 	this->texturesTempArr[0] = this->lightingBuffer->getTexture(0);
 	this->texturesTempArr[1] = this->lightingBuffer->getTexture(1);
 	this->texturesTempArr[2] = this->gBuffer->getTexture(2);
-	this->combineShader->updateUniforms(this->texturesTempArr, 3);
+	this->combineShader->updateUniforms(this->texturesTempArr, 4);
 
 	glBindVertexArray(this->quadVAO);
 	glDrawArrays(GL_TRIANGLES, 0, 6);

@@ -20,9 +20,16 @@ public:
 	void init();
 	void update(const float& dt);
 
+	glm::vec3 getDirection() const;
+	float getIntensity() const;
+	glm::vec3 getColor();
+
+	void setDirection(const glm::vec3& direction);
+	void setIntensity(float intensity);
+	void setColor(const glm::vec3& color);
+
 private:
 	DirectionalLightData data;
-	float radius;
 };
 
 #endif

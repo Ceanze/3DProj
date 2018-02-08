@@ -19,9 +19,15 @@ public:
 
 	static void init();
 
+	static void print(const std::string &str);
+	static void print(const std::string& description, const std::string &str);
 	static void print(const std::string &str, CONSOLE_COLOR color);
+	static void print(const std::string& description, const std::string &str, CONSOLE_COLOR color);
+	static void print(const std::string& description1, const std::string& description2, const std::string &str, CONSOLE_COLOR color);
 	static void printError(const std::string &str);
+	static void printError(const std::string& description, const std::string &str);
 	static void printWarning(const std::string &str);
+	static void printWarning(const std::string& description, const std::string &str);
 
 private:
 	static HANDLE hstdin, hstdout;

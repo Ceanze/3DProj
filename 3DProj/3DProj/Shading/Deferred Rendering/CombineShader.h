@@ -10,10 +10,9 @@ public:
 	virtual ~CombineShader();
 
 	void updateUniforms(GLuint* textures, unsigned nrOf);
+
 private:
 	void selfUpdateUniforms(Node* entity);
-
-	GLint diffuseLoc, specularLoc, albedoLoc;
 };
 
 #endif
