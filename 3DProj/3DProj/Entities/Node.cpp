@@ -57,12 +57,12 @@ void Node::input(Display * display)
 	
 }
 
-void Node::render()
+void Node::render(ShaderProgram* shadowShader)
 {
-	selfRender();
+	selfRender(shadowShader);
 
 	for (Node* node : this->children)
-		node->render();
+		node->render(shadowShader);
 }
 
 Node * Node::getParent()

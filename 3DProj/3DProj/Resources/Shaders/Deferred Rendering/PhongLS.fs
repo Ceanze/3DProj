@@ -32,6 +32,9 @@ layout(location = 1) out vec4 finalSpecular;
 in vec2 fragTextureCoord;
 uniform vec3 camPos;
 
+uniform mat4 shadowCamera;
+uniform sampler2D shadowMap;
+
 void main()
 {
 	vec4 kd_a = texture(kd_a_Texture, fragTextureCoord);
@@ -63,18 +66,29 @@ void main()
 		specular += diffuseFactor*specularFactor*lightFactor;
 	}
 
+	const mat4 biasMatrix = mat4(0.5, 0.0, 0.0, 0.0,
+						   0.0, 0.5, 0.0, 0.0,
+						   0.0, 0.0, 0.5, 0.0,
+						   0.5, 0.5, 0.5, 1.0);
+	mat4 depthBias = biasMatrix*shadowCamera;
+	vec4 shadowCoord = depthBias*vec4(fragPos, 1.0);
+	float visibility = 1.0;
+	if(shadowCoord.x >= 0.0 && shadowCoord.x <= 1.0 && shadowCoord.y >= 0.0 && shadowCoord.y <= 1.0 && shadowCoord.z >= 0.0 && shadowCoord.z <= 1.0)
+		if(texture(shadowMap, shadowCoord.xy).x+0.01 < shadowCoord.z)
+			visibility = 0.0;
+
 	// Directonal Light
 	// Diffuse part
 	vec3 lightDirection = -directionalLightData.direction.xyz;
 	float diffuseFactor = max(dot(fragNormal, lightDirection), 0.0);
-	diffuseOut += diffuseFactor*directionalLightData.colorIntensity.xyz;
+	diffuseOut += visibility*diffuseFactor*directionalLightData.colorIntensity.xyz;
 
 	// Specular part
 	float s = ks_ns.w;
 	vec3 r = reflect(fragNormal, lightDirection);
 	vec3 v = normalize(camPos - fragPos);
 	float specularFactor = pow(max(dot(r, v), 0.0), s+0.01);
-	specular += diffuseFactor*specularFactor;
+	specular += visibility*diffuseFactor*specularFactor;
 
 	ambient = isBackground ? vec3(0.0) : ambient;
 	finalDiffuse = vec4(ambient + diffuseOut*kd_a.xyz, 1.0);

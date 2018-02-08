@@ -19,6 +19,8 @@ public:
 
 	void addPointLight(PointLight::PointLightData* data);
 	void setDirectionalLight(DirectionalLight::DirectionalLightData* data);
+
+	void setShadowCamera(const glm::mat4& shadowCamera);
 private:
 	void selfUpdateUniforms(Node* entity);
 
@@ -26,7 +28,7 @@ private:
 	DirectionalLight::DirectionalLightData* directionalLight;
 
 	GLuint ubo, bindingPoint;
-	GLint positionLoc, normalLoc, kdALoc, ksNsLoc, camLoc, nrOf;
+	GLint positionLoc, normalLoc, kdALoc, ksNsLoc, camLoc, nrOf, shadowCameraLoc, shadowMapLoc;
 };
 
 #endif

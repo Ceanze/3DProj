@@ -111,7 +111,7 @@ void FrameBuffer::createFramebuffer(const std::vector<std::pair<FBO_ATTATCHMENT_
 	delete[] drawBuffers;
 
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-		Error::printError("Failed to attach and draw texture to the framebuffer!");
+		Error::printError("Failed to attach and draw texturea to the framebuffer!");
 
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 }

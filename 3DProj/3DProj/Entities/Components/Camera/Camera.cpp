@@ -15,13 +15,14 @@ Camera::Camera(Display * display, glm::vec3 relativePosition, float fov, float z
 	this->active = false;
 }
 
-Camera::Camera(Display * display, float width, float height, glm::vec3 relativePosition, float fov, float zNear, float zFar)
+Camera::Camera(Display * display, float width, float height, glm::vec3 relativePosition, float zNear, float zFar)
 {
 	this->display = display;
 	this->width = width;
 	this->height = height;
 	this->relativePosition = relativePosition;
 	this->orthoCam = true;
+	this->fov = 0.0f;
 	updateProj(fov, zNear, zFar);
 	this->active = false;
 }
@@ -139,6 +140,25 @@ void Camera::deactivate()
 	this->active = false;
 }
 
+void Camera::setDirection(const glm::vec3 & direction)
+{
+	this->f = direction;
+	this->r = glm::cross(f, GLOBAL_UP_VECTOR);
+	this->u = glm::cross(r, f);
+
+	this->yawPitchRoll.x = atan2(this->f.z, this->f.x) + 3.1415f / 2.0f;
+	this->yawPitchRoll.y = atan2(this->f.y, -this->f.z);
+	this->yawPitchRoll.z = atan2(this->u.y, this->f.x);
+
+	updateView(this->f, this->r, this->u, this->worldPosition);
+	this->getEntity()->getLocalTransform().setDirection(this->f);
+}
+
+bool Camera::isCamOrtho() const
+{
+	return this->orthoCam;
+}
+
 float Camera::getFOV() const
 {
 	return this->fov;
@@ -154,9 +174,29 @@ glm::vec3 Camera::getDirection() const
 	return this->f;
 }
 
+glm::vec3 Camera::getUp() const
+{
+	return this->u;
+}
+
+glm::vec3 Camera::getRight() const
+{
+	return this->r;
+}
+
 glm::mat4 Camera::getVP() const
 {
 	return this->proj*this->view;
+}
+
+float Camera::getFarPlane() const
+{
+	return this->zFar;
+}
+
+float Camera::getNearPlane() const
+{
+	return this->zNear;
 }
 
 void Camera::updateProj(float fov, float zNear, float zFar)
@@ -180,10 +220,6 @@ void Camera::updateView(const glm::vec3 & f, const glm::vec3 & r, const glm::vec
 
 void Camera::setLocalPositionMat()
 {
-	//this->localPositionMat = glm::mat4(1, 0, 0, this->relativePosition.x,
-	//								   0, 1, 0, this->relativePosition.y,
-	//								   0, 0, 1, this->relativePosition.z,
-	//						   		   0, 0, 0, 1);
 	this->localPositionMat = glm::mat4(1, 0, 0, 0,
 									   0, 1, 0, 0,
 									   0, 0, 1, 0,
@@ -193,7 +229,7 @@ void Camera::setLocalPositionMat()
 void Camera::setWorldPosition()
 {
 	setLocalPositionMat();
-	glm::mat4 temp = this->getEntity()->getWorldTransform().getMatrix()*this->localPositionMat;
+	glm::mat4 temp = this->getEntity()->getChainTransform().getMatrix()*this->localPositionMat;
 
 	this->worldPosition = glm::vec3(temp[3][0], temp[3][1], temp[3][2]);
 	//this->worldPosition = glm::vec3(0.0, 5.0, 10.0);

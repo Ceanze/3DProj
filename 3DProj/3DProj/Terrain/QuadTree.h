@@ -2,6 +2,7 @@
 #define QUADTREE_H
 
 #include "glew.h"
+#include "glm.hpp"
 
 #include <vector>
 
@@ -15,13 +16,13 @@ struct Triangle
 class QuadTree
 {
 public:
-	QuadTree(const unsigned& recursionLevel);
+	QuadTree(const unsigned& recursionLevel, const glm::vec2 corners[4]);
 	~QuadTree();
 
 	QuadTree** children;
 	bool hasChildren;
 
-	void addTriangleToChild(const unsigned& child, const Triangle& triangle);
+	void addTriangle(const glm::vec2 & pos, const Triangle& triangle);
 	void render();
 
 	void addEbo();
@@ -29,6 +30,9 @@ public:
 private:
 	std::vector<Triangle> triangles;
 	GLuint ebo;
+
+	glm::vec2 corners[4];
+	float quadSize;
 
 };
 

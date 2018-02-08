@@ -138,6 +138,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Core\Frustum Culling\AABox.cpp" />
     <ClCompile Include="Core\GL Utils\FrameBuffer.cpp" />
     <ClCompile Include="Core\GL Utils\Texture.cpp" />
     <ClCompile Include="Core\GL Utils\TextureInfo.cpp" />
@@ -158,6 +159,7 @@
     <ClCompile Include="Entities\Models\Mesh.cpp" />
     <ClCompile Include="Entities\Node.cpp" />
     <ClCompile Include="Error.cpp" />
+    <ClCompile Include="Core\Frustum Culling\Frustum.cpp" />
     <ClCompile Include="ImGui\imgui.cpp" />
     <ClCompile Include="ImGui\imgui_demo.cpp" />
     <ClCompile Include="ImGui\imgui_draw.cpp" />
@@ -165,6 +167,7 @@
     <ClCompile Include="Loaders\MTLLoader.cpp" />
     <ClCompile Include="Loaders\ObjLoader.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Core\Frustum Culling\Plane.cpp" />
     <ClCompile Include="Postprocessing\BlurFilter.cpp" />
     <ClCompile Include="Postprocessing\BrightnessFilter.cpp" />
     <ClCompile Include="Shading\Deferred Rendering\CombineShader.cpp" />
@@ -187,6 +190,7 @@
     <ClCompile Include="Utils\Transform.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Core\Frustum Culling\AABox.h" />
     <ClInclude Include="Core\GL Utils\FrameBuffer.h" />
     <ClInclude Include="Core\GL Utils\Texture.h" />
     <ClInclude Include="Core\GL Utils\TextureInfo.h" />
@@ -210,6 +214,7 @@
     <ClInclude Include="Entities\Models\Mesh.h" />
     <ClInclude Include="Entities\Node.h" />
     <ClInclude Include="Error.h" />
+    <ClInclude Include="Core\Frustum Culling\Frustum.h" />
     <ClInclude Include="ImGui\imconfig.h" />
     <ClInclude Include="ImGui\imgui.h" />
     <ClInclude Include="ImGui\imgui_impl_glfw_gl3.h" />
@@ -219,6 +224,7 @@
     <ClInclude Include="ImGui\stb_truetype.h" />
     <ClInclude Include="Loaders\MTLLoader.h" />
     <ClInclude Include="Loaders\ObjLoader.h" />
+    <ClInclude Include="Core\Frustum Culling\Plane.h" />
     <ClInclude Include="Postprocessing\BlurFilter.h" />
     <ClInclude Include="Postprocessing\BrightnessFilter.h" />
     <ClInclude Include="Shading\Deferred Rendering\CombineShader.h" />

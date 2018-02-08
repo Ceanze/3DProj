@@ -29,19 +29,25 @@ DeferredRenderer::DeferredRenderer(Display* display)
 	this->combineBuffer->createTextures(std::vector<std::pair<FrameBuffer::FBO_ATTATCHMENT_TYPE, GLuint>>{
 		{ FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16F }
 	});
+	this->combineBuffer->bindTexture(0);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	this->combineBuffer->unbindTexture();
 
-	this->shadowBuffer = new FrameBuffer(display->getWidth(), display->getHeight());
+	this->shadowResScale = 4.0f;
+	this->shadowBuffer = new FrameBuffer(display->getWidth()*this->shadowResScale, display->getHeight()*this->shadowResScale);
 	this->shadowBuffer->createTextures(std::vector<std::pair<FrameBuffer::FBO_ATTATCHMENT_TYPE, GLuint>>{
 		{ FrameBuffer::FBO_DEPTH_ATTACHMENT, GL_RGBA16F }
 	});
 
 	this->brightnessFilter = new BrightnessFilter(display->getWidth(), display->getHeight());
-	this->blurFilter = new BlurFilter(display->getWidth(), display->getHeight(), 0.5f);
+	this->blurFilter = new BlurFilter(display->getWidth(), display->getHeight(), 0.1f);
 
 	this->phongShader = new PhongLS();
 	this->combineShader = new CombineShader();
 	this->glowShader = new GlowShader();
 	this->quadShader = new QuadShader();
+	this->shadowShader = new ShadowShader();
 	createQuad();
 }
 
@@ -62,11 +68,19 @@ DeferredRenderer::~DeferredRenderer()
 	delete this->glowShader;
 
 	delete this->shadowBuffer;
+	delete this->shadowShader;
 }
 
 void DeferredRenderer::render(Node * node)
 {
 	renderGBuffer(node);
+
+	this->shadowBuffer->bind();
+	glUseProgram(this->shadowShader->getID());
+	node->render(this->shadowShader);
+	glUseProgram(0);
+	this->shadowBuffer->unbind();
+
 	renderLightBuffer();
 	renderCombineBuffer();
 	renderGlowBlurOrNormal();
@@ -78,6 +92,14 @@ void DeferredRenderer::render(Node * node, Terrain * terrain)
 	node->render();
 	terrain->render();
 	this->gBuffer->unbind();
+
+	this->shadowBuffer->bind();
+	glUseProgram(this->shadowShader->getID());
+	node->render(this->shadowShader);
+	terrain->render(this->shadowShader);
+	glUseProgram(0);
+	this->shadowBuffer->unbind();
+
 	renderLightBuffer();
 	renderCombineBuffer();
 	renderGlowBlurOrNormal();
@@ -92,11 +114,17 @@ void DeferredRenderer::resize(Display * display)
 
 	this->brightnessFilter->resize(display->getWidth(), display->getHeight());
 	this->blurFilter->resize(display->getWidth(), display->getHeight());
+	this->shadowBuffer->resize(display->getWidth()*this->shadowResScale, display->getHeight()*this->shadowResScale);
 }
 
 const FrameBuffer * DeferredRenderer::getGBuffer() const
 {
 	return this->gBuffer;
+}
+
+const FrameBuffer * DeferredRenderer::getShadowBuffer() const
+{
+	return this->shadowBuffer;
 }
 
 const FrameBuffer * DeferredRenderer::getLBuffer() const
@@ -119,6 +147,11 @@ void DeferredRenderer::setCamera(Camera * camera)
 	this->phongShader->setCamera(camera);
 }
 
+void DeferredRenderer::setShadowCamera(Camera * shadowCamera)
+{
+	this->shadowShader->setCamera(shadowCamera);
+}
+
 PhongLS * DeferredRenderer::getPhongShader()
 {
 	return this->phongShader;
@@ -134,9 +167,16 @@ void DeferredRenderer::renderGBuffer(Node * node)
 void DeferredRenderer::renderLightBuffer()
 {
 	this->lightingBuffer->bind();
-	
+
 	glUseProgram(this->phongShader->getID());
-	this->phongShader->updateUniforms(this->gBuffer->getTextures(), this->gBuffer->getNumTextures());
+	this->texturesTempArr[0] = this->gBuffer->getTexture(0);
+	this->texturesTempArr[1] = this->gBuffer->getTexture(1);
+	this->texturesTempArr[2] = this->gBuffer->getTexture(3);
+	this->texturesTempArr[3] = this->gBuffer->getTexture(4);
+	this->texturesTempArr[4] = this->shadowBuffer->getTexture(0);
+	this->phongShader->updateUniforms(this->texturesTempArr, 5);
+
+	this->phongShader->setShadowCamera(this->shadowShader->getCamera()->getVP());
 
 	glBindVertexArray(this->quadVAO);
 	glDrawArrays(GL_TRIANGLES, 0, 6);

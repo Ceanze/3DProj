@@ -1,6 +1,8 @@
 #include "Entity.h"
 #include "Components\Component.h"
 
+#include "../Shading/ShaderProgram.h"
+
 #include <gtc\matrix_transform.hpp>
 #include <string>
 
@@ -68,16 +70,22 @@ void Entity::selfUpdate(float dt)
 		this->components[i]->update(dt);
 }
 
-void Entity::selfRender()
+void Entity::selfRender(ShaderProgram* shadowShader)
 {
 	for (unsigned int i = 0; i < this->shaders.size(); i++)
 	{
 		std::vector<unsigned int> meshIds = this->shaderMap[this->shaders[i]];
-		glUseProgram(this->shaders[i]->getID());
-		this->shaders[i]->updateUniforms(this);
+		if (shadowShader == nullptr)
+		{
+			glUseProgram(this->shaders[i]->getID());
+			this->shaders[i]->updateUniforms(this);
+		}
+		else
+			shadowShader->updateUniforms(this);
 		for (unsigned int j = 0; j < meshIds.size(); j++)
 			this->meshes[meshIds[j]]->draw();
-		glUseProgram(0);
+		if(shadowShader == nullptr)
+			glUseProgram(0);
 	}
 }
 
