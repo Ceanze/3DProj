@@ -96,7 +96,6 @@ void DeferredRenderer::render(Node * node, Terrain * terrain)
 	this->shadowBuffer->bind();
 	glUseProgram(this->shadowShader->getID());
 	node->render(this->shadowShader);
-	terrain->render(this->shadowShader);
 	glUseProgram(0);
 	this->shadowBuffer->unbind();
 
