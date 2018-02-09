@@ -31,6 +31,7 @@ EngineCore::EngineCore()
 	this->activeCamera = this->camera;
 	this->camInc = 0;
 	attachCamera(this->activeCamera);
+	this->frustum = new Frustum(this->activeCamera, this->display.getRatio());
 	
 	this->terrain.setShader(this->geometryShader);
 
@@ -133,6 +134,7 @@ EngineCore::EngineCore()
 
 	this->base->update(0.16f);
 	this->base->init();
+	this->frustum->init();
 	this->shadowCamera->setDirection(lightDir);
 	/*-------------- END TEMP ------------------*/
 }
@@ -145,6 +147,7 @@ EngineCore::~EngineCore()
 	for (Mesh* m : this->armyPilotMeshes) delete m;
 	for (Mesh* m : this->swordMeshes) delete m;
 	delete this->base;
+	delete this->frustum;
 
 	delete this->geometryShader;
 	delete this->deferredRenderer;

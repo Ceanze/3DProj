@@ -21,6 +21,8 @@
 /*-------------- END TEMP ------------------*/
 
 #include "../Entities/Components/Camera/Camera.h"
+#include "Frustum Culling\Frustum.h"
+
 
 class EngineCore
 {
@@ -71,6 +73,8 @@ private:
 	Camera* camera2;
 	Camera* shadowCamera;
 	Camera* activeCamera;
+	Frustum* frustum;
+
 	unsigned int camInc;
 	/*-------------- END TEMP ------------------*/
 };

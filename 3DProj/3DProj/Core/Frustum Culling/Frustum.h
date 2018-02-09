@@ -22,13 +22,14 @@ private:
 
 
 public:
-	Frustum(Camera* camera, float zNear, float zFar, float ratio);
+	Frustum(Camera* camera, float ratio);
 	~Frustum();
 
-	void init(glm::vec3 camPos);
+	void init();
 	void update(glm::vec3 camPos);
 	
 	bool checkBox(AABox &box);
+
 };
 
 #endif

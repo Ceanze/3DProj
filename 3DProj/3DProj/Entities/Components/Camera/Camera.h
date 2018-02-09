@@ -8,8 +8,6 @@
 
 #include <glm.hpp>
 
-class Frustum;
-
 class Camera : public Component
 {
 public:
@@ -50,7 +48,6 @@ private:
 	Transform localTransform;
 
 	Display* display;
-	Frustum* frustum;
 
 	glm::mat4 localPositionMat;
 	glm::mat4 proj;

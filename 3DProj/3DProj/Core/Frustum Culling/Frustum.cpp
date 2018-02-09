@@ -29,12 +29,13 @@ void Frustum::calculatePlanes()
 	planes[RIGHT_P].setPointAndNormal(point, glm::normalize(cross(point - camPos, this->camera->getRight())));
 }
 
-Frustum::Frustum(Camera* camera, float zNear, float zFar, float ratio)
+Frustum::Frustum(Camera* camera, float ratio)
 {
-	this->zNear = zNear;
-	this->zFar = zFar;
+	this->zNear = camera->getNearPlane();
+	this->zFar = camera->getFarPlane();
 	this->fov = camera->getFOV();
 	this->ratio = ratio;
+	this->camera = camera;
 	calculateWidthAndHeight();
 }
 
@@ -43,9 +44,9 @@ Frustum::~Frustum()
 {
 }
 
-void Frustum::init(glm::vec3 camPos)
+void Frustum::init()
 {
-	this->camPos = camPos;
+	this->camPos = this->camera->getPosition();
 	calculatePlanes();
 }
 
