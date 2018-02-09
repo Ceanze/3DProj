@@ -10,7 +10,7 @@ Terrain::Terrain()
 	: quadTree(nullptr)
 {
 	this->heightMap = nullptr;
-	this->loadTexture("./Resources/Textures/heightmapTest.png", &this->heightMap);
+	this->loadTexture("./Resources/Textures/heightmap.png", &this->heightMap);
 
 	this->texture = nullptr;
 	this->loadTexture("./Resources/Textures/stone.jpg", &this->texture);
@@ -192,10 +192,10 @@ const glm::vec3& Terrain::generateNormals(const unsigned& x, const unsigned& z, 
 {
 	float LH, RH, UH, DH;
 
-	LH = this->getHeight(x, z + 1, data);
-	RH = this->getHeight(x, z - 1, data);
-	UH = this->getHeight(x + 1, z, data);
-	DH = this->getHeight(x - 1, z, data);
+	LH = this->getHeight(x, z - 1, data);
+	RH = this->getHeight(x, z + 1, data);
+	UH = this->getHeight(x - 1, z, data);
+	DH = this->getHeight(x + 1, z, data);
 
 	return glm::normalize(glm::vec3(LH - RH, 2.f, DH - UH));
 }
