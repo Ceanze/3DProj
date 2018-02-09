@@ -48,6 +48,7 @@ private:
 
 	GLint textureLocation;
 	GLint normalMapLocation;
+	GLint useNormalMapLoc;
 
 	GLuint ubo, bindingPoint;
 };

@@ -6,6 +6,7 @@
 #include "../ImGui/imgui_impl_glfw_gl3.h"
 #include "..\Entities\Components\Movement\Movement.h"
 #include "..\Entities\Components\Lightning\PointLight.h"
+#include "../Utils/Utils.h"
 #include "../Terrain/Terrain.h"
 
 #include "ResourceManager.h"
@@ -20,12 +21,10 @@ EngineCore::EngineCore()
 {
 	/*---------------- TEMP --------------------*/
 	// Create Shader
-	//this->testShader = new TestShader();
 	this->geometryShader = new GeometryShader();
-	this->geometryNMShader = new GeometryNormalMapShader();
 	this->deferredRenderer = new DeferredRenderer(&this->display);
 
-	this->shadowCamera = new Camera(&this->display, 40, 40, {0.0f, 0.0f, 0.0f}, -50, 50);
+	this->shadowCamera = new Camera(&this->display, 150, 150, {0.0f, 0.0f, 0.0f}, -100, 200);
 	this->deferredRenderer->setShadowCamera(this->shadowCamera);
 	this->camera = new Camera(&this->display, glm::vec3{0.0f, 0.0f, 0.0f});
 	this->camera2 = new Camera(&this->display, glm::vec3{0.0f, 10.0f, 0.0f});
@@ -36,12 +35,6 @@ EngineCore::EngineCore()
 	this->terrain.setShader(this->geometryShader);
 
 	this->base = new Entity({ 0.0f, 5.0f, -5.0f }, {0.0f, 0.0f, 0.0f});
-
-	this->directionalLight = new Entity({1.0f, 10.0f, 2.0f}, { 0.0f, 0.0f, 0.0f });
-	this->directionalLight->addComponent(this->shadowCamera);
-	const glm::vec3 lightDir = glm::normalize(glm::vec3(-3.0f, -5.0f, 1.0f));
-	this->directionalLight->addComponent(new DirectionalLight(lightDir, 1.0f, glm::vec3(1.0f), this->deferredRenderer->getPhongShader()));
-	this->base->addChild(this->directionalLight);
 
 	/*this->m1 = new Mesh();
 	loader.load(this->m1, "Bunny/bunny.obj");*/
@@ -66,6 +59,15 @@ EngineCore::EngineCore()
 	this->e2->addComponent(this->camera);
 	this->e2->addComponent(new Movement(&this->terrain, 10, GLFW_KEY_W, GLFW_KEY_A, GLFW_KEY_S, GLFW_KEY_D));
 	base->addChild(e2);
+
+	this->directionalLight = new Entity({ 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f });
+	this->directionalLight->addComponent(this->shadowCamera);
+	const glm::vec3 lightDir = glm::normalize(glm::vec3(1.0f, -2.0f, 0.0f));
+	this->shadowCamera->setDirection(lightDir);
+	this->shadowCamera->rotate(Tools::getYaw(lightDir)+ 3.1415f / 2.0f, Tools::getPitch(lightDir), 0.0f);
+	this->directionalLight->addComponent(new DirectionalLight(lightDir, 1.0f, glm::vec3(1.0f), this->deferredRenderer->getPhongShader()));
+	this->e2->addChild(this->directionalLight);
+
 	
 	// --------------------------- Sword ---------------------------
 	this->sword = new Entity({ 0.0f, -2.0f, -1.0f }, { 0.0f, 0.0f, 0.0f }, false);
@@ -84,22 +86,22 @@ EngineCore::EngineCore()
 
 	// --------------------------- Arm ---------------------------
 	Entity* temp = new Entity({ 0.0f, -3.0f, 0.0f }, { 0.0f, 0.0f, 0.0f });
-	temp->addMesh(this->m2, this->geometryNMShader);
+	temp->addMesh(this->m2, this->geometryShader);
 	base->addChild(temp);
 	this->arm.push_back(temp);
 
 	temp = new Entity({ 0.0f, 2.0f, 0.0f }, { 0.0f, 0.0f, 0.0f });
-	temp->addMesh(this->m2, this->geometryNMShader);
+	temp->addMesh(this->m2, this->geometryShader);
 	this->arm[this->arm.size() - 1]->addChild(temp);
 	this->arm.push_back(temp);
 
 	temp = new Entity({ 0.0f, 2.0f, 0.0f }, { 0.0f, 0.0f, 0.0f });
-	temp->addMesh(this->m2, this->geometryNMShader);
+	temp->addMesh(this->m2, this->geometryShader);
 	this->arm[this->arm.size() - 1]->addChild(temp);
 	this->arm.push_back(temp);
 
 	temp = new Entity({ 0.0f, 2.0f, 0.0f }, { 0.0f, 0.0f, 0.0f });
-	temp->addMeshes(this->cubeMeshes, this->geometryNMShader);
+	temp->addMeshes(this->cubeMeshes, this->geometryShader);
 	//temp->addComponent(this->camera2);
 	//temp->addComponent(new Movement(10, GLFW_KEY_W, GLFW_KEY_A, GLFW_KEY_S, GLFW_KEY_D));
 	this->arm[this->arm.size() - 1]->addChild(temp);
@@ -137,8 +139,6 @@ EngineCore::EngineCore()
 
 EngineCore::~EngineCore()
 {
-	//delete this->testShader;
-	//delete this->phongShader;
 	//delete this->m1;
 	delete this->m2;
 	for (Mesh* m : this->cubeMeshes) delete m;
@@ -146,7 +146,6 @@ EngineCore::~EngineCore()
 	for (Mesh* m : this->swordMeshes) delete m;
 	delete this->base;
 
-	delete this->geometryNMShader;
 	delete this->geometryShader;
 	delete this->deferredRenderer;
 
@@ -224,7 +223,12 @@ void EngineCore::update(const float & dt)
 
 	Transform& lightT = this->lightBase->getWorldTransform();
 	lightT.setRotation(lightT.getRotation() + glm::vec3{ 0.0f, -dt, 0.0f });
-
+	/*
+	DirectionalLight* dirLight = dynamic_cast<DirectionalLight*>(this->directionalLight->getComponent(1));
+	glm::vec3 newDir = glm::normalize(glm::rotate(glm::mat4(1.0f), dt*0.1f, { 0.0f, 0.0f, 1.0f })*glm::vec4(dirLight->getDirection(), 0.0f));
+	dirLight->setDirection(newDir);
+	this->shadowCamera->rotate(Tools::getYaw(newDir) + 3.1415f / 2.0f, Tools::getPitch(newDir), 0.0f);
+	*/
 	this->base->update(dt);
 	
 }
@@ -465,7 +469,6 @@ void EngineCore::attachCamera(Camera* camera)
 {
 	camera->activate();
 	this->geometryShader->setCamera(camera);
-	this->geometryNMShader->setCamera(camera);
 	this->deferredRenderer->setCamera(camera);
 }
 

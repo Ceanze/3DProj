@@ -18,7 +18,6 @@ layout(std140) uniform Lights
   PointLightData pointLightData[MAX_LIGHTS];
   DirectionalLightData directionalLightData;
 };
-
 uniform int nrOfPointLights;
 
 uniform sampler2D positionTexture;
@@ -65,17 +64,18 @@ void main()
 		float specularFactor = pow(max(dot(r, v), 0.0), s+0.01);
 		specular += diffuseFactor*specularFactor*lightFactor;
 	}
-
+ 
+	float visibility = 1.0;
 	const mat4 biasMatrix = mat4(0.5, 0.0, 0.0, 0.0,
-						   0.0, 0.5, 0.0, 0.0,
-						   0.0, 0.0, 0.5, 0.0,
-						   0.5, 0.5, 0.5, 1.0);
+						0.0, 0.5, 0.0, 0.0,
+						0.0, 0.0, 0.5, 0.0,
+						0.5, 0.5, 0.5, 1.0);
 	mat4 depthBias = biasMatrix*shadowCamera;
 	vec4 shadowCoord = depthBias*vec4(fragPos, 1.0);
-	float visibility = 1.0;
-	if(texture(shadowMap, shadowCoord.xy).x+0.01 < shadowCoord.z)
-		visibility = 0.0;
-
+	if(shadowCoord.x >= 0.0 && shadowCoord.x <= 1.0 && shadowCoord.y >= 0.0 && shadowCoord.y <= 1.0 && shadowCoord.z >= 0.0 && shadowCoord.z <= 1.0)
+		if(texture(shadowMap, shadowCoord.xy).x+0.01 < shadowCoord.z)
+			visibility = 0.5;
+	
 	// Directonal Light
 	// Diffuse part
 	vec3 lightDirection = -directionalLightData.direction.xyz;

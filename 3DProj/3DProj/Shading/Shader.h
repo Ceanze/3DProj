@@ -15,8 +15,13 @@ public:
 	void compile();
 
 	const GLuint getID() const;
+	std::string getName() const;
+	GLuint getType() const;
+
 private:
 	GLuint id;
+	std::string name;
+	GLuint type;
 };
 
 #endif

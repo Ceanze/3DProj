@@ -159,7 +159,7 @@ void ObjLoader::load(Mesh * mesh, const std::string & name, unsigned int flags)
 
 		ResourceManager::addMaterials(outMaterials);
 
-		Error::printError("[" + std::string(MODEL_PATH) + name + "]numv: " + std::to_string(numv));
+		Error::print("[Mesh detail]:", "[" + std::string(MODEL_PATH) + name + "] num triangles: " + std::to_string(numv));
 		file.close();
 	}
 	else
@@ -330,7 +330,7 @@ void ObjLoader::load(std::vector<Mesh*>& meshes, const std::string & name, unsig
 
 		ResourceManager::addMaterials(outMaterials);
 
-		Error::printError("["+ std::string(MODEL_PATH) + name +"]numv: " + std::to_string(numv) + ", meshIndex: " + std::to_string(meshIndex));
+		Error::print("[Mesh detail]:", "["+ std::string(MODEL_PATH) + name +"] num triangles: " + std::to_string(numv) + ", meshIndex: " + std::to_string(meshIndex));
 		file.close();
 	}
 	else

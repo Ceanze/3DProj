@@ -48,6 +48,7 @@ private:
 
 	GLuint vao, vertexVbo, ebo;
 	GLuint vPosLocation, normalLocation, uvsLocation;
+	GLint useNormalMapLoc;
 
 	float* heights;
 	unsigned size, offset, rowLength;

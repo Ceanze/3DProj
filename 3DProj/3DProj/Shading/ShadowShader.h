@@ -13,8 +13,6 @@ public:
 
 private:
 	void selfUpdateUniforms(Node* entity);
-
-	GLuint depthCameraLoc, wmLoc;
 };
 
 #endif

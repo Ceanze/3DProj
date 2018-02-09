@@ -39,6 +39,8 @@ public:
 	glm::vec3 getUp() const;
 	glm::vec3 getRight() const;
 	glm::mat4 getVP() const;
+	float getFarPlane() const;
+	float getNearPlane() const;
 
 private:
 	void updateProj(float fov, float zNear, float zFar);

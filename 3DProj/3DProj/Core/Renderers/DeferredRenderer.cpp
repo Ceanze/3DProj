@@ -34,7 +34,8 @@ DeferredRenderer::DeferredRenderer(Display* display)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	this->combineBuffer->unbindTexture();
 
-	this->shadowBuffer = new FrameBuffer(display->getWidth(), display->getHeight());
+	this->shadowResScale = 4.0f;
+	this->shadowBuffer = new FrameBuffer(display->getWidth()*this->shadowResScale, display->getHeight()*this->shadowResScale);
 	this->shadowBuffer->createTextures(std::vector<std::pair<FrameBuffer::FBO_ATTATCHMENT_TYPE, GLuint>>{
 		{ FrameBuffer::FBO_DEPTH_ATTACHMENT, GL_RGBA16F }
 	});
@@ -95,7 +96,6 @@ void DeferredRenderer::render(Node * node, Terrain * terrain)
 	this->shadowBuffer->bind();
 	glUseProgram(this->shadowShader->getID());
 	node->render(this->shadowShader);
-	terrain->render(this->shadowShader);
 	glUseProgram(0);
 	this->shadowBuffer->unbind();
 
@@ -113,7 +113,7 @@ void DeferredRenderer::resize(Display * display)
 
 	this->brightnessFilter->resize(display->getWidth(), display->getHeight());
 	this->blurFilter->resize(display->getWidth(), display->getHeight());
-	this->shadowBuffer->resize(display->getWidth(), display->getHeight());
+	this->shadowBuffer->resize(display->getWidth()*this->shadowResScale, display->getHeight()*this->shadowResScale);
 }
 
 const FrameBuffer * DeferredRenderer::getGBuffer() const
@@ -166,7 +166,7 @@ void DeferredRenderer::renderGBuffer(Node * node)
 void DeferredRenderer::renderLightBuffer()
 {
 	this->lightingBuffer->bind();
-	
+
 	glUseProgram(this->phongShader->getID());
 	this->texturesTempArr[0] = this->gBuffer->getTexture(0);
 	this->texturesTempArr[1] = this->gBuffer->getTexture(1);
@@ -175,7 +175,7 @@ void DeferredRenderer::renderLightBuffer()
 	this->texturesTempArr[4] = this->shadowBuffer->getTexture(0);
 	this->phongShader->updateUniforms(this->texturesTempArr, 5);
 
-	this->phongShader->setShadowCamera(this->shadowShader->getCamera()->getVP());
+	this->phongShader->setShadowCamera(this->shadowShader->getCamera());
 
 	glBindVertexArray(this->quadVAO);
 	glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -193,7 +193,7 @@ void DeferredRenderer::renderCombineBuffer()
 	this->texturesTempArr[0] = this->lightingBuffer->getTexture(0);
 	this->texturesTempArr[1] = this->lightingBuffer->getTexture(1);
 	this->texturesTempArr[2] = this->gBuffer->getTexture(2);
-	this->combineShader->updateUniforms(this->texturesTempArr, 3);
+	this->combineShader->updateUniforms(this->texturesTempArr, 4);
 
 	glBindVertexArray(this->quadVAO);
 	glDrawArrays(GL_TRIANGLES, 0, 6);

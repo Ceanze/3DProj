@@ -5,11 +5,13 @@
 ShaderProgram::ShaderProgram()
 {
 	this->id = glCreateProgram();
+	this->name = "";
 }
 
 ShaderProgram::ShaderProgram(const Shader & computeShader)
 {
 	this->id = glCreateProgram();
+	this->name = "";
 	addShader(computeShader);
 	link();
 }
@@ -17,6 +19,7 @@ ShaderProgram::ShaderProgram(const Shader & computeShader)
 ShaderProgram::ShaderProgram(const Shader & vertexShader, const Shader & fragmentShader)
 {
 	this->id = glCreateProgram();
+	this->name = "";
 	addShader(vertexShader);
 	addShader(fragmentShader);
 	link();
@@ -25,6 +28,7 @@ ShaderProgram::ShaderProgram(const Shader & vertexShader, const Shader & fragmen
 ShaderProgram::ShaderProgram(const Shader & vertexShader, const Shader & fragmentShader, const Shader & geometryShader)
 {
 	this->id = glCreateProgram();
+	this->name = "";
 	addShader(vertexShader);
 	addShader(fragmentShader);
 	addShader(geometryShader);
@@ -38,6 +42,14 @@ ShaderProgram::~ShaderProgram()
 
 void ShaderProgram::addShader(const Shader & shader)
 {
+	std::string sname = "[" + shader.getName() + ": ";
+	switch (shader.getType())
+	{
+	case GL_FRAGMENT_SHADER:	sname += "Fragment shader"; break;
+	case GL_GEOMETRY_SHADER:	sname += "Geometry shader | "; break;
+	case GL_VERTEX_SHADER:		sname += "Vertex shader | "; break;
+	}
+	this->name += sname + "]";
 	this->shaderIds.push_back(shader.getID());
 	glAttachShader(this->id, shader.getID());
 }
@@ -65,37 +77,91 @@ void ShaderProgram::link(bool shouldDeleteShaders)
 	}
 }
 
+void ShaderProgram::setTexture2D(const std::string & name, unsigned int unit)
+{
+	glUniform1i(addUniform(name), unit);
+}
+
+void ShaderProgram::setTexture2D(const std::string & name, unsigned int unit, GLuint textureID)
+{
+	setTexture2D(name, unit);
+	glActiveTexture(GL_TEXTURE0 + unit);
+	glBindTexture(GL_TEXTURE_2D, textureID);
+}
+
+void ShaderProgram::setUniform1i(const std::string & name, int value)
+{
+	glUniform1i(addUniform(name), value);
+}
+
+void ShaderProgram::setUniform1b(const std::string & name, bool value)
+{
+	setUniform1i(name, (int)value);
+}
+
+void ShaderProgram::setUniform2f(const std::string & name, float v1, float v2)
+{
+	glUniform2f(addUniform(name), v1, v2);
+}
+
+void ShaderProgram::setUniform2fv(const std::string & name, unsigned int count, const float * values)
+{
+	glUniform2fv(addUniform(name), count, values);
+}
+
+void ShaderProgram::setUniform3f(const std::string & name, float v1, float v2, float v3)
+{
+	glUniform3f(addUniform(name), v1, v2, v3);
+}
+
+void ShaderProgram::setUniform3fv(const std::string & name, unsigned int count, const float * values)
+{
+	glUniform3fv(addUniform(name), count, values);
+}
+
+void ShaderProgram::setUniform4f(const std::string & name, float v1, float v2, float v3, float v4)
+{
+	glUniform4f(addUniform(name), v1, v2, v3, v4);
+}
+
+void ShaderProgram::setUniform4fv(const std::string & name, unsigned int count, const float * values)
+{
+	glUniform4fv(addUniform(name), count, values);
+}
+
+void ShaderProgram::setUniformMatrix4fv(const std::string & name, unsigned int count, bool transpose, const float * values)
+{
+	glUniformMatrix4fv(addUniform(name), count, transpose, values);
+}
+
 void ShaderProgram::setCamera(Camera * camera)
 {
 	this->camera = camera;
 }
 
+int ShaderProgram::addUniform(const std::string & name)
+{
+	if (this->uniforms.find(name) == this->uniforms.end())
+	{
+		int uniformLocation = glGetUniformLocation(this->id, name.c_str());
+		if (uniformLocation == -1)
+			Error::printError("Can't find uniform '" + name + "' in shader '" + this->name + "'");
+		this->uniforms.insert({ name, uniformLocation });
+	}
+	return this->uniforms[name];
+}
+
 void ShaderProgram::updateUniforms()
 {
-	GLuint camLoc = glGetUniformLocation(this->getID(), "camera");
-	if (camLoc != -1)
-	{
-		glUniformMatrix4fv(camLoc, 1, GL_FALSE, &(this->camera->getVP())[0][0]);
-	}
-	else Error::printError("Could not find 'camera' in shader!");
+	setUniformMatrix4fv("camera", 1, false, &(this->camera->getVP())[0][0]);
 
 	glm::mat4 identityMatrix(1.0f);
-
-	GLuint wmLoc = glGetUniformLocation(this->getID(), "wm");
-	if (wmLoc != -1)
-	{
-		glUniformMatrix4fv(wmLoc, 1, GL_FALSE, &identityMatrix[0][0]);
-	}
+	setUniformMatrix4fv("wm", 1, false, &identityMatrix[0][0]);
 }
 
 void ShaderProgram::updateUniforms(Node * entity)
 {
-	GLuint camLoc = glGetUniformLocation(this->getID(), "camera");
-	if (camLoc != -1)
-	{
-		glUniformMatrix4fv(camLoc, 1, GL_FALSE, &(this->camera->getVP())[0][0]);
-	}
-	else Error::printError("Could not find 'camera' in shader!");
+	setUniformMatrix4fv("camera", 1, false, &(this->camera->getVP())[0][0]);
 
 	selfUpdateUniforms(entity);
 }

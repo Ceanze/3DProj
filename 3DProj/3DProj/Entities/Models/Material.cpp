@@ -35,7 +35,7 @@ void Material::loadTexture(const std::string & path)
 	if (hasFailed == TEXTURE_FAILED)
 		Error::printError("Failed to load texture: " + path);
 	else if (hasFailed == TEXTURE_SUCCEEDED)
-		Error::printWarning("Loaded texture:  " + path);
+		Error::print("[Loaded texture]:", path);
 }
 
 void Material::loadNormalMap(const std::string & path)
@@ -44,7 +44,7 @@ void Material::loadNormalMap(const std::string & path)
 	if (hasFailed == TEXTURE_FAILED)
 		Error::printError("Failed to load normal map: " + path);
 	else if (hasFailed == TEXTURE_SUCCEEDED)
-		Error::printWarning("Loaded normal map:  " + path);
+		Error::print("[Loaded normal map]:", path);
 }
 
 void Material::loadDefaultTexture()
@@ -53,7 +53,7 @@ void Material::loadDefaultTexture()
 	if (hasFailed == TEXTURE_FAILED)
 		Error::printError("Failed to load default texture: " + std::string(DEFAULT_TEXTURE_PATH));
 	else if (hasFailed == TEXTURE_SUCCEEDED)
-		Error::printWarning("Loaded default texture:  " + std::string(DEFAULT_TEXTURE_PATH));
+		Error::print("[Loaded default texture]:", std::string(DEFAULT_TEXTURE_PATH));
 }
 
 void Material::loadDefaultNormalMap()
@@ -62,5 +62,5 @@ void Material::loadDefaultNormalMap()
 	if (hasFailed == TEXTURE_FAILED)
 		Error::printError("Failed to load default normal map: " + std::string(DEFAULT_NORMAL_MAP_PATH));
 	else if(hasFailed == TEXTURE_SUCCEEDED)
-		Error::printWarning("Loaded default normal map:  " + std::string(DEFAULT_NORMAL_MAP_PATH));
+		Error::print("[Loaded default normal map]:", std::string(DEFAULT_NORMAL_MAP_PATH));
 }

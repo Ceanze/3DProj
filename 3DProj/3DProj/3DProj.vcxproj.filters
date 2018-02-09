@@ -78,12 +78,6 @@
     <ClCompile Include="Utils\Transform.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Shading\PhongShader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Shading\TestShader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Entities\Components\Component.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -112,9 +106,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Core\ResourceManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Shading\Deferred Rendering\GeometryNormalMapShader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Entities\Components\Lightning\LightComponent.cpp">
@@ -245,12 +236,6 @@
     <ClInclude Include="Utils\Transform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Shading\PhongShader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Shading\TestShader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Entities\Components\Component.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -279,9 +264,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Core\ResourceManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Shading\Deferred Rendering\GeometryNormalMapShader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Stb\stb_image.h">
@@ -335,12 +317,12 @@
     <ClInclude Include="Core\Frustum Culling\AABox.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Utils\Utils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Shaders\Phong\TestShader.fs" />
     <None Include="Resources\Shaders\Deferred Rendering\PhongLS.fs" />
     <None Include="Resources\Shaders\Deferred Rendering\PhongLS.vs" />
-    <None Include="Resources\Shaders\Deferred Rendering\GeometryDRNormalMap.vs" />
-    <None Include="Resources\Shaders\Deferred Rendering\GeometryDRNormalMap.fs" />
   </ItemGroup>
 </Project>

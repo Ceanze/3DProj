@@ -15,10 +15,7 @@
 #include "../Shading/Shader.h"
 
 #include "../Shading/ShaderProgram.h"
-#include "../Shading/PhongShader.h"
-#include "../Shading/TestShader.h"
 #include "../Shading/Deferred Rendering/GeometryShader.h"
-#include "../Shading/Deferred Rendering/GeometryNormalMapShader.h"
 
 #include "Renderers\DeferredRenderer.h"
 /*-------------- END TEMP ------------------*/
@@ -53,10 +50,8 @@ private:
 
 	/*---------------- TEMP --------------------*/
 	GeometryShader* geometryShader;
-	GeometryNormalMapShader* geometryNMShader;
 	DeferredRenderer* deferredRenderer;
 
-	//TestShader* testShader;
 	Terrain terrain;
 	Entity* base;
 	Entity* e1;
