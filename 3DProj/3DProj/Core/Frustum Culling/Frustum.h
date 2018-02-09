@@ -2,7 +2,7 @@
 #define FRUSTUM_H
 
 #include "Plane.h"
-#include "../Config.h"
+#include "glm.hpp"
 
 class Camera;
 class AABox;
@@ -10,7 +10,7 @@ class AABox;
 class Frustum
 {
 private:
-	enum {NEAR = 0, FAR, LEFT, RIGHT, TOP, BOTTOM};
+	enum Sides {NEAR_P = 0, FAR_P, LEFT_P, RIGHT_P, TOP_P, BOTTOM_P};
 	Plane planes[6];
 	Camera* camera;
 	float zNear, zFar, fov, ratio;

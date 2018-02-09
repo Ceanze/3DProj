@@ -17,16 +17,16 @@ void Frustum::calculatePlanes()
 	glm::vec3 point;
 	glm::vec3 nearCenter = this->camPos - this->camera->getDirection() * zNear;
 	glm::vec3 farCenter = this->camPos - this->camera->getDirection() * zFar;
-	planes[NEAR].setPointAndNormal(nearCenter, this->camera->getDirection());
-	planes[FAR].setPointAndNormal(farCenter, -this->camera->getDirection());
+	planes[NEAR_P].setPointAndNormal(nearCenter, this->camera->getDirection());
+	planes[FAR_P].setPointAndNormal(farCenter, -this->camera->getDirection());
 
 	point = nearCenter + (this->nearHeight / 2) - (this->nearWidth / 2);
-	planes[TOP].setPointAndNormal(point, glm::normalize(cross(point - camPos, this->camera->getUp())));
-	planes[LEFT].setPointAndNormal(point, glm::normalize(cross(point - camPos, -this->camera->getRight())));
+	planes[TOP_P].setPointAndNormal(point, glm::normalize(cross(point - camPos, this->camera->getUp())));
+	planes[LEFT_P].setPointAndNormal(point, glm::normalize(cross(point - camPos, -this->camera->getRight())));
 
 	point = nearCenter - (this->nearHeight / 2) + (this->nearWidth / 2);
-	planes[BOTTOM].setPointAndNormal(point, glm::normalize(cross(point - camPos, -this->camera->getUp())));
-	planes[RIGHT].setPointAndNormal(point, glm::normalize(cross(point - camPos, this->camera->getRight())));
+	planes[BOTTOM_P].setPointAndNormal(point, glm::normalize(cross(point - camPos, -this->camera->getUp())));
+	planes[RIGHT_P].setPointAndNormal(point, glm::normalize(cross(point - camPos, this->camera->getRight())));
 }
 
 Frustum::Frustum(Camera* camera, float zNear, float zFar, float ratio)
@@ -35,7 +35,7 @@ Frustum::Frustum(Camera* camera, float zNear, float zFar, float ratio)
 	this->zFar = zFar;
 	this->fov = camera->getFOV();
 	this->ratio = ratio;
-	
+	calculateWidthAndHeight();
 }
 
 
@@ -46,6 +46,7 @@ Frustum::~Frustum()
 void Frustum::init(glm::vec3 camPos)
 {
 	this->camPos = camPos;
+	calculatePlanes();
 }
 
 void Frustum::update(glm::vec3 camPos)

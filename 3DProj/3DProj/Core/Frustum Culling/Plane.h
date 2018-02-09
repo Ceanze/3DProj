@@ -1,7 +1,7 @@
 #ifndef PLANE_H
 #define PLANE_H
 
-#include "../Config.h"
+#include "glm.hpp"
 
 class Plane
 {

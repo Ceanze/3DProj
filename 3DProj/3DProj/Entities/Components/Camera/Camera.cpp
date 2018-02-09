@@ -3,6 +3,7 @@
 #include "../../../Core/Display.h"
 #include "..\..\Entity.h"
 #include "../../../Error.h"
+#include "../../../Core/Frustum Culling/Frustum.h"
 
 #include <gtc\matrix_transform.hpp>
 
@@ -13,6 +14,7 @@ Camera::Camera(Display * display, glm::vec3 relativePosition, float fov, float z
 	this->orthoCam = false;
 	updateProj(fov, zNear, zFar);
 	this->active = false;
+	this->frustum = new Frustum(this, this->zNear, this->zFar, this->display->getRatio());
 }
 
 Camera::Camera(Display * display, float width, float height, glm::vec3 relativePosition, float zNear, float zFar)
@@ -47,6 +49,7 @@ void Camera::update(const float & dt)
 {
 	this->dt = dt;
 	setRelativePosition(this->relativePosition);
+	frustum->update(this->worldPosition);
 }
 
 void Camera::input(Display * display)

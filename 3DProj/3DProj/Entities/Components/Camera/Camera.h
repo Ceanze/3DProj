@@ -4,8 +4,11 @@
 #include "../Component.h"
 #include "../../../Core/Config.h"
 #include "../../../Utils/Transform.h"
+//#include "../../../Core/Frustum Culling/Frustum.h"
 
 #include <glm.hpp>
+
+class Frustum;
 
 class Camera : public Component
 {
@@ -45,6 +48,7 @@ private:
 	Transform localTransform;
 
 	Display* display;
+	Frustum* frustum;
 
 	glm::mat4 localPositionMat;
 	glm::mat4 proj;
