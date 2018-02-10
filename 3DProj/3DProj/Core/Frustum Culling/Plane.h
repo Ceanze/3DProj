@@ -13,7 +13,7 @@ public:
 	~Plane();
 
 	void setPointAndNormal(glm::vec3 point, glm::vec3 normal);
-	float distance(glm::vec3 point);
+	float distance(const glm::vec3& point) const;
 };
 
 #endif

@@ -2,6 +2,8 @@
 #define FRUSTUM_H
 
 #include "Plane.h"
+#include "../../Terrain/QuadTree.h"
+
 #include "glm.hpp"
 
 class Camera;
@@ -13,6 +15,7 @@ private:
 	enum Sides {NEAR_P = 0, FAR_P, LEFT_P, RIGHT_P, TOP_P, BOTTOM_P};
 	Plane planes[6];
 	Camera* camera;
+	QuadTree* quadTree;
 	float zNear, zFar, fov, ratio;
 	float farWidth, farHeight, nearWidth, nearHeight;
 	glm::vec3 camPos;
@@ -22,7 +25,7 @@ private:
 
 
 public:
-	Frustum(Camera* camera, float ratio);
+	Frustum(Camera* camera, QuadTree* quadTree, float ratio);
 	~Frustum();
 
 	void init();

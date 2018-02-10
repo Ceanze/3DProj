@@ -31,7 +31,7 @@ EngineCore::EngineCore()
 	this->activeCamera = this->camera;
 	this->camInc = 0;
 	attachCamera(this->activeCamera);
-	this->frustum = new Frustum(this->activeCamera, this->display.getRatio());
+	this->frustum = new Frustum(this->activeCamera, this->terrain.getQuadTree(), this->display.getRatio());
 	
 	this->terrain.setShader(this->geometryShader);
 
@@ -63,7 +63,7 @@ EngineCore::EngineCore()
 
 	this->directionalLight = new Entity({ 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f });
 	this->directionalLight->addComponent(this->shadowCamera);
-	const glm::vec3 lightDir = glm::normalize(glm::vec3(1.0f, -2.0f, 0.0f));
+	const glm::vec3 lightDir = glm::normalize(glm::vec3(20.0f, -2.0f, 0.0f));
 	this->shadowCamera->setDirection(lightDir);
 	this->shadowCamera->rotate(Tools::getYaw(lightDir)+ 3.1415f / 2.0f, Tools::getPitch(lightDir), 0.0f);
 	this->directionalLight->addComponent(new DirectionalLight(lightDir, 1.0f, glm::vec3(1.0f), this->deferredRenderer->getPhongShader()));
@@ -109,16 +109,16 @@ EngineCore::EngineCore()
 	this->arm.push_back(temp);
 
 	// ------------------------- Lights ---------------------------
-	this->lightBase = new Entity({ 0.0f, 6.0f, 0.0f }, { 0.0f, 0.0f, 0.0f });
+	this->lightBase = new Entity({ 0.0f, 2.0f, 40.0f }, { 0.0f, 0.0f, 0.0f });
 	this->base->addChild(this->lightBase);
+	
+	//temp = new Entity({ 0.0f, 0.0f, 10.0f }, { 0.0f, 0.0f, 0.0f });
+	//temp->addComponent(new PointLight(100.0f, 1.0f, glm::vec3(0.8f, 0.8f, 0.8f), this->deferredRenderer->getPhongShader()));
+	//temp->addMesh(this->m2, this->geometryShader);
+	//temp->getLocalTransform().setScale({ 0.2f, 0.2f, 0.2f });
+	//this->lightBase->addChild(temp);
+
 	/*
-	temp = new Entity({ -4.0f, 0.0f, -6.0f }, { 0.0f, 0.0f, 0.0f });
-	temp->addComponent(new PointLight(50.0f, 1.0f, glm::vec3(1.0f, 0.0f, 0.0f), this->deferredRenderer->getPhongShader()));
-	temp->addMesh(this->m2, this->geometryNMShader);
-	temp->getLocalTransform().setScale({ 0.2f, 0.2f, 0.2f });
-	this->lightBase->addChild(temp);
-
-
 	temp = new Entity({ 4.0f, 0.0f, -6.0f }, { 0.0f, 0.0f, 0.0f });
 	temp->addComponent(new PointLight(50.0f, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f), this->deferredRenderer->getPhongShader()));
 	temp->addMesh(this->m2, this->geometryNMShader);
@@ -205,6 +205,8 @@ void EngineCore::init()
 
 void EngineCore::update(const float & dt)
 {
+	this->frustum->update(this->camera->getPosition());
+
 	/*
 	float& time = this->testShader->getTime();
 	time += dt*3.0f;

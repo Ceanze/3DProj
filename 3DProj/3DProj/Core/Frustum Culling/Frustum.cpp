@@ -1,6 +1,7 @@
 #include "Frustum.h"
 
 #include "../../Entities/Components/Camera/Camera.h"
+#include "../../Error.h"
 #include "AABox.h"
 
 void Frustum::calculateWidthAndHeight()
@@ -29,13 +30,14 @@ void Frustum::calculatePlanes()
 	planes[RIGHT_P].setPointAndNormal(point, glm::normalize(cross(point - camPos, this->camera->getRight())));
 }
 
-Frustum::Frustum(Camera* camera, float ratio)
+Frustum::Frustum(Camera* camera, QuadTree* quadTree, float ratio)
 {
 	this->zNear = camera->getNearPlane();
 	this->zFar = camera->getFarPlane();
 	this->fov = camera->getFOV();
 	this->ratio = ratio;
 	this->camera = camera;
+	this->quadTree = quadTree;
 	calculateWidthAndHeight();
 }
 
@@ -47,12 +49,17 @@ Frustum::~Frustum()
 void Frustum::init()
 {
 	this->camPos = this->camera->getPosition();
-	calculatePlanes();
+	this->calculatePlanes();
 }
 
 void Frustum::update(glm::vec3 camPos)
 {
 	this->camPos = camPos;
+	this->calculatePlanes();
+	if (this->quadTree != nullptr)
+		this->quadTree->statusFrustum(this->planes);
+	else
+		Error::printWarning("No 'QuadTree' attached to frustum!");
 }
 
 bool Frustum::checkBox(AABox &box)

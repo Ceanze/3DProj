@@ -3,13 +3,18 @@
 
 
 
-AABox::AABox(const std::vector<glm::vec3> points)
+AABox::AABox()
 {
-	this->points = points;
+
 }
 
 AABox::~AABox()
 {
+}
+
+void AABox::addPoint(const glm::vec3 & point)
+{
+	this->points.push_back(point);
 }
 
 glm::vec3 AABox::getPoint(int index)

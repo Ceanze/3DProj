@@ -3,6 +3,8 @@
 
 #include "glew.h"
 #include "glm.hpp"
+#include "../Core/Frustum Culling/Plane.h"
+#include "../Core/Frustum Culling/AABox.h"
 
 #include <vector>
 
@@ -16,7 +18,7 @@ struct Triangle
 class QuadTree
 {
 public:
-	QuadTree(const unsigned& recursionLevel, const glm::vec2 corners[4]);
+	QuadTree(const unsigned& recursionLevel, glm::vec3 corners[4], const float& height);
 	~QuadTree();
 
 	QuadTree** children;
@@ -24,6 +26,7 @@ public:
 
 	void addTriangle(const glm::vec2 & pos, const Triangle& triangle);
 	void render();
+	bool statusFrustum(const Plane planes[6]);
 
 	void addEbo();
 
@@ -31,7 +34,11 @@ private:
 	std::vector<Triangle> triangles;
 	GLuint ebo;
 
-	glm::vec2 corners[4];
+	bool inFrustum;
+
+	glm::vec3 corners[4];
+
+	AABox box;
 	float quadSize;
 
 };
