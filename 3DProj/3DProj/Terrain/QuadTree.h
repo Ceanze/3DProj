@@ -36,7 +36,7 @@ private:
 
 	bool inFrustum;
 
-	glm::vec3 corners[4];
+	//glm::vec3 corners[4];
 
 	AABox box;
 	float quadSize;
