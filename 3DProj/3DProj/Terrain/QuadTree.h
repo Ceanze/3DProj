@@ -30,6 +30,9 @@ public:
 
 	void addEbo();
 
+	AABox getBox() const;
+	bool isInFrustum() const;
+
 private:
 	std::vector<Triangle> triangles;
 	GLuint ebo;

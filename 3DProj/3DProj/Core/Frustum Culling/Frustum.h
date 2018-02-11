@@ -31,7 +31,14 @@ public:
 	void init();
 	void update(glm::vec3 camPos);
 	
-	bool checkBox(AABox &box);
+	//bool checkBox(AABox &box);
+
+	float getZNear() const;
+	float getZFar() const;
+	float getNearHeight() const;
+	float getFarHeight() const;
+	float getNearWidth() const;
+	float getFarWidth() const;
 
 };
 
