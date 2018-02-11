@@ -498,30 +498,7 @@ void EngineCore::renderFrustumGUI()
 
 	draw_list->PushClipRect(canvas_pos, ImVec2(canvas_pos.x + canvas_size.x, canvas_pos.y + canvas_size.y), true);      // clip lines within the canvas (if we resize it, etc.)
 	
-	for (unsigned int i = 0; i < 4; i++)
-	{
-		glm::vec3 min;
-		glm::vec3 max;
-		AABox box = tree->children[i]->getBox();
-		for (unsigned int j = 0; j < 8; j++)
-		{
-			if (j == 0 || (min.x < box.getPoint(j).x || min.z < box.getPoint(j).z)) min = box.getPoint(j);
-			if (j == 0 || (max.x > box.getPoint(j).x || max.z > box.getPoint(j).z)) max = box.getPoint(j);
-			draw_list->AddCircleFilled(ImVec2(box.getPoint(j).x+offset.x, box.getPoint(j).z+offset.z), 1.5f, ImColor(255, 255, 255), 8);
-		}
-		glm::vec2 temp(min.x, min.z);
-		min.x = temp.y;
-		min.z = temp.x;
-		temp.x = max.x;
-		temp.y = max.z;
-		max.x = temp.y;
-		max.z = temp.x;
-		min += offset;
-		max += offset;
-		ImColor color = ImColor(0, 255, 0);
-		if (!tree->children[i]->isInFrustum()) color = ImColor(255, 0, 0);
-		draw_list->AddRectFilled(ImVec2(min.x, min.z), ImVec2(max.x, max.z), color);
-	}
+	renderQuadGUI(&draw_list, offset, tree);
 	//draw_list->AddCircleFilled(ImVec2(camPos.x, camPos.y), 1.5f, ImColor(255, 255, 255), 8);
 
 	glm::vec3 nearCenter = this->camera->getPosition() + this->camera->getDirection() * this->frustum->getZNear();
@@ -563,6 +540,44 @@ void EngineCore::renderFrustumGUI()
 	draw_list->AddLine(ImVec2(frd.x, frd.z), ImVec2(fru.x, fru.z), ImColor(255, 255, 255));
 
 	draw_list->PopClipRect();
+}
+
+void EngineCore::renderQuadGUI(ImDrawList** draw_list, glm::vec3 offset, QuadTree* quad)
+{
+	if (quad->hasChildren)
+	{
+		for (unsigned int i = 0; i < 4; i++)
+		{
+			if (!quad->children[i]->hasChildren)
+			{
+				glm::vec3 min;
+				glm::vec3 max;
+				AABox box = quad->children[i]->getBox();
+				for (unsigned int j = 0; j < 8; j++)
+				{
+					if (j == 0 || (min.x < box.getPoint(j).x || min.z < box.getPoint(j).z)) min = box.getPoint(j);
+					if (j == 0 || (max.x > box.getPoint(j).x || max.z > box.getPoint(j).z)) max = box.getPoint(j);
+					(*draw_list)->AddCircleFilled(ImVec2(box.getPoint(j).x + offset.x, box.getPoint(j).z + offset.z), 1.5f, ImColor(255, 255, 255), 8);
+				}
+				glm::vec2 temp(min.x, min.z);
+				min.x = temp.y;
+				min.z = temp.x;
+				temp.x = max.x;
+				temp.y = max.z;
+				max.x = temp.y;
+				max.z = temp.x;
+				min += offset;
+				max += offset;
+				ImColor color = ImColor(0, 255, 0);
+				if (!quad->children[i]->isInFrustum()) color = ImColor(255, 0, 0);
+				(*draw_list)->AddRectFilled(ImVec2(min.x, min.z), ImVec2(max.x, max.z), color);
+			}
+			else
+			{
+				renderQuadGUI(draw_list, offset, quad->children[i]);
+			}
+		}
+	}
 }
 
 void EngineCore::attachCamera(Camera* camera)
