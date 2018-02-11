@@ -118,7 +118,10 @@ bool QuadTree::statusFrustum(const Plane planes[6])
 				in++;
 		}
 		if (in == 0)
+		{
+			this->inFrustum = false;
 			return false;
+		}
 		else
 			result = true;
 	}

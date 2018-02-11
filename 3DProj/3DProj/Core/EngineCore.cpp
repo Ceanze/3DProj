@@ -112,11 +112,11 @@ EngineCore::EngineCore()
 	this->lightBase = new Entity({ 0.0f, 2.0f, 40.0f }, { 0.0f, 0.0f, 0.0f });
 	this->base->addChild(this->lightBase);
 	
-	//temp = new Entity({ 0.0f, 0.0f, 10.0f }, { 0.0f, 0.0f, 0.0f });
-	//temp->addComponent(new PointLight(100.0f, 1.0f, glm::vec3(0.8f, 0.8f, 0.8f), this->deferredRenderer->getPhongShader()));
-	//temp->addMesh(this->m2, this->geometryShader);
-	//temp->getLocalTransform().setScale({ 0.2f, 0.2f, 0.2f });
-	//this->lightBase->addChild(temp);
+	temp = new Entity({ 0.0f, 0.0f, 10.0f }, { 0.0f, 0.0f, 0.0f });
+	temp->addComponent(new PointLight(50.0f, 5.0f, glm::vec3(1.0f, 1.0f, 1.0f), this->deferredRenderer->getPhongShader()));
+	temp->addMesh(this->m2, this->geometryShader);
+	temp->getLocalTransform().setScale({ 0.2f, 0.2f, 0.2f });
+	this->lightBase->addChild(temp);
 
 	/*
 	temp = new Entity({ 4.0f, 0.0f, -6.0f }, { 0.0f, 0.0f, 0.0f });

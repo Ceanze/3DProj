@@ -79,15 +79,16 @@ void main()
 	// Directonal Light
 	// Diffuse part
 	vec3 lightDirection = -directionalLightData.direction.xyz;
+	float lightIntensity = directionalLightData.colorIntensity.w;
 	float diffuseFactor = max(dot(fragNormal, lightDirection), 0.0);
-	diffuseOut += visibility*diffuseFactor*directionalLightData.colorIntensity.xyz;
-
+	diffuseOut += visibility*diffuseFactor*directionalLightData.colorIntensity.xyz*lightIntensity;
+	
 	// Specular part
 	float s = ks_ns.w;
 	vec3 r = reflect(fragNormal, lightDirection);
 	vec3 v = normalize(camPos - fragPos);
 	float specularFactor = pow(max(dot(r, v), 0.0), s+0.01);
-	specular += visibility*diffuseFactor*specularFactor;
+	specular += visibility*diffuseFactor*specularFactor*lightIntensity;
 
 	ambient = isBackground ? vec3(0.0) : ambient;
 	finalDiffuse = vec4(ambient + diffuseOut*kd_a.xyz, 1.0);
