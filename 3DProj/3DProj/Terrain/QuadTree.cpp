@@ -118,7 +118,7 @@ void QuadTree::render()
 		this->children[i]->render();
 
 
-	if (this->triangles.size() > 0 && this->inFrustum)
+	if (this->triangles.size() > 0 && this->inFrustum && !this->hasChildren)
 	{
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->ebo);
 		glDrawElements(GL_TRIANGLES, this->triangles.size() * 3, GL_UNSIGNED_INT, 0);

@@ -31,7 +31,7 @@ Terrain::Terrain(const unsigned& terrainScale, const float& textureScale)
 
 	glm::vec3 corners[4] = { topLeftCorner, topRightCorner, botLeftCorner, botRightCorner };
 
-	quadTree = new QuadTree(1, corners, 100);
+	quadTree = new QuadTree(4, corners, 100);
 
 	this->generateTerrain();
 }
