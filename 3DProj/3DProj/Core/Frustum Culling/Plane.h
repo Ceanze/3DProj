@@ -1,7 +1,7 @@
 #ifndef PLANE_H
 #define PLANE_H
 
-#include "../Config.h"
+#include "glm.hpp"
 
 class Plane
 {
@@ -13,7 +13,7 @@ public:
 	~Plane();
 
 	void setPointAndNormal(glm::vec3 point, glm::vec3 normal);
-	float distance(glm::vec3 point);
+	float distance(const glm::vec3& point) const;
 };
 
 #endif

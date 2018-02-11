@@ -2,7 +2,9 @@
 #define FRUSTUM_H
 
 #include "Plane.h"
-#include "../Config.h"
+#include "../../Terrain/QuadTree.h"
+
+#include "glm.hpp"
 
 class Camera;
 class AABox;
@@ -10,9 +12,10 @@ class AABox;
 class Frustum
 {
 private:
-	enum {NEAR = 0, FAR, LEFT, RIGHT, TOP, BOTTOM};
+	enum Sides {NEAR_P = 0, FAR_P, LEFT_P, RIGHT_P, TOP_P, BOTTOM_P};
 	Plane planes[6];
 	Camera* camera;
+	QuadTree* quadTree;
 	float zNear, zFar, fov, ratio;
 	float farWidth, farHeight, nearWidth, nearHeight;
 	glm::vec3 camPos;
@@ -22,13 +25,14 @@ private:
 
 
 public:
-	Frustum(Camera* camera, float zNear, float zFar, float ratio);
+	Frustum(Camera* camera, QuadTree* quadTree, float ratio);
 	~Frustum();
 
-	void init(glm::vec3 camPos);
+	void init();
 	void update(glm::vec3 camPos);
 	
 	bool checkBox(AABox &box);
+
 };
 
 #endif

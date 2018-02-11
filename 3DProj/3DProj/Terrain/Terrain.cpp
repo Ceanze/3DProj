@@ -6,38 +6,32 @@
 #include "../Core/ResourceManager.h"
 #include <iostream>
 
-Terrain::Terrain()
+Terrain::Terrain(const unsigned& terrainScale, const float& textureScale)
 	: quadTree(nullptr)
 {
-	this->heightMap = nullptr;
-	this->loadTexture("./Resources/Textures/heightmap.png", &this->heightMap);
+	this->textureScale = textureScale;
 
-	this->texture = nullptr;
+	this->heightMap = this->texture = this->textureNormalMap = nullptr;
+
+	this->loadTexture("./Resources/Textures/heightmapTest.png", &this->heightMap, false);
 	this->loadTexture("./Resources/Textures/stone.jpg", &this->texture);
-	this->texture->bind();
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-
-	glGenerateMipmap(GL_TEXTURE_2D);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-	this->size = this->heightMap->getWidth() * 2;
-	this->offset = 2;
+	this->loadTexture("./Resources/Textures/stoneNP.jpg", &this->textureNormalMap);
+	
+	this->size = this->heightMap->getWidth() * terrainScale;
+	this->offset = terrainScale;
 	this->rowLength = this->size / this->offset;
 	this->start = glm::vec3(-(int)this->size / 2, 0, -(int)this->size / 2);
-	this->texture->unbind();
 
 	this->heights = new float[(int)size * (int)size];
 
-	glm::vec2 topLeftCorner(this->start.x, this->start.z);
-	glm::vec2 topRightCorner(this->start.x + this->size, this->start.z);
-	glm::vec2 botLeftCorner(this->start.x, this->start.z + this->size);
-	glm::vec2 botRightCorner(this->start.x + this->size, this->start.z + this->size);
+	glm::vec3 topLeftCorner(this->start.x, 0, this->start.z);
+	glm::vec3 topRightCorner(this->start.x + this->size, 0, this->start.z);
+	glm::vec3 botLeftCorner(this->start.x, 0, this->start.z + this->size);
+	glm::vec3 botRightCorner(this->start.x + this->size, 0, this->start.z + this->size);
 
-	glm::vec2 corners[4] = { topLeftCorner, topRightCorner, botLeftCorner, botRightCorner };
+	glm::vec3 corners[4] = { topLeftCorner, topRightCorner, botLeftCorner, botRightCorner };
 
-	quadTree = new QuadTree(1, corners);
+	quadTree = new QuadTree(1, corners, MAX_HEIGHT);
 
 	this->generateTerrain();
 }
@@ -48,6 +42,7 @@ Terrain::~Terrain()
 
 	delete this->quadTree;
 	delete this->texture;
+	delete this->textureNormalMap;
 	delete this->heightMap;
 	glDeleteBuffers(1, &this->vertexVbo);
 	glDeleteVertexArrays(1, &this->vao);
@@ -58,11 +53,15 @@ void Terrain::render(ShaderProgram* shadowShader)
 	if(shadowShader == nullptr)
 		glUseProgram(this->shader->getID());
 
-	glUniform1i(this->useNormalMapLoc, 0);
+	glUniform1i(this->useNormalMapLoc, 1);
 
 	glUniform1i(this->textureLocation, 0);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, this->texture->getTexture());
+
+	glUniform1i(this->textureNPlocation, 1);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, this->textureNormalMap->getTexture());
 
 	glBindVertexArray(this->vao );
 	if (shadowShader == nullptr)
@@ -82,6 +81,7 @@ void Terrain::setShader(ShaderProgram * shader)
 	this->shader = shader;
 
 	this->textureLocation = glGetUniformLocation(this->shader->getID(), "albedoMap");
+	this->textureNPlocation = glGetUniformLocation(this->shader->getID(), "normalMap");
 
 	this->loadToGPU();
 }
@@ -130,18 +130,59 @@ float Terrain::getHeight(const float & x, const float & z)
 	return height;
 }
 
-void Terrain::loadTexture(const std::string& path, Texture** texture)
+QuadTree * Terrain::getQuadTree()
+{
+	return this->quadTree;
+}
+
+void Terrain::loadTexture(const std::string& path, Texture** texture, const bool& generateMIPMAP)
 {
 	char hasFailed = ResourceManager::loadTexture(path, texture);
 	if (hasFailed == TEXTURE_FAILED)
 		Error::printError("Failed to load texture: " + path);
 	else if (hasFailed == TEXTURE_SUCCEEDED)
 		Error::print("[Loaded texture]:", path);
+
+	if (generateMIPMAP)
+	{
+		texture[0][0].bind();
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+
+		glGenerateMipmap(GL_TEXTURE_2D);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+		texture[0][0].unbind();
+	}
 }
 
 void Terrain::generateTerrain()
 {
 	this->generateVerticies();
+}
+
+void Terrain::generateTangent(const Triangle& tri)
+{
+
+	Vertex& v0 = this->verticies[tri.p1];
+	Vertex& v1 = this->verticies[tri.p2];
+	Vertex& v2 = this->verticies[tri.p3];
+
+	glm::vec2 deltaUV1 = v1.uvs - v0.uvs;
+	glm::vec2 deltaUV2 = v2.uvs - v0.uvs;
+	glm::vec3 deltaPos1 = v1.position - v0.position;
+	glm::vec3 deltaPos2 = v2.position - v0.position;
+
+	float r = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV1.y * deltaUV2.x);
+	glm::vec3 tangent = (deltaPos1 * deltaUV2.y - deltaPos2 * deltaUV1.y)*r;
+
+	// Make the tangent perpendicular to its corresponding normal.
+	v0.tangent = glm::normalize(tangent - v0.normal*glm::dot(v0.normal, tangent));
+	v1.tangent = glm::normalize(tangent - v1.normal*glm::dot(v1.normal, tangent));
+	v2.tangent = glm::normalize(tangent - v2.normal*glm::dot(v2.normal, tangent));
+
 }
 
 void Terrain::generateVerticies()
@@ -161,7 +202,7 @@ void Terrain::generateVerticies()
 			this->heights[x + z * rowLength] = this->getHeight(x, z, data);
 			vertex.position = this->start + glm::vec3(offset * x, this->heights[x + z * rowLength], offset * z);
 			vertex.normal = this->generateNormals(x, z, data);
-			vertex.uvs = glm::vec2(x, z);
+			vertex.uvs = glm::vec2(x/ this->textureScale, z/ this->textureScale);
 			this->verticies.push_back(vertex);
 
 			if (x >= 1 & z >= 1)
@@ -185,6 +226,9 @@ void Terrain::generateIndicies(const unsigned& x, const unsigned& z)
 
 	this->quadTree->addTriangle(glm::vec2(x * this->offset, z * this->offset), tri1);
 	this->quadTree->addTriangle(glm::vec2(x * this->offset, z * this->offset), tri2);
+
+	this->generateTangent(tri1);
+	this->generateTangent(tri2);
 
 }
 
@@ -246,14 +290,20 @@ GLuint Terrain::addVertexVbo()
 	if (this->normalLocation == -1)
 		Error::printError("Terrain couldn't find 'vertexNormal' in GeometryDR.vs");
 	glEnableVertexAttribArray(this->normalLocation);
-
 	glVertexAttribPointer(this->normalLocation, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (char*)(sizeof(GLfloat) * 3));
+
+	this->tangentLocation = 2;// glGetAttribLocation(this->shader->getID(), "vertexUvs");
+	if (this->tangentLocation == -1)
+		Error::printError("Terrain couldn't find 'vertexTangent' in GeometryDR.vs");
+	glEnableVertexAttribArray(tangentLocation);
+	glVertexAttribPointer(tangentLocation, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (char*)(sizeof(GLfloat) * 6));
 
 	this->uvsLocation = 3;// glGetAttribLocation(this->shader->getID(), "vertexUvs");
 	if (this->uvsLocation == -1)
 		Error::printError("Terrain couldn't find 'vertexUvs' in GeometryDR.vs");
 	glEnableVertexAttribArray(uvsLocation);
-	glVertexAttribPointer(uvsLocation, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (char*)(sizeof(GLfloat) * 6));
+	glVertexAttribPointer(uvsLocation, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (char*)(sizeof(GLfloat) * 9));
+
 	
 	this->useNormalMapLoc = glGetUniformLocation(this->shader->getID(), "useNormalMap");
 	if (this->useNormalMapLoc == -1)

@@ -10,8 +10,10 @@ private:
 	std::vector<glm::vec3> points;
 
 public:
-	AABox(const std::vector<glm::vec3> points);
+	AABox();
 	~AABox();
+
+	void addPoint(const glm::vec3& point);
 
 	glm::vec3 getPoint(int index);
 };
