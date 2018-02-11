@@ -63,7 +63,7 @@ void Frustum::update(glm::vec3 camPos)
 }
 
 // Might not be used.
-bool Frustum::checkBox(AABox &box)
+/*bool Frustum::checkBox(AABox &box)
 {
 	int in, out;
 	bool result = false;
@@ -84,7 +84,7 @@ bool Frustum::checkBox(AABox &box)
 		else
 			result = true;
 	}
-}
+}*/
 
 float Frustum::getZNear() const
 {

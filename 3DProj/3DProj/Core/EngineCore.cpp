@@ -500,9 +500,27 @@ void EngineCore::renderFrustumGUI()
 	
 	for (unsigned int i = 0; i < 4; i++)
 	{
+		glm::vec3 min;
+		glm::vec3 max;
 		AABox box = tree->children[i]->getBox();
 		for (unsigned int j = 0; j < 8; j++)
+		{
+			if (j == 0 || (min.x < box.getPoint(j).x || min.z < box.getPoint(j).z)) min = box.getPoint(j);
+			if (j == 0 || (max.x > box.getPoint(j).x || max.z > box.getPoint(j).z)) max = box.getPoint(j);
 			draw_list->AddCircleFilled(ImVec2(box.getPoint(j).x+offset.x, box.getPoint(j).z+offset.z), 1.5f, ImColor(255, 255, 255), 8);
+		}
+		glm::vec2 temp(min.x, min.z);
+		min.x = temp.y;
+		min.z = temp.x;
+		temp.x = max.x;
+		temp.y = max.z;
+		max.x = temp.y;
+		max.z = temp.x;
+		min += offset;
+		max += offset;
+		ImColor color = ImColor(0, 255, 0);
+		if (!tree->children[i]->isInFrustum()) color = ImColor(255, 0, 0);
+		draw_list->AddRectFilled(ImVec2(min.x, min.z), ImVec2(max.x, max.z), color);
 	}
 	//draw_list->AddCircleFilled(ImVec2(camPos.x, camPos.y), 1.5f, ImColor(255, 255, 255), 8);
 

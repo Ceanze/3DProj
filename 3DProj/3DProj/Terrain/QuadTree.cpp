@@ -110,10 +110,9 @@ bool QuadTree::statusFrustum(const Plane planes[6])
 	{
 		for (int j = 0; j < 8 && !in; j++)
 		{
-			if (planes[i].distance(this->box.getPoint(j)) < 0)
+			if (planes[i].distance(this->box.getPoint(j)) > 0)
 			{
 				in = true;
-				Error::print("inside");
 			}
 		}
 
