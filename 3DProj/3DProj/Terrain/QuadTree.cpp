@@ -130,6 +130,7 @@ bool QuadTree::statusFrustum(const Plane planes[6])
 {
 
 	bool in = false;
+	bool result = false;
 
 	for (int i = 0; i < 6; i++)
 	{
@@ -147,15 +148,18 @@ bool QuadTree::statusFrustum(const Plane planes[6])
 			return false;
 		}
 		else
-		{
-			this->inFrustum = true;
+			result = true;
+	}
 
-			if (this->hasChildren)
+	if(result)
+	{
+		this->inFrustum = true;
+
+		if (this->hasChildren)
+		{
+			for (int i = 0; i < CHILDREN_AMOUNT; i++)
 			{
-				for (int i = 0; i < CHILDREN_AMOUNT; i++)
-				{
-					this->children[i]->statusFrustum(planes);
-				}
+				this->children[i]->statusFrustum(planes);
 			}
 		}
 	}
