@@ -24,7 +24,7 @@ EngineCore::EngineCore()
 	this->geometryShader = new GeometryShader();
 	this->deferredRenderer = new DeferredRenderer(&this->display);
 
-	this->shadowCamera = new Camera(&this->display, 150, 150, {0.0f, 0.0f, 0.0f}, -100, 200);
+	this->shadowCamera = new Camera(&this->display, 50, 50, {0.0f, 0.0f, 0.0f}, -100, 200);
 	this->deferredRenderer->setShadowCamera(this->shadowCamera);
 	this->camera = new Camera(&this->display, glm::vec3{0.0f, 0.0f, 0.0f});
 	this->camera2 = new Camera(&this->display, glm::vec3{0.0f, 10.0f, 0.0f});

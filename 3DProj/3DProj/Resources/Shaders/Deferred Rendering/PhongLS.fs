@@ -73,8 +73,8 @@ void main()
 	mat4 depthBias = biasMatrix*shadowCamera;
 	vec4 shadowCoord = depthBias*vec4(fragPos, 1.0);
 	if(shadowCoord.x >= 0.0 && shadowCoord.x <= 1.0 && shadowCoord.y >= 0.0 && shadowCoord.y <= 1.0 && shadowCoord.z >= 0.0 && shadowCoord.z <= 1.0)
-		if(texture(shadowMap, shadowCoord.xy).x+0.01 < shadowCoord.z)
-			visibility = 0.5;
+		if(texture(shadowMap, shadowCoord.xy).x+0.001 < shadowCoord.z)
+			visibility = 0.0;
 	
 	// Directonal Light
 	// Diffuse part

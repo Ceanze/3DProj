@@ -33,29 +33,25 @@ void Mesh::loadToGPU(GLuint shaderProgramID, GLenum usage, bool useUvs)
 	glUseProgram(shaderProgramID);
 
 	// Position
-	this->vertexPosID = 0;// glGetAttribLocation(shaderProgramID, "vertexPosition");
-	//assert(this->vertexPosID != -1 && "Error, cannot find 'vertexPosition' attribute in Vertex shader\n");
+	this->vertexPosID = 0;
 	glEnableVertexAttribArray(this->vertexPosID); // This is now affecting the vaoID which was created. 
 	glVertexAttribPointer(this->vertexPosID, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (char*)nullptr);
 
 	// Noraml
-	this->vertexNormalID = 1;// glGetAttribLocation(shaderProgramID, "vertexNormal");
-	//assert(this->vertexNormalID != -1 && "Error, cannot find 'vertexNormal' attribute in Vertex shader\n");
+	this->vertexNormalID = 1;
 	glEnableVertexAttribArray(this->vertexNormalID);
 	glVertexAttribPointer(this->vertexNormalID, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (char*)(sizeof(GLfloat) * 3));
 
 	if (this->material->normalMap != nullptr)
 	{
 		// Tangent
-		this->vertexTangentID = 2;// glGetAttribLocation(shaderProgramID, "vertexTangent");
-		//assert(this->vertexTangentID != -1 && "Error, cannot find 'vertexTangent' attribute in Vertex shader\n");
+		this->vertexTangentID = 2;
 		glEnableVertexAttribArray(this->vertexTangentID);
 		glVertexAttribPointer(this->vertexTangentID, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (char*)(sizeof(GLfloat) * 6));
 	}
 
 	// Texture coords
-	this->vertexUvsID = 3;// glGetAttribLocation(shaderProgramID, "vertexUvs");
-	//assert(this->vertexUvsID != -1 && "Error, cannot find 'vertexUvs' attribute in Vertex shader\n");
+	this->vertexUvsID = 3;
 	glEnableVertexAttribArray(this->vertexUvsID);
 	glVertexAttribPointer(this->vertexUvsID, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (char*)(sizeof(GLfloat) * 9));
 
