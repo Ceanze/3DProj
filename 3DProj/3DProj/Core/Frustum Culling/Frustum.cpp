@@ -21,13 +21,13 @@ void Frustum::calculatePlanes()
 	planes[NEAR_P].setPointAndNormal(nearCenter, this->camera->getDirection());
 	planes[FAR_P].setPointAndNormal(farCenter, -this->camera->getDirection());
 
-	point = nearCenter + (this->nearHeight / 2) - (this->nearWidth / 2);
-	planes[TOP_P].setPointAndNormal(point, glm::normalize(cross(point - camPos, this->camera->getUp())));
-	planes[LEFT_P].setPointAndNormal(point, glm::normalize(cross(point - camPos, -this->camera->getRight())));
+	point = nearCenter + this->camera->getUp() * (this->nearHeight / 2) - this->camera->getRight() * (this->nearWidth / 2);
+	planes[LEFT_P].setPointAndNormal(point, glm::normalize(cross(point - camPos, this->camera->getUp())));
+	planes[TOP_P].setPointAndNormal(point, glm::normalize(cross(point - camPos, this->camera->getRight())));
 
-	point = nearCenter - (this->nearHeight / 2) + (this->nearWidth / 2);
-	planes[BOTTOM_P].setPointAndNormal(point, glm::normalize(cross(point - camPos, -this->camera->getUp())));
-	planes[RIGHT_P].setPointAndNormal(point, glm::normalize(cross(point - camPos, this->camera->getRight())));
+	point = nearCenter - this->camera->getUp() *(this->nearHeight / 2) + this->camera->getRight() * (this->nearWidth / 2);
+	planes[RIGHT_P].setPointAndNormal(point, glm::normalize(cross(point - camPos, -this->camera->getUp())));
+	planes[BOTTOM_P].setPointAndNormal(point, glm::normalize(cross(point - camPos, -this->camera->getRight())));
 }
 
 Frustum::Frustum(Camera* camera, QuadTree* quadTree, float ratio)
