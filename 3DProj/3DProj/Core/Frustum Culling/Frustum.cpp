@@ -25,7 +25,7 @@ void Frustum::calculatePlanes()
 	planes[LEFT_P].setPointAndNormal(point, glm::normalize(cross(point - camPos, this->camera->getUp())));
 	planes[TOP_P].setPointAndNormal(point, glm::normalize(cross(point - camPos, this->camera->getRight())));
 
-	point = nearCenter - this->camera->getUp() *(this->nearHeight / 2) + this->camera->getRight() * (this->nearWidth / 2);
+	point = nearCenter - this->camera->getUp() * (this->nearHeight / 2) + this->camera->getRight() * (this->nearWidth / 2);
 	planes[RIGHT_P].setPointAndNormal(point, glm::normalize(cross(point - camPos, -this->camera->getUp())));
 	planes[BOTTOM_P].setPointAndNormal(point, glm::normalize(cross(point - camPos, -this->camera->getRight())));
 }
