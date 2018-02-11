@@ -128,15 +128,14 @@ void QuadTree::render()
 
 bool QuadTree::statusFrustum(const Plane planes[6])
 {
-
-	bool in = false;
 	bool result = false;
 
-	for (int i = 0; i < 6; i++)
+	for (int plane = 0; plane < 6; plane++)
 	{
-		for (int j = 0; j < 8 && !in; j++)
+		bool in = false;
+		for (int pointBox = 0; pointBox < 8 && !in; pointBox++)
 		{
-			if (planes[i].distance(this->box.getPoint(j)) > 0)
+			if (planes[plane].distance(this->box.getPoint(pointBox)) > 0)
 			{
 				in = true;
 			}
@@ -145,6 +144,7 @@ bool QuadTree::statusFrustum(const Plane planes[6])
 		if (!in)
 		{
 			this->inFrustum = false;
+			result = false;
 			return false;
 		}
 		else
@@ -164,7 +164,7 @@ bool QuadTree::statusFrustum(const Plane planes[6])
 		}
 	}
 
-	return in;
+	return result;
 }
 
 
