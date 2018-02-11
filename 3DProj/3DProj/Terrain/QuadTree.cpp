@@ -1,5 +1,5 @@
 #include "QuadTree.h"
-
+#include "../Error.h"
 
 QuadTree::QuadTree(const unsigned & recursionLevel, glm::vec3 corners[4], const float& height)
 {
@@ -103,22 +103,24 @@ void QuadTree::render()
 bool QuadTree::statusFrustum(const Plane planes[6])
 {
 
-	bool in;
+	bool in = false;
 	bool result = false;
 
 	for (int i = 0; i < 6; i++)
 	{
-		in = false;
 		for (int j = 0; j < 8 && !in; j++)
 		{
-			if (planes[i].distance(this->box.getPoint(j)) > 0)
+			if (planes[i].distance(this->box.getPoint(j)) < 0)
+			{
 				in = true;
+				Error::print("inside");
+			}
 		}
 
 		if (!in)
 		{
 			this->inFrustum = false;
-			return 0;
+			return false;
 		}
 		else
 			result = true;
