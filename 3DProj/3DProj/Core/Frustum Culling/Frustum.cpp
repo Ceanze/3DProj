@@ -16,8 +16,8 @@ void Frustum::calculateWidthAndHeight()
 void Frustum::calculatePlanes()
 {
 	glm::vec3 point;
-	glm::vec3 nearCenter = this->camPos - this->camera->getDirection() * zNear;
-	glm::vec3 farCenter = this->camPos - this->camera->getDirection() * zFar;
+	glm::vec3 nearCenter = this->camPos + this->camera->getDirection() * zNear;
+	glm::vec3 farCenter = this->camPos + this->camera->getDirection() * zFar;
 	planes[NEAR_P].setPointAndNormal(nearCenter, this->camera->getDirection());
 	planes[FAR_P].setPointAndNormal(farCenter, -this->camera->getDirection());
 
@@ -62,6 +62,7 @@ void Frustum::update(glm::vec3 camPos)
 		Error::printWarning("No 'QuadTree' attached to frustum!");
 }
 
+// Might not be used.
 bool Frustum::checkBox(AABox &box)
 {
 	int in, out;
@@ -83,4 +84,34 @@ bool Frustum::checkBox(AABox &box)
 		else
 			result = true;
 	}
+}
+
+float Frustum::getZNear() const
+{
+	return this->zNear;
+}
+
+float Frustum::getZFar() const
+{
+	return this->zFar;
+}
+
+float Frustum::getNearHeight() const
+{
+	return this->nearHeight;
+}
+
+float Frustum::getFarHeight() const
+{
+	return this->farHeight;
+}
+
+float Frustum::getNearWidth() const
+{
+	return this->nearWidth;
+}
+
+float Frustum::getFarWidth() const
+{
+	return this->farWidth;
 }

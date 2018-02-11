@@ -33,6 +33,13 @@ public:
 	
 	bool checkBox(AABox &box);
 
+	float getZNear() const;
+	float getZFar() const;
+	float getNearHeight() const;
+	float getFarHeight() const;
+	float getNearWidth() const;
+	float getFarWidth() const;
+
 };
 
 #endif

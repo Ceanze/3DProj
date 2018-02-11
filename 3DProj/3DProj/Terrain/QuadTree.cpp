@@ -158,3 +158,13 @@ void QuadTree::addEbo()
 	}
 
 }
+
+AABox QuadTree::getBox() const
+{
+	return this->box;
+}
+
+bool QuadTree::isInFrustum() const
+{
+	return this->inFrustum;
+}

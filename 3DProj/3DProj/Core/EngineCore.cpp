@@ -280,11 +280,13 @@ void EngineCore::input(Display* display)
 
 void EngineCore::renderGui()
 {
+	static bool show_frustum_window = false;
 	static bool show_node_tree_window = false;
 	static bool show_dr_window = false;
 	{
 		if (ImGui::Button("Node tree Window")) show_node_tree_window ^= 1;
 		if (ImGui::Button("Deferred Rendering")) show_dr_window ^= 1;
+		if (ImGui::Button("Frustum Window")) show_frustum_window ^= 1;
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 		ImGui::Text("Click 'C' to toggle camera on and off and 'V' to swap camera");
 		ImGui::Text("Click 'B' to toggle blur on and off.");
@@ -319,6 +321,13 @@ void EngineCore::renderGui()
 		renderLSTextures();
 		renderBrightnessTextures();
 		renderBlurTextures();
+		ImGui::End();
+	}
+
+	if (show_frustum_window)
+	{
+		ImGui::Begin("Frustum Window", &show_frustum_window);
+		renderFrustumGUI();
 		ImGui::End();
 	}
 }
@@ -468,6 +477,74 @@ void EngineCore::renderTexture(ImTextureID texID, float ratio, bool nextLine)
 		ImGui::Image(texID, ImVec2(170 * ratio, 170), ImVec2(0, 1), ImVec2(1, 0), ImVec4(1, 1, 1, 1), ImVec4(1, 1, 1, 1));
 		ImGui::EndTooltip();
 	}
+}
+
+void EngineCore::renderFrustumGUI()
+{
+	ImDrawList* draw_list = ImGui::GetWindowDrawList();
+
+	ImVec2 canvas_pos = ImGui::GetCursorScreenPos();            // ImDrawList API uses screen coordinates!
+	ImVec2 canvas_size = ImGui::GetContentRegionAvail();        // Resize canvas to what's available
+	if (canvas_size.x < 50.0f) canvas_size.x = 50.0f;
+	if (canvas_size.y < 50.0f) canvas_size.y = 50.0f;
+	draw_list->AddRectFilledMultiColor(canvas_pos, ImVec2(canvas_pos.x + canvas_size.x, canvas_pos.y + canvas_size.y), ImColor(50, 50, 50), ImColor(50, 50, 60), ImColor(60, 60, 70), ImColor(50, 50, 60));
+	draw_list->AddRect(canvas_pos, ImVec2(canvas_pos.x + canvas_size.x, canvas_pos.y + canvas_size.y), ImColor(255, 255, 255));
+
+	QuadTree* tree = this->terrain.getQuadTree();
+
+	glm::vec3 offset(canvas_size.x/2+ canvas_pos.x, 0, canvas_size.y/2+ canvas_pos.y);
+
+	ImVec2 camPos(this->camera->getPosition().x + offset.x, this->camera->getPosition().z + offset.z);
+
+	draw_list->PushClipRect(canvas_pos, ImVec2(canvas_pos.x + canvas_size.x, canvas_pos.y + canvas_size.y), true);      // clip lines within the canvas (if we resize it, etc.)
+	
+	for (unsigned int i = 0; i < 4; i++)
+	{
+		AABox box = tree->children[i]->getBox();
+		for (unsigned int j = 0; j < 8; j++)
+			draw_list->AddCircleFilled(ImVec2(box.getPoint(j).x+offset.x, box.getPoint(j).z+offset.z), 1.5f, ImColor(255, 255, 255), 8);
+	}
+	//draw_list->AddCircleFilled(ImVec2(camPos.x, camPos.y), 1.5f, ImColor(255, 255, 255), 8);
+
+	glm::vec3 nearCenter = this->camera->getPosition() + this->camera->getDirection() * this->frustum->getZNear();
+	glm::vec3 farCenter = this->camera->getPosition() + this->camera->getDirection() * this->frustum->getZFar();
+
+	glm::vec3 nru = nearCenter + this->camera->getUp() * (this->frustum->getNearHeight() / 2) + this->camera->getRight() * (this->frustum->getNearWidth() / 2);
+	glm::vec3 fru = farCenter + this->camera->getUp() * (this->frustum->getFarHeight() / 2) + this->camera->getRight() * (this->frustum->getFarWidth() / 2);
+	glm::vec3 nlu = nearCenter + this->camera->getUp() * (this->frustum->getNearHeight() / 2) - this->camera->getRight() * (this->frustum->getNearWidth() / 2);
+	glm::vec3 flu = farCenter + this->camera->getUp() * (this->frustum->getFarHeight() / 2) - this->camera->getRight() * (this->frustum->getFarWidth() / 2);
+
+	glm::vec3 nrd = nearCenter - this->camera->getUp() * (this->frustum->getNearHeight() / 2) + this->camera->getRight() * (this->frustum->getNearWidth() / 2);
+	glm::vec3 frd = farCenter - this->camera->getUp() * (this->frustum->getFarHeight() / 2) + this->camera->getRight() * (this->frustum->getFarWidth() / 2);
+	glm::vec3 nld = nearCenter - this->camera->getUp() * (this->frustum->getNearHeight() / 2) - this->camera->getRight() * (this->frustum->getNearWidth() / 2);
+	glm::vec3 fld = farCenter - this->camera->getUp() * (this->frustum->getFarHeight() / 2) - this->camera->getRight() * (this->frustum->getFarWidth() / 2);
+
+	nru += offset;
+	fru += offset;
+	nlu += offset;
+	flu += offset;
+
+	nrd += offset;
+	frd += offset;
+	nld += offset;
+	fld += offset;
+	
+	draw_list->AddLine(ImVec2(nrd.x, nrd.z), ImVec2(frd.x, frd.z), ImColor(126, 126, 126));
+	draw_list->AddLine(ImVec2(nld.x, nld.z), ImVec2(fld.x, fld.z), ImColor(126, 126, 126));
+	draw_list->AddLine(ImVec2(fld.x, fld.z), ImVec2(frd.x, frd.z), ImColor(126, 126, 126));
+	draw_list->AddLine(ImVec2(nld.x, nld.z), ImVec2(frd.x, frd.z), ImColor(126, 126, 126));
+
+	draw_list->AddLine(ImVec2(nld.x, nld.z), ImVec2(nlu.x, nlu.z), ImColor(126, 126, 126));
+	draw_list->AddLine(ImVec2(nrd.x, nrd.z), ImVec2(nru.x, nru.z), ImColor(126, 126, 126));
+
+	draw_list->AddLine(ImVec2(nru.x, nru.z), ImVec2(fru.x, fru.z), ImColor(255, 255, 255));
+	draw_list->AddLine(ImVec2(nlu.x, nlu.z), ImVec2(flu.x, flu.z), ImColor(255, 255, 255));
+	draw_list->AddLine(ImVec2(flu.x, flu.z), ImVec2(fru.x, fru.z), ImColor(255, 255, 255));
+	draw_list->AddLine(ImVec2(nlu.x, nlu.z), ImVec2(fru.x, fru.z), ImColor(255, 255, 255));
+	draw_list->AddLine(ImVec2(fld.x, fld.z), ImVec2(flu.x, flu.z), ImColor(255, 255, 255));
+	draw_list->AddLine(ImVec2(frd.x, frd.z), ImVec2(fru.x, fru.z), ImColor(255, 255, 255));
+
+	draw_list->PopClipRect();
 }
 
 void EngineCore::attachCamera(Camera* camera)
