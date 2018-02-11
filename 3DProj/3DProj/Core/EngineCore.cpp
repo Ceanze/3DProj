@@ -63,10 +63,10 @@ EngineCore::EngineCore()
 
 	this->directionalLight = new Entity({ 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f });
 	this->directionalLight->addComponent(this->shadowCamera);
-	const glm::vec3 lightDir = glm::normalize(glm::vec3(20.0f, -2.0f, 0.0f));
+	const glm::vec3 lightDir = glm::normalize(glm::vec3(1.0f, -2.0f, 0.0f));
 	this->shadowCamera->setDirection(lightDir);
 	this->shadowCamera->rotate(Tools::getYaw(lightDir)+ 3.1415f / 2.0f, Tools::getPitch(lightDir), 0.0f);
-	this->directionalLight->addComponent(new DirectionalLight(lightDir, 1.0f, glm::vec3(1.0f), this->deferredRenderer->getPhongShader()));
+	this->directionalLight->addComponent(new DirectionalLight(lightDir, 2.0f, glm::vec3(1.0f), this->deferredRenderer->getPhongShader()));
 	this->e2->addChild(this->directionalLight);
 
 	
@@ -113,7 +113,7 @@ EngineCore::EngineCore()
 	this->base->addChild(this->lightBase);
 	
 	temp = new Entity({ 0.0f, 0.0f, 10.0f }, { 0.0f, 0.0f, 0.0f });
-	temp->addComponent(new PointLight(50.0f, 5.0f, glm::vec3(1.0f, 1.0f, 1.0f), this->deferredRenderer->getPhongShader()));
+	temp->addComponent(new PointLight(50.0f, 1.0f, glm::vec3(1.0f, 0.0f, 1.0f), this->deferredRenderer->getPhongShader()));
 	temp->addMesh(this->m2, this->geometryShader);
 	temp->getLocalTransform().setScale({ 0.2f, 0.2f, 0.2f });
 	this->lightBase->addChild(temp);

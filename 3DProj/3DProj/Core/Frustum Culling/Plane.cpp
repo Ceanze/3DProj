@@ -19,8 +19,5 @@ void Plane::setPointAndNormal(glm::vec3 point, glm::vec3 normal)
 
 float Plane::distance(const glm::vec3& point) const
 {
-	glm::vec3 v = point - this->point;
-	float r = glm::dot(v, this->normal);
-
-	return glm::length(point - this->point);
+	return glm::dot(point - this->point, this->normal);
 }
