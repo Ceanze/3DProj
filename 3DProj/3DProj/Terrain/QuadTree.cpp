@@ -49,8 +49,6 @@ QuadTree::QuadTree(const unsigned & recursionLevel, glm::vec3 corners[4], const 
 
 		this->children[3] = new QuadTree(recursionLevel - 1, childCorners, height);
 	}
-
-	
 }
 
 QuadTree::~QuadTree()
@@ -64,25 +62,53 @@ QuadTree::~QuadTree()
 	
 }
 
+void QuadTree::init()
+{
+	if (this->triangles.size() > 0 && this->hasChildren)
+	{
+		for (int i = 0; i < this->triangles.size(); i++)
+		{
+			this->addTriangle(this->trianglePositions[i], this->triangles[i]);
+		}
+		this->triangles.clear();
+		this->trianglePositions.clear();
+
+		for (int i = 0; i < CHILDREN_AMOUNT; i++)
+		{
+			this->children[i]->init();
+		}
+	}
+}
+
+void QuadTree::addTriangleToRoot(const glm::vec2 & pos, const Triangle & triangle)
+{
+	this->triangles.push_back(triangle);
+	this->trianglePositions.push_back(pos);
+}
+
 void QuadTree::addTriangle(const glm::vec2 & pos, const Triangle& triangle)
 {
 	float childQuadSize = this->quadSize / 2.0f;
 
 	if (pos.x <= childQuadSize && pos.y <= childQuadSize)
 	{
-		this->children[0]->triangles.push_back(triangle);;
+		this->children[0]->triangles.push_back(triangle);
+		this->children[0]->trianglePositions.push_back(pos);
 	}
 	else if (pos.x < childQuadSize && pos.y > childQuadSize)
 	{
 		this->children[1]->triangles.push_back(triangle);
+		this->children[1]->trianglePositions.push_back(pos);
 	}
 	else if (pos.x > childQuadSize && pos.y < childQuadSize)
 	{
 		this->children[2]->triangles.push_back(triangle);
+		this->children[2]->trianglePositions.push_back(pos);
 	}
 	else
 	{
 		this->children[3]->triangles.push_back(triangle);
+		this->children[3]->trianglePositions.push_back(pos);
 	}
 }
 
@@ -113,7 +139,6 @@ bool QuadTree::statusFrustum(const Plane planes[6])
 			if (planes[i].distance(this->box.getPoint(j)) < 0)
 			{
 				in = true;
-				Error::print("inside");
 			}
 		}
 

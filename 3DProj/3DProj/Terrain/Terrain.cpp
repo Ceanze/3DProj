@@ -31,7 +31,7 @@ Terrain::Terrain(const unsigned& terrainScale, const float& textureScale)
 
 	glm::vec3 corners[4] = { topLeftCorner, topRightCorner, botLeftCorner, botRightCorner };
 
-	quadTree = new QuadTree(1, corners, MAX_HEIGHT);
+	quadTree = new QuadTree(4, corners, MAX_HEIGHT);
 
 	this->generateTerrain();
 }
@@ -161,6 +161,7 @@ void Terrain::loadTexture(const std::string& path, Texture** texture, const bool
 void Terrain::generateTerrain()
 {
 	this->generateVerticies();
+	this->quadTree->init();
 }
 
 void Terrain::generateTangent(const Triangle& tri)
@@ -224,8 +225,8 @@ void Terrain::generateIndicies(const unsigned& x, const unsigned& z)
 	tri2.p2 = z + x * (this->rowLength) + (this->rowLength);
 	tri2.p3 = z + 1 + x * (this->rowLength);
 
-	this->quadTree->addTriangle(glm::vec2(x * this->offset, z * this->offset), tri1);
-	this->quadTree->addTriangle(glm::vec2(x * this->offset, z * this->offset), tri2);
+	this->quadTree->addTriangleToRoot(glm::vec2(x * this->offset, z * this->offset), tri1);
+	this->quadTree->addTriangleToRoot(glm::vec2(x * this->offset, z * this->offset), tri2);
 
 	this->generateTangent(tri1);
 	this->generateTangent(tri2);

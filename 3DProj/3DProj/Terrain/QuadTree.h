@@ -24,14 +24,18 @@ public:
 	QuadTree** children;
 	bool hasChildren;
 
-	void addTriangle(const glm::vec2 & pos, const Triangle& triangle);
+	void init();
+
+	void addTriangleToRoot(const glm::vec2 & pos, const Triangle& triangle);
 	void render();
 	bool statusFrustum(const Plane planes[6]);
 
 	void addEbo();
 
 private:
+	void addTriangle(const glm::vec2 & pos, const Triangle& triangle);
 	std::vector<Triangle> triangles;
+	std::vector<glm::vec2> trianglePositions;
 	GLuint ebo;
 
 	bool inFrustum;
