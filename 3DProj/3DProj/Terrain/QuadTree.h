@@ -32,6 +32,9 @@ public:
 
 	void addEbo();
 
+	AABox getBox() const;
+	bool isInFrustum() const;
+
 private:
 	void addTriangle(const glm::vec2 & pos, const Triangle& triangle);
 	std::vector<Triangle> triangles;

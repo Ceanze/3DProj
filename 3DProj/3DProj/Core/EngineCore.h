@@ -44,6 +44,7 @@ private:
 	void renderBrightnessTextures();
 	void renderBlurTextures();
 	void renderTexture(ImTextureID texID, float ratio, bool nextLine);
+	void renderFrustumGUI();
 
 	void attachCamera(Camera* camera);
 	void swapCamera();

@@ -130,13 +130,12 @@ bool QuadTree::statusFrustum(const Plane planes[6])
 {
 
 	bool in = false;
-	bool result = false;
 
 	for (int i = 0; i < 6; i++)
 	{
 		for (int j = 0; j < 8 && !in; j++)
 		{
-			if (planes[i].distance(this->box.getPoint(j)) < 0)
+			if (planes[i].distance(this->box.getPoint(j)) > 0)
 			{
 				in = true;
 			}
@@ -148,23 +147,20 @@ bool QuadTree::statusFrustum(const Plane planes[6])
 			return false;
 		}
 		else
-			result = true;
-	}
-
-	if (result == true)
-	{
-		this->inFrustum = true;
-		
-		if (this->hasChildren)
 		{
-			for (int i = 0; i < CHILDREN_AMOUNT; i++)
+			this->inFrustum = true;
+
+			if (this->hasChildren)
 			{
-				this->children[i]->statusFrustum(planes);
+				for (int i = 0; i < CHILDREN_AMOUNT; i++)
+				{
+					this->children[i]->statusFrustum(planes);
+				}
 			}
 		}
 	}
 
-	return result;
+	return in;
 }
 
 
@@ -184,4 +180,14 @@ void QuadTree::addEbo()
 			this->children[i]->addEbo();
 	}
 
+}
+
+AABox QuadTree::getBox() const
+{
+	return this->box;
+}
+
+bool QuadTree::isInFrustum() const
+{
+	return this->inFrustum;
 }
