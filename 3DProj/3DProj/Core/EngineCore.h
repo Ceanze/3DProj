@@ -45,6 +45,7 @@ private:
 	void renderBlurTextures();
 	void renderTexture(ImTextureID texID, float ratio, bool nextLine);
 	void renderFrustumGUI();
+	void renderQuadGUI(ImDrawList** draw_list, glm::vec3 offset, QuadTree* quad);
 
 	void attachCamera(Camera* camera);
 	void swapCamera();
