@@ -16,8 +16,8 @@ void Frustum::calculateWidthAndHeight()
 void Frustum::calculatePlanes()
 {
 	glm::vec3 point;
-	glm::vec3 nearCenter = this->camPos - this->camera->getDirection() * zNear;
-	glm::vec3 farCenter = this->camPos - this->camera->getDirection() * zFar;
+	glm::vec3 nearCenter = this->camPos + this->camera->getDirection() * zNear;
+	glm::vec3 farCenter = this->camPos + this->camera->getDirection() * zFar;
 	planes[NEAR_P].setPointAndNormal(nearCenter, this->camera->getDirection());
 	planes[FAR_P].setPointAndNormal(farCenter, -this->camera->getDirection());
 

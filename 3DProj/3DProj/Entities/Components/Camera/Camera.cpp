@@ -142,7 +142,7 @@ void Camera::deactivate()
 
 void Camera::setDirection(const glm::vec3 & direction)
 {
-	this->f = direction;
+	this->f = glm::normalize(direction);
 	this->r = glm::cross(f, GLOBAL_UP_VECTOR);
 	this->u = glm::cross(r, f);
 
