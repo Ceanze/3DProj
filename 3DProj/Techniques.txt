@@ -1,11 +1,11 @@
 100 % Deferred Rendering
 100 % Parsing and rendering an existing model format
-85  % Height-map terrain rendering, user can walk on the terrain using WASD keys.
+100 % Height-map terrain rendering, user can walk on the terrain using WASD keys.
 100 % Normal Mapping
-0   % Shadow Mapping
-25  % View frustum culling against a quadtree
+100 % Shadow Mapping
+99  % View frustum culling against a quadtree
 100 % Back face culling using Geometry Shader
 100 % Gaussian Filter
-90  % Glow-effect
+100 % Glow-effect
 
 Error when minimize window. (Trying to create a perspective matrix when window size is 0.)
