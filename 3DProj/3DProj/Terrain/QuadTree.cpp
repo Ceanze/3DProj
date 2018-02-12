@@ -11,7 +11,6 @@ QuadTree::QuadTree(const unsigned & recursionLevel, glm::vec3 corners[4], const 
 		this->box.addPoint({ corners[i].x,  corners[i].y, corners[i].z});
 		this->box.addPoint({ corners[i].x,  corners[i].y + height, corners[i].z });
 	}
-		
 
 	if (recursionLevel > 0)
 	{
@@ -135,7 +134,8 @@ bool QuadTree::statusFrustum(const Plane planes[6])
 		bool in = false;
 		for (int pointBox = 0; pointBox < 8 && !in; pointBox++)
 		{
-			if (planes[plane].distance(this->box.getPoint(pointBox)) > 0)
+			const glm::vec3 boxPoint = this->box.getPoint(pointBox);
+			if (planes[plane].distance(glm::vec3(boxPoint.z, boxPoint.y, boxPoint.x)) > 0)
 			{
 				in = true;
 			}

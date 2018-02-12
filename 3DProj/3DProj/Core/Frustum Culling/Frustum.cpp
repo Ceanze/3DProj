@@ -7,9 +7,9 @@
 void Frustum::calculateWidthAndHeight()
 {
 	float tang = tan(fov / 2);
-	this->nearHeight = this->zNear * tang;
+	this->nearHeight = this->zNear * tang * 2.0f;
 	this->nearWidth = this->nearHeight * this->ratio;
-	this->farHeight = this->zFar * tang;
+	this->farHeight = this->zFar * tang * 2.0f;
 	this->farWidth = this->farHeight * this->ratio;
 }
 

@@ -490,14 +490,11 @@ void EngineCore::renderFrustumGUI()
 	draw_list->AddRectFilledMultiColor(canvas_pos, ImVec2(canvas_pos.x + canvas_size.x, canvas_pos.y + canvas_size.y), ImColor(50, 50, 50), ImColor(50, 50, 60), ImColor(60, 60, 70), ImColor(50, 50, 60));
 	draw_list->AddRect(canvas_pos, ImVec2(canvas_pos.x + canvas_size.x, canvas_pos.y + canvas_size.y), ImColor(255, 255, 255));
 
-	QuadTree* tree = this->terrain.getQuadTree();
-
-	glm::vec3 offset(canvas_size.x/2+ canvas_pos.x, 0, canvas_size.y/2+ canvas_pos.y);
-
-	ImVec2 camPos(this->camera->getPosition().x + offset.x, this->camera->getPosition().z + offset.z);
-
-	draw_list->PushClipRect(canvas_pos, ImVec2(canvas_pos.x + canvas_size.x, canvas_pos.y + canvas_size.y), true);      // clip lines within the canvas (if we resize it, etc.)
+	// clip lines within the canvas (if we resize it, etc.)
+	draw_list->PushClipRect(canvas_pos, ImVec2(canvas_pos.x + canvas_size.x, canvas_pos.y + canvas_size.y), true);
 	
+	QuadTree* tree = this->terrain.getQuadTree();
+	glm::vec3 offset(canvas_size.x/2+ canvas_pos.x, 0, canvas_size.y/2+ canvas_pos.y);
 	renderQuadGUI(&draw_list, offset, tree);
 	//draw_list->AddCircleFilled(ImVec2(camPos.x, camPos.y), 1.5f, ImColor(255, 255, 255), 8);
 
