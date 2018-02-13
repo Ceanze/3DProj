@@ -5,6 +5,7 @@ QuadTree::QuadTree(const unsigned & recursionLevel, glm::vec3 corners[4], const 
 {
 	this->hasChildren = false;
 	this->inFrustum = false;
+	this->quadSize = glm::length((corners[1] - corners[0]));
 
 	for (int i = 0; i < 4; i++)
 	{	
@@ -17,8 +18,6 @@ QuadTree::QuadTree(const unsigned & recursionLevel, glm::vec3 corners[4], const 
 		this->hasChildren = true;
 
 		this->children = new QuadTree*[4];
-
-		this->quadSize = glm::length((corners[1] - corners[0]));
 
 		glm::vec3 v1 = { 0, 0, 0 }, v2 = { 0, 0, 0 };
 		v1 = (corners[1] - corners[0]) / 2.0f;
@@ -79,7 +78,7 @@ void QuadTree::init()
 	}
 }
 
-void QuadTree::addTriangleToRoot(const glm::vec2 & pos, const Triangle & triangle)
+void QuadTree::addTriangleToRoot(const glm::vec2 pos, const Triangle triangle)
 {
 	this->triangles.push_back(triangle);
 	this->trianglePositions.push_back(pos);
@@ -87,19 +86,19 @@ void QuadTree::addTriangleToRoot(const glm::vec2 & pos, const Triangle & triangl
 
 void QuadTree::addTriangle(const glm::vec2 & pos, const Triangle& triangle)
 {
-	float childQuadSize = this->quadSize / 2.0f;
-
-	if (pos.x <= childQuadSize && pos.y <= childQuadSize)
+	//float childQuadSize = this->quadSize / 2.0f;
+	glm::vec3 center = this->box.getCenterPoint();
+	if (pos.x <= center.x && pos.y <= center.z)
 	{
 		this->children[0]->triangles.push_back(triangle);
 		this->children[0]->trianglePositions.push_back(pos);
 	}
-	else if (pos.x < childQuadSize && pos.y > childQuadSize)
+	else if (pos.x < center.x && pos.y > center.z)
 	{
 		this->children[1]->triangles.push_back(triangle);
 		this->children[1]->trianglePositions.push_back(pos);
 	}
-	else if (pos.x > childQuadSize && pos.y < childQuadSize)
+	else if (pos.x > center.x && pos.y < center.z)
 	{
 		this->children[2]->triangles.push_back(triangle);
 		this->children[2]->trianglePositions.push_back(pos);
@@ -113,7 +112,7 @@ void QuadTree::addTriangle(const glm::vec2 & pos, const Triangle& triangle)
 
 void QuadTree::render()
 {
-	for (int i = 0; i < CHILDREN_AMOUNT && this->hasChildren == true; i++)
+	for (int i = 0; i < CHILDREN_AMOUNT && this->hasChildren && this->inFrustum; i++)
 		this->children[i]->render();
 
 
@@ -129,6 +128,7 @@ bool QuadTree::statusFrustum(const Plane planes[6])
 {
 	bool result = false;
 
+	this->setChildrenInFrustum(false);
 	for (int plane = 0; plane < 6; plane++)
 	{
 		bool in = false;
@@ -143,7 +143,6 @@ bool QuadTree::statusFrustum(const Plane planes[6])
 
 		if (!in)
 		{
-			this->inFrustum = false;
 			result = false;
 			return false;
 		}
@@ -171,14 +170,13 @@ bool QuadTree::statusFrustum(const Plane planes[6])
 
 void QuadTree::addEbo()
 {
-	if (this->triangles.size() > 0)
+	if (this->triangles.size() > 0 && !this->hasChildren)
 	{
 		glGenBuffers(1, &this->ebo);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->ebo);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint)*this->triangles.size() * 3, &this->triangles[0], GL_STATIC_DRAW);
 	}
-
-	if (this->hasChildren)
+	else if (this->hasChildren)
 	{
 		for (int i = 0; i < CHILDREN_AMOUNT; i++)
 			this->children[i]->addEbo();
@@ -194,4 +192,12 @@ AABox QuadTree::getBox() const
 bool QuadTree::isInFrustum() const
 {
 	return this->inFrustum;
+}
+
+void QuadTree::setChildrenInFrustum(bool state)
+{
+	this->inFrustum = false;
+	if(this->hasChildren)
+		for (int i = 0; i < CHILDREN_AMOUNT; i++)
+			this->children[i]->setChildrenInFrustum(state);
 }

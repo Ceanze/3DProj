@@ -225,8 +225,8 @@ void Terrain::generateIndicies(const unsigned& x, const unsigned& z)
 	tri2.p2 = z + x * (this->rowLength) + (this->rowLength);
 	tri2.p3 = z + 1 + x * (this->rowLength);
 
-	this->quadTree->addTriangleToRoot(glm::vec2(x * this->offset, z * this->offset), tri1);
-	this->quadTree->addTriangleToRoot(glm::vec2(x * this->offset, z * this->offset), tri2);
+	this->quadTree->addTriangleToRoot(glm::vec2(x * this->offset - this->size/2, z * this->offset - this->size/2), tri1);
+	this->quadTree->addTriangleToRoot(glm::vec2(x * this->offset - this->size/2, z * this->offset - this->size/2), tri2);
 
 	this->generateTangent(tri1);
 	this->generateTangent(tri2);

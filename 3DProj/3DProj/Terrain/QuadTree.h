@@ -26,7 +26,7 @@ public:
 
 	void init();
 
-	void addTriangleToRoot(const glm::vec2 & pos, const Triangle& triangle);
+	void addTriangleToRoot(const glm::vec2 pos, const Triangle triangle);
 	void render();
 	bool statusFrustum(const Plane planes[6]);
 
@@ -34,6 +34,7 @@ public:
 
 	AABox getBox() const;
 	bool isInFrustum() const;
+	void setChildrenInFrustum(bool state);
 
 private:
 	void addTriangle(const glm::vec2 & pos, const Triangle& triangle);
