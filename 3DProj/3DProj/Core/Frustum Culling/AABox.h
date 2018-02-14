@@ -1,7 +1,7 @@
 #ifndef AABOX_H
 #define AABOX_H
 
-#include "../Config.h"
+#include "glm.hpp"
 #include <vector>
 
 class AABox

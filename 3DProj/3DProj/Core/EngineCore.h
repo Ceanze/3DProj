@@ -58,21 +58,18 @@ private:
 
 	Terrain terrain;
 	Entity* base;
-	Entity* e1;
 	Entity* e2;
 	Entity* armyPilot;
 	Entity* sword;
 	Entity* lightBase;
 	Entity* directionalLight;
 	std::vector<Entity*> arm;
-	Mesh* m1;
 	Mesh* m2;
 	std::vector<Mesh*> cubeMeshes;
 	std::vector<Mesh*> swordMeshes;
 	std::vector<Mesh*> armyPilotMeshes;
 	ObjLoader loader;
 	Camera* camera;
-	Camera* camera2;
 	Camera* shadowCamera;
 	Camera* activeCamera;
 	Frustum* frustum;

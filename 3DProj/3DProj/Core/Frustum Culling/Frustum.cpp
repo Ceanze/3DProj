@@ -8,9 +8,9 @@ void Frustum::calculateWidthAndHeight()
 {
 	float tang = tan(fov / 2);
 	this->nearHeight = this->zNear * tang * 2.0f;
-	this->nearWidth = this->nearHeight * this->ratio;
+	this->nearWidth = this->nearHeight * this->ratio * 1.2;
 	this->farHeight = this->zFar * tang * 2.0f;
-	this->farWidth = this->farHeight * this->ratio;
+	this->farWidth = this->farHeight * this->ratio * 1.2;
 }
 
 void Frustum::calculatePlanes()
@@ -61,30 +61,6 @@ void Frustum::update(glm::vec3 camPos)
 	else
 		Error::printWarning("No 'QuadTree' attached to frustum!");
 }
-
-// Might not be used.
-/*bool Frustum::checkBox(AABox &box)
-{
-	int in, out;
-	bool result = false;
-
-	for (int i = 0; i < 6; i++)
-	{
-		in = 0;
-		out = 0;
-		for (int j = 0; j < 8 && (in == 0 || out == 0); j++)
-		{
-			if (planes[i].distance(box.getPoint(j)) < 0)
-				out++;
-			else
-				in++;
-		}
-		if (in == 0)
-			return false;
-		else
-			result = true;
-	}
-}*/
 
 float Frustum::getZNear() const
 {
