@@ -1,8 +1,6 @@
 #include "AABox.h"
 
 
-
-
 AABox::AABox()
 {
 	this->sum = glm::vec3(0.0f);

@@ -4,7 +4,6 @@
 #include "../Component.h"
 #include "../../../Core/Config.h"
 #include "../../../Utils/Transform.h"
-//#include "../../../Core/Frustum Culling/Frustum.h"
 
 #include <glm.hpp>
 

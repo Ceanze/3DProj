@@ -12,22 +12,24 @@ DeferredRenderer::DeferredRenderer(Display* display)
 
 	this->gBuffer = new FrameBuffer(display->getWidth(), display->getHeight());
 	this->gBuffer->createTextures(std::vector<std::pair<FrameBuffer::FBO_ATTATCHMENT_TYPE, GLuint>>{ 
-		{ FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16F },
-		{ FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16F },
-		{ FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16F },
-		{ FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16F },
-		{ FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16F },
-		{ FrameBuffer::FBO_DEPTH_ATTACHMENT, GL_RGBA16F }
+		{ FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16F }, // Position
+		{ FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16F }, // Normal
+		{ FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16F }, // Albedo
+		{ FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16F }, // Material diffuse color and ambient factor
+		{ FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16F }, // Material specular color and specular exponent. 
+		{ FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16F }, // Glow color
+		{ FrameBuffer::FBO_DEPTH_ATTACHMENT, GL_RGBA16F }  // Depth texture
 	});
 
 	this->lightingBuffer = new FrameBuffer(display->getWidth(), display->getHeight());
 	this->lightingBuffer->createTextures(std::vector<std::pair<FrameBuffer::FBO_ATTATCHMENT_TYPE, GLuint>>{
-		{ FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16F}, {FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16F }
+		{ FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16F}, // Diffuse (and ambient) light
+		{FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16F }  // Specular light
 	});
 
 	this->combineBuffer = new FrameBuffer(display->getWidth(), display->getHeight());
 	this->combineBuffer->createTextures(std::vector<std::pair<FrameBuffer::FBO_ATTATCHMENT_TYPE, GLuint>>{
-		{ FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16F }
+		{ FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16F } // Final image
 	});
 	this->combineBuffer->bindTexture(0);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -37,11 +39,11 @@ DeferredRenderer::DeferredRenderer(Display* display)
 	this->shadowResScale = 4.0f;
 	this->shadowBuffer = new FrameBuffer(display->getWidth()*this->shadowResScale, display->getHeight()*this->shadowResScale);
 	this->shadowBuffer->createTextures(std::vector<std::pair<FrameBuffer::FBO_ATTATCHMENT_TYPE, GLuint>>{
-		{ FrameBuffer::FBO_DEPTH_ATTACHMENT, GL_RGBA16F }
+		{ FrameBuffer::FBO_DEPTH_ATTACHMENT, GL_RGBA16F } // Depth from shadow camera.
 	});
 
-	this->brightnessFilter = new BrightnessFilter(display->getWidth(), display->getHeight());
-	this->blurFilter = new BlurFilter(display->getWidth(), display->getHeight(), 0.1f);
+	this->blurFilter = new BlurFilter(display->getWidth(), display->getHeight(), 0.4f);
+	this->glowFilter = new GlowFilter(display->getWidth(), display->getHeight(), this->blurFilter);
 
 	this->phongShader = new PhongLS();
 	this->combineShader = new CombineShader();
@@ -62,7 +64,7 @@ DeferredRenderer::~DeferredRenderer()
 	delete this->combineBuffer;
 	delete this->combineShader;
 
-	delete this->brightnessFilter;
+	delete this->glowFilter;
 	delete this->blurFilter;
 
 	delete this->glowShader;
@@ -86,11 +88,20 @@ void DeferredRenderer::render(Node * node)
 	renderGlowBlurOrNormal();
 }
 
-void DeferredRenderer::render(Node * node, Terrain * terrain)
+void DeferredRenderer::render(Node * node, Terrain * terrain, bool useWireframe)
 {
 	this->gBuffer->bind();
+	if (useWireframe)
+	{
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_ONE, GL_ONE);
+	}
 	node->render();
 	terrain->render();
+	if (useWireframe)
+	{
+		glDisable(GL_BLEND);
+	}
 	this->gBuffer->unbind();
 
 	this->shadowBuffer->bind();
@@ -111,7 +122,8 @@ void DeferredRenderer::resize(Display * display)
 	this->lightingBuffer->resize(display->getWidth(), display->getHeight());
 	this->combineBuffer->resize(display->getWidth(), display->getHeight());
 
-	this->brightnessFilter->resize(display->getWidth(), display->getHeight());
+	//this->glowBuffer->resize(display->getWidth(), display->getHeight());
+	this->glowFilter->resize(display->getWidth(), display->getHeight());
 	this->blurFilter->resize(display->getWidth(), display->getHeight());
 	this->shadowBuffer->resize(display->getWidth()*this->shadowResScale, display->getHeight()*this->shadowResScale);
 }
@@ -133,7 +145,7 @@ const FrameBuffer * DeferredRenderer::getLBuffer() const
 
 const FrameBuffer * DeferredRenderer::getBrightnessBuffer() const
 {
-	return this->brightnessFilter->getFrameBuffer();
+	return this->glowFilter->getBrightnessBuffer();
 }
 
 const FrameBuffer * DeferredRenderer::getBlurBuffer() const
@@ -234,8 +246,7 @@ void DeferredRenderer::renderGlowBlurOrNormal()
 
 	if (isGClicked) // Glow effect
 	{
-		this->brightnessFilter->render(this->combineBuffer, this->quadVAO);
-		this->blurFilter->render(this->brightnessFilter->getFrameBuffer(), this->quadVAO);
+		this->glowFilter->render(this->gBuffer->getTexture(5), this->quadVAO);
 
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
@@ -243,7 +254,7 @@ void DeferredRenderer::renderGlowBlurOrNormal()
 
 		glUseProgram(this->glowShader->getID());
 		this->texturesTempArr[0] = this->combineBuffer->getTexture();
-		this->texturesTempArr[1] = this->blurFilter->getTexture();
+		this->texturesTempArr[1] = this->glowFilter->getTexture();
 		this->glowShader->updateUniforms(this->texturesTempArr, 1);
 
 		glBindVertexArray(this->quadVAO);

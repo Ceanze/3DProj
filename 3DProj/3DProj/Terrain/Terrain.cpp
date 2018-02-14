@@ -4,7 +4,6 @@
 #include "../glm/glm.hpp"
 #include "../Error.h"
 #include "../Core/ResourceManager.h"
-#include <iostream>
 
 Terrain::Terrain(const unsigned& terrainScale, const float& textureScale)
 	: quadTree(nullptr)

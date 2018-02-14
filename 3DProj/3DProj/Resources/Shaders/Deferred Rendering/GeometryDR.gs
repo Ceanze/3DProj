@@ -15,6 +15,7 @@ out vec3 fragPosition;
 out vec3 fragNormal;
 out vec3 fragTangent;
 out vec2 fragTextureCoord;
+out vec3 dist;
 
 void main()
 {
@@ -36,6 +37,8 @@ void main()
                 fragNormal = geometryNormal[i];
                 fragTangent = geometryTangent[i];
                 gl_Position = camera*vec4(fragPosition, 1.0);
+                dist = vec3(0.0);
+                dist[i] = 1.0;
                 EmitVertex();
             }
         }

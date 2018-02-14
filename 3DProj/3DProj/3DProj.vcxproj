@@ -170,6 +170,7 @@
     <ClCompile Include="Core\Frustum Culling\Plane.cpp" />
     <ClCompile Include="Postprocessing\BlurFilter.cpp" />
     <ClCompile Include="Postprocessing\BrightnessFilter.cpp" />
+    <ClCompile Include="Postprocessing\GlowFilter.cpp" />
     <ClCompile Include="Shading\Deferred Rendering\CombineShader.cpp" />
     <ClCompile Include="Shading\BrightnessShader.cpp" />
     <ClCompile Include="Shading\GlowShader.cpp" />
@@ -224,6 +225,7 @@
     <ClInclude Include="Core\Frustum Culling\Plane.h" />
     <ClInclude Include="Postprocessing\BlurFilter.h" />
     <ClInclude Include="Postprocessing\BrightnessFilter.h" />
+    <ClInclude Include="Postprocessing\GlowFilter.h" />
     <ClInclude Include="Shading\Deferred Rendering\CombineShader.h" />
     <ClInclude Include="Shading\BrightnessShader.h" />
     <ClInclude Include="Shading\GlowShader.h" />

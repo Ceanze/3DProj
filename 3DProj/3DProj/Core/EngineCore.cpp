@@ -1,25 +1,20 @@
 #include "EngineCore.h"
 
-#include <chrono>
+#include <chrono> //Deltatime
 
-#include "../ImGui/imgui.h"
-#include "../ImGui/imgui_impl_glfw_gl3.h"
-#include "..\Entities\Components\Movement\Movement.h"
-#include "..\Entities\Components\Lightning\PointLight.h"
-#include "../Utils/Utils.h"
-#include "../Terrain/Terrain.h"
+#include "../ImGui/imgui.h" //UI
+#include "../ImGui/imgui_impl_glfw_gl3.h" //UI
+#include "..\Entities\Components\Movement\Movement.h" //Movement
+#include "..\Entities\Components\Lightning\PointLight.h" //Pointlight
+#include "../Utils/Utils.h" //Used for calculations of yaw, pitch, roll.
+#include "../Terrain/Terrain.h" //Terrain
 
 #include "ResourceManager.h"
-
-/*---------------- TEMP --------------------*/
-#include <gtc\matrix_transform.hpp>
-/*-------------- END TEMP ------------------*/
 
 EngineCore::EngineCore()
 	:	display("test window"),
 		terrain()
 {
-	/*---------------- TEMP --------------------*/
 	// Create Shader
 	this->geometryShader = new GeometryShader();
 	this->deferredRenderer = new DeferredRenderer(&this->display);
@@ -27,36 +22,26 @@ EngineCore::EngineCore()
 	this->shadowCamera = new Camera(&this->display, 50, 50, {0.0f, 0.0f, 0.0f}, -100, 200);
 	this->deferredRenderer->setShadowCamera(this->shadowCamera);
 	this->camera = new Camera(&this->display, glm::vec3{0.0f, 0.0f, 0.0f});
-	this->camera2 = new Camera(&this->display, glm::vec3{0.0f, 10.0f, 0.0f});
 	this->activeCamera = this->camera;
 	this->camInc = 0;
 	attachCamera(this->activeCamera);
+
 	this->frustum = new Frustum(this->activeCamera, this->terrain.getQuadTree(), this->display.getRatio());
 	
 	this->terrain.setShader(this->geometryShader);
 
 	this->base = new Entity({ 0.0f, 5.0f, -5.0f }, {0.0f, 0.0f, 0.0f});
 
-	/*this->m1 = new Mesh();
-	loader.load(this->m1, "Bunny/bunny.obj");*/
 	this->m2 = new Mesh();
 	loader.load(this->m2, "Cube/Cube.obj", USE_NORMAL_MAP);
+	this->m2->material->glowColor = glm::vec3(1.0f, 1.0f, 1.0f);
 
 	loader.load(this->cubeMeshes, "Cube2/Cube2.obj", USE_NORMAL_MAP);
 	loader.load(this->armyPilotMeshes, "ArmyPilot/ArmyPilot.obj", FLIP_UV_Y);
 	loader.load(this->swordMeshes, "Sword2a/sword2a.obj");
 	
-	// --------------------------- Bunny ---------------------------
-	/*this->e1 = new Entity({ -3.0f, 1.f, -5.0f }, glm::normalize(glm::vec3{ 0.1f, 2.0f, -2.0f }), false);
-	this->e1->addMesh(this->m1, this->geometryShader);
-	this->e1->addComponent(new testComponent());
-	
-	
-	base->addChild(e1);
-*/
-	// --------------------------- Bunny and Cube ---------------------------
+	// --------------------------- Player ---------------------------
 	this->e2 = new Entity({ 0.0f, 3.0f, 10.0f }, { 0.0f, 0.0f, 0.0f }, false);
-	//this->e2->addMesh(this->m1, this->geometryShader);
 	this->e2->addComponent(this->camera);
 	this->e2->addComponent(new Movement(&this->terrain, 10, GLFW_KEY_W, GLFW_KEY_A, GLFW_KEY_S, GLFW_KEY_D));
 	base->addChild(e2);
@@ -81,8 +66,6 @@ EngineCore::EngineCore()
 	this->armyPilot = new Entity({ 0.0f, -5.f, 5.0f }, { 0.0f, 0.0f, 0.0f }, false);
 	this->armyPilot->getLocalTransform().setScale({0.05f, 0.05f, 0.05f });
 	this->armyPilot->addMeshes(this->armyPilotMeshes, this->geometryShader);
-	this->armyPilot->addComponent(this->camera2);
-	//this->armyPilot->addComponent(new Movement(10));
 	base->addChild(armyPilot);
 
 	// --------------------------- Arm ---------------------------
@@ -103,8 +86,6 @@ EngineCore::EngineCore()
 
 	temp = new Entity({ 0.0f, 2.0f, 0.0f }, { 0.0f, 0.0f, 0.0f });
 	temp->addMeshes(this->cubeMeshes, this->geometryShader);
-	//temp->addComponent(this->camera2);
-	//temp->addComponent(new Movement(10, GLFW_KEY_W, GLFW_KEY_A, GLFW_KEY_S, GLFW_KEY_D));
 	this->arm[this->arm.size() - 1]->addChild(temp);
 	this->arm.push_back(temp);
 
@@ -117,31 +98,27 @@ EngineCore::EngineCore()
 	temp->addMesh(this->m2, this->geometryShader);
 	temp->getLocalTransform().setScale({ 0.2f, 0.2f, 0.2f });
 	this->lightBase->addChild(temp);
-
-	/*
+	
 	temp = new Entity({ 4.0f, 0.0f, -6.0f }, { 0.0f, 0.0f, 0.0f });
 	temp->addComponent(new PointLight(50.0f, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f), this->deferredRenderer->getPhongShader()));
-	temp->addMesh(this->m2, this->geometryNMShader);
+	temp->addMesh(this->m2, this->geometryShader);
 	temp->getLocalTransform().setScale({ 0.2f, 0.2f, 0.2f });
 	this->lightBase->addChild(temp);
 
-
 	temp = new Entity({ -4.0f, 0.0f, 6.0f }, { 0.0f, 0.0f, 0.0f });
 	temp->addComponent(new PointLight(50.0f, 1.0f, glm::vec3(0.0f, 0.0f, 1.0f), this->deferredRenderer->getPhongShader()));
-	temp->addMesh(this->m2, this->geometryNMShader);
+	temp->addMesh(this->m2, this->geometryShader);
 	temp->getLocalTransform().setScale({ 0.2f, 0.2f, 0.2f });
-	this->lightBase->addChild(temp);*/
+	this->lightBase->addChild(temp);
 
 	this->base->update(0.16f);
 	this->base->init();
 	this->frustum->init();
 	this->shadowCamera->setDirection(lightDir);
-	/*-------------- END TEMP ------------------*/
 }
 
 EngineCore::~EngineCore()
 {
-	//delete this->m1;
 	delete this->m2;
 	for (Mesh* m : this->cubeMeshes) delete m;
 	for (Mesh* m : this->armyPilotMeshes) delete m;
@@ -157,19 +134,19 @@ EngineCore::~EngineCore()
 
 void EngineCore::init()
 {
+	// -------------------- Delta time -----------------------
 	auto currentTime = std::chrono::high_resolution_clock::now();
 	auto previousTime = currentTime;
 	float dt = 0.0f;
 	float timePassed = 0.0;
 
+	// -------------------- Main loop ------------------------
 	glfwSetInputMode(display.getWindowPtr(), GLFW_STICKY_KEYS, GL_TRUE);
 	while (glfwGetKey(display.getWindowPtr(), GLFW_KEY_ESCAPE) != GLFW_PRESS && glfwWindowShouldClose(display.getWindowPtr()) == 0)
 	{
-
 		if (this->display.sizeUpdated)
 		{
 			this->camera->updateProj();
-			this->camera2->updateProj();
 			this->deferredRenderer->resize(&this->display);
 			this->display.sizeUpdated = false;
 		}
@@ -191,14 +168,14 @@ void EngineCore::init()
 #endif
 		// ------------------------------------------------------------------------
 
-		// Compute deltat time (dt)
+		// Compute delta time (dt)
 		currentTime = std::chrono::high_resolution_clock::now();
 		dt = std::chrono::duration<float>(currentTime-previousTime).count();
 		previousTime = currentTime;
 
-		this->input(&this->display);
-		this->update(dt);
-		this->render();
+		this->input(&this->display); //Check if there are any inputs
+		this->update(dt); //Uppdate all the entities before rendering
+		this->render(); //Renders
 	}
 
 }
@@ -207,13 +184,6 @@ void EngineCore::update(const float & dt)
 {
 	this->frustum->update(this->camera->getPosition());
 
-	/*
-	float& time = this->testShader->getTime();
-	time += dt*3.0f;
-	if (time > 10)
-		time = 0;
-	*/
-
 	/*Transform& tb = this->base->getWorldTransform();
 	tb.setRotation(tb.getRotation() + glm::vec3{ 0.0f, -dt, 0.0f });
 	
@@ -221,9 +191,6 @@ void EngineCore::update(const float & dt)
 	a1.setRotation(a1.getRotation() + glm::vec3{ dt, 0.0f, dt });
 	Transform& a2 = this->arm[2]->getLocalTransform();
 	a2.setRotation(a2.getRotation() + glm::vec3{ -dt, 0.0f, dt });
-	*/
-	/*Transform& t = this->e1->getWorldTransform();
-	t.setRotation(t.getRotation() + glm::vec3{ dt*1.5f, dt*1.5f, dt*1.5f });
 	*/
 
 	Transform& lightT = this->lightBase->getWorldTransform();
@@ -240,12 +207,12 @@ void EngineCore::update(const float & dt)
 
 void EngineCore::render()
 {
-	this->display.bindAsRenderTarget();
+	this->display.bindAsRenderTarget(); //Render to current display
 	// Draw
 	glClearColor(0, 0, 0, 1);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	this->deferredRenderer->render(this->base, &this->terrain);
+	this->deferredRenderer->render(this->base, &this->terrain, this->geometryShader->isUsingWireframe());
 
 	// Draw ImGui elements.
 #ifdef RENDER_GUI
@@ -257,6 +224,20 @@ void EngineCore::render()
 
 void EngineCore::input(Display* display)
 {
+	static bool isFClicked = 0;
+	static bool isFPressed = false;
+
+	if (glfwGetKey(display->getWindowPtr(), GLFW_KEY_F) != GLFW_PRESS)
+	{
+		if (isFPressed)
+		{
+			isFPressed = false;
+			isFClicked ^= 1;
+			this->geometryShader->setUseWireframe(isFClicked);
+		}
+	}
+	else isFPressed = true;
+
 	static bool isVClicked = 0;
 	static bool isVPressed = false;
 	if (glfwGetKey(display->getWindowPtr(), GLFW_KEY_V) != GLFW_PRESS)
@@ -275,6 +256,7 @@ void EngineCore::input(Display* display)
 		isVClicked ^= 1;
 	}
 
+	//Go through the bases and all it's children inputs.
 	base->input(display);
 }
 
@@ -291,6 +273,7 @@ void EngineCore::renderGui()
 		ImGui::Text("Click 'C' to toggle camera on and off and 'V' to swap camera");
 		ImGui::Text("Click 'B' to toggle blur on and off.");
 		ImGui::Text("Click 'G' to toggle glow on and off.");
+		ImGui::Text("Click 'F' to toggle wireframe on and off.");
 	}
 
 	if (show_node_tree_window)
@@ -583,17 +566,14 @@ void EngineCore::swapCamera()
 	switch (this->camInc)
 	{
 	case 0:
-		this->activeCamera = this->camera2;
-		break;
-	case 1:
 		this->activeCamera = this->shadowCamera;
 		break;
-	case 2:
+	case 1:
 		this->activeCamera = this->camera;
 		break;
 	}
 	this->camInc++;
-	if (this->camInc > 2)
+	if (this->camInc > 1)
 		this->camInc = 0;
 	attachCamera(this->activeCamera);
 }
