@@ -6,7 +6,7 @@
 
 #include <gtc\matrix_transform.hpp>
 
-Camera::Camera(Display * display, glm::vec3 relativePosition, float fov, float zNear, float zFar)
+Camera::Camera(Display * display, glm::vec3 relativePosition, float fov, float zNear, float zFar) //Used for normal "fps" camera
 {
 	this->display = display;
 	this->relativePosition = relativePosition;
@@ -15,7 +15,7 @@ Camera::Camera(Display * display, glm::vec3 relativePosition, float fov, float z
 	this->active = false;
 }
 
-Camera::Camera(Display * display, float width, float height, glm::vec3 relativePosition, float zNear, float zFar)
+Camera::Camera(Display * display, float width, float height, glm::vec3 relativePosition, float zNear, float zFar) //Used for ortholinear camera
 {
 	this->display = display;
 	this->width = width;
@@ -23,7 +23,7 @@ Camera::Camera(Display * display, float width, float height, glm::vec3 relativeP
 	this->relativePosition = relativePosition;
 	this->orthoCam = true;
 	this->fov = 0.0f;
-	updateProj(fov, zNear, zFar);
+	updateProj(this->fov, zNear, zFar);
 	this->active = false;
 }
 
@@ -40,7 +40,6 @@ void Camera::init()
 	lookAt(glm::vec3(0.0f, 0.0f, 0.0f));
 
 	glfwSetCursorPos(this->display->getWindowPtr(), this->display->getWidth() / 2, this->display->getHeight() / 2);
-	//glfwSetInputMode(this->display->getWindowPtr(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 }
 
 void Camera::update(const float & dt)
@@ -64,7 +63,7 @@ void Camera::input(Display * display)
 		}
 		else isCPressed = true;
 
-		if (isCClicked)
+		if (isCClicked) //If C is clicked, activate camera mouse movement
 		{
 			double xPos, yPos, sensitivity = 0.5f;
 
@@ -232,7 +231,4 @@ void Camera::setWorldPosition()
 	glm::mat4 temp = this->getEntity()->getChainTransform().getMatrix()*this->localPositionMat;
 
 	this->worldPosition = glm::vec3(temp[3][0], temp[3][1], temp[3][2]);
-	//this->worldPosition = glm::vec3(0.0, 5.0, 10.0);
-	//Error::printError("Chainmatrix" + std::to_string(this->getEntity()->getChainTransform().getMatrix()[3][0]) + ", " + std::to_string(this->getEntity()->getChainTransform().getMatrix()[3][1]) + ", " + std::to_string(this->getEntity()->getChainTransform().getMatrix()[3][2]));
-	//Error::printWarning("Camera worldpos: " + std::to_string(this->worldPosition.x) + ", " + std::to_string(this->worldPosition.y) + ", " + std::to_string(this->worldPosition.z));
 }

@@ -4,7 +4,6 @@
 #include "../glm/glm.hpp"
 #include "../Error.h"
 #include "../Core/ResourceManager.h"
-#include <iostream>
 
 Terrain::Terrain(const unsigned& terrainScale, const float& textureScale)
 	: quadTree(nullptr)
@@ -13,13 +12,13 @@ Terrain::Terrain(const unsigned& terrainScale, const float& textureScale)
 
 	this->heightMap = this->texture = this->textureNormalMap = nullptr;
 
-	this->loadTexture("./Resources/Textures/heightmapTest.png", &this->heightMap, false);
+	this->loadTexture("./Resources/Textures/heightmap.png", &this->heightMap, false);
 	this->loadTexture("./Resources/Textures/stone.jpg", &this->texture);
 	this->loadTexture("./Resources/Textures/stoneNP.jpg", &this->textureNormalMap);
 	
 	this->size = this->heightMap->getWidth() * terrainScale;
 	this->offset = terrainScale;
-	this->rowLength = this->size / this->offset;
+	this->rowLength = (this->size / this->offset);
 	this->start = glm::vec3(-(int)this->size / 2, 0, -(int)this->size / 2);
 
 	this->heights = new float[(int)size * (int)size];
@@ -225,8 +224,10 @@ void Terrain::generateIndicies(const unsigned& x, const unsigned& z)
 	tri2.p2 = z + x * (this->rowLength) + (this->rowLength);
 	tri2.p3 = z + 1 + x * (this->rowLength);
 
-	this->quadTree->addTriangleToRoot(glm::vec2(x * this->offset - this->size/2, z * this->offset - this->size/2), tri1);
-	this->quadTree->addTriangleToRoot(glm::vec2(x * this->offset - this->size/2, z * this->offset - this->size/2), tri2);
+	glm::vec2 pos(x * this->offset - this->size / 2.0f, z * this->offset - this->size / 2.0f);
+
+	this->quadTree->addTriangleToRoot(pos, tri1);
+	this->quadTree->addTriangleToRoot(pos, tri2);
 
 	this->generateTangent(tri1);
 	this->generateTangent(tri2);

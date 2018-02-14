@@ -1,5 +1,3 @@
-#include <iostream>
-#include <Windows.h>
 #include <crtdbg.h>
 
 #include "Core\EngineCore.h"

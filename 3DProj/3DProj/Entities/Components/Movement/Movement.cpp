@@ -8,9 +8,9 @@
 
 
 
-Movement::Movement(float speed, unsigned forward, unsigned left, unsigned backward, unsigned right)
+Movement::Movement(float speed, unsigned forward, unsigned left, unsigned backward, unsigned right) //Movement without terrain
 {
-
+	this->terrain = nullptr;
 	this->speed = this->normalSpeed = speed;
 	this->shiftSpeed = speed * 4;
 	this->forward = forward;
@@ -19,7 +19,7 @@ Movement::Movement(float speed, unsigned forward, unsigned left, unsigned backwa
 	this->right = right;
 }
 
-Movement::Movement(Terrain * terrain, float speed, unsigned forward, unsigned left, unsigned backward, unsigned right)
+Movement::Movement(Terrain * terrain, float speed, unsigned forward, unsigned left, unsigned backward, unsigned right) //Movement with terrain
 {
 	this->terrain = terrain;
 	this->speed = this->normalSpeed = speed;
@@ -78,13 +78,14 @@ void Movement::input(Display * display)
 	}
 	else isShiftKeyPressed = true;
 
-	if (terrainLock) {
+	if (terrainLock && this->terrain != nullptr) //If space has been pressed, lock the player to the terrain
+	{ 
 		setHeight(this->terrain->getHeight(position.x, position.z));
 		forward = glm::vec3(forward.x, 0, forward.z);
 		right = glm::vec3(right.x, 0, right.z);
 	}
 
-	if (isShiftKeyPressed)
+	if (isShiftKeyPressed) //If shift is being pressed, set a higher movement speed
 	{
 		this->speed = this->shiftSpeed;
 
