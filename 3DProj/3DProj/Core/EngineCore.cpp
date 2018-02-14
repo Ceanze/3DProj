@@ -41,6 +41,7 @@ EngineCore::EngineCore()
 	loader.load(this->m1, "Bunny/bunny.obj");*/
 	this->m2 = new Mesh();
 	loader.load(this->m2, "Cube/Cube.obj", USE_NORMAL_MAP);
+	this->m2->material->glowColor = glm::vec3(1.0f, 1.0f, 1.0f);
 
 	loader.load(this->cubeMeshes, "Cube2/Cube2.obj", USE_NORMAL_MAP);
 	loader.load(this->armyPilotMeshes, "ArmyPilot/ArmyPilot.obj", FLIP_UV_Y);
@@ -245,7 +246,7 @@ void EngineCore::render()
 	glClearColor(0, 0, 0, 1);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	this->deferredRenderer->render(this->base, &this->terrain);
+	this->deferredRenderer->render(this->base, &this->terrain, this->geometryShader->isUsingWireframe());
 
 	// Draw ImGui elements.
 #ifdef RENDER_GUI
@@ -257,6 +258,20 @@ void EngineCore::render()
 
 void EngineCore::input(Display* display)
 {
+	static bool isFClicked = 0;
+	static bool isFPressed = false;
+
+	if (glfwGetKey(display->getWindowPtr(), GLFW_KEY_F) != GLFW_PRESS)
+	{
+		if (isFPressed)
+		{
+			isFPressed = false;
+			isFClicked ^= 1;
+			this->geometryShader->setUseWireframe(isFClicked);
+		}
+	}
+	else isFPressed = true;
+
 	static bool isVClicked = 0;
 	static bool isVPressed = false;
 	if (glfwGetKey(display->getWindowPtr(), GLFW_KEY_V) != GLFW_PRESS)
@@ -291,6 +306,7 @@ void EngineCore::renderGui()
 		ImGui::Text("Click 'C' to toggle camera on and off and 'V' to swap camera");
 		ImGui::Text("Click 'B' to toggle blur on and off.");
 		ImGui::Text("Click 'G' to toggle glow on and off.");
+		ImGui::Text("Click 'F' to toggle wireframe on and off.");
 	}
 
 	if (show_node_tree_window)

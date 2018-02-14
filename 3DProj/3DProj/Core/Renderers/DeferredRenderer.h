@@ -9,7 +9,7 @@
 #include "../../Shading/GlowShader.h"
 #include "../../Shading/ShadowShader.h"
 #include "../../Postprocessing/BlurFilter.h"
-#include "../../Postprocessing/BrightnessFilter.h"
+#include "../../Postprocessing/GlowFilter.h"
 #include "../../Entities/Components/Lightning/LightComponent.h"
 #include "../../Terrain/Terrain.h"
 
@@ -21,7 +21,7 @@ public:
 	virtual ~DeferredRenderer();
 
 	void render(Node* node);
-	void render(Node* node, Terrain* terrain);
+	void render(Node* node, Terrain* terrain, bool useWireframe);
 
 	void resize(Display* display);
 
@@ -56,9 +56,10 @@ private:
 	FrameBuffer* lightingBuffer;
 	FrameBuffer* combineBuffer;
 	FrameBuffer* shadowBuffer;
+	//FrameBuffer* glowBuffer;
 	float shadowResScale;
 
-	BrightnessFilter* brightnessFilter;
+	GlowFilter* glowFilter;
 	BlurFilter* blurFilter;
 
 	GLuint quadVAO;
