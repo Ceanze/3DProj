@@ -156,6 +156,9 @@
     <ClCompile Include="Core\Frustum Culling\AABox.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Postprocessing\GlowFilter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\EngineCore.h">
@@ -318,6 +321,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Utils\Utils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Postprocessing\GlowFilter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -12,12 +12,15 @@ public:
 	virtual ~GeometryShader();
 
 	void updateUniforms(GLuint* textures, unsigned nrOf);
+	void setUseWireframe(bool state);
+	bool isUsingWireframe() const;
 
 private:
 	void selfUpdateUniforms(Node* node);
 
 	glm::mat4 proj;
 	glm::mat4 view;
+	bool useWireframe;
 };
 
 #endif

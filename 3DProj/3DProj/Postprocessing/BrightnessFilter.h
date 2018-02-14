@@ -11,6 +11,7 @@ public:
 	virtual ~BrightnessFilter();
 
 	void resize(unsigned int newWidth, unsigned int newHeight);
+	void render(GLuint texture, GLuint quadVAO);
 	void render(FrameBuffer* fb, GLuint quadVAO);
 
 	FrameBuffer* getFrameBuffer();

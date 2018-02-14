@@ -21,6 +21,24 @@ void BrightnessFilter::resize(unsigned int newWidth, unsigned int newHeight)
 	this->frameBuffer->resize((unsigned int)(newWidth*this->scale), (unsigned int)(newHeight*this->scale));
 }
 
+void BrightnessFilter::render(GLuint texture, GLuint quadVAO)
+{
+	this->frameBuffer->bind();
+
+	glUseProgram(this->brightnessShader->getID());
+	GLuint* textures = new GLuint[1];
+	textures[0] = texture;
+	this->brightnessShader->updateUniforms(textures, 1);
+	delete[] textures;
+
+	glBindVertexArray(quadVAO);
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+	glBindVertexArray(0);
+	glUseProgram(0);
+
+	this->frameBuffer->unbind();
+}
+
 void BrightnessFilter::render(FrameBuffer * fb, GLuint quadVAO)
 {
 	this->frameBuffer->bind();

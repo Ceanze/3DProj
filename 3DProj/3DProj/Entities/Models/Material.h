@@ -14,6 +14,7 @@ public:
 	glm::vec3 ka;
 	glm::vec3 kd;
 	glm::vec3 ks;
+	glm::vec3 glowColor;
 	float ns;
 
 	Texture* normalMap;

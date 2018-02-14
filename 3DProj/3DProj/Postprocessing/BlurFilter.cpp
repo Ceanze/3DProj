@@ -1,4 +1,5 @@
 #include "BlurFilter.h"
+#include "GlowFilter.h"
 
 BlurFilter::BlurFilter(unsigned int width, unsigned int height, float scale)
 {
