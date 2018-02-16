@@ -23,7 +23,7 @@ Entity::Entity(const glm::mat4 &matrix, bool isDynamic)
 
 Entity::~Entity()
 {
-	for (int i = 0; i < this->components.size(); i++)
+	for (size_t i = 0; i < this->components.size(); i++)
 		delete this->components[i];
 }
 
@@ -60,13 +60,13 @@ std::vector<Mesh*> & Entity::getMeshes()
 
 void Entity::selfInit()
 {
-	for (int i = 0; i < this->components.size(); i++)
+	for (size_t i = 0; i < this->components.size(); i++)
 		this->components[i]->init();
 }
 
 void Entity::selfUpdate(float dt)
 {
-	for (int i = 0; i < this->components.size(); i++)
+	for (size_t i = 0; i < this->components.size(); i++)
 		this->components[i]->update(dt);
 }
 
@@ -91,6 +91,6 @@ void Entity::selfRender(ShaderProgram* shadowShader)
 
 void Entity::selfInput(Display * display)
 {
-	for (int i = 0; i < this->components.size(); i++)
+	for (size_t i = 0; i < this->components.size(); i++)
 		this->components[i]->input(display);
 }

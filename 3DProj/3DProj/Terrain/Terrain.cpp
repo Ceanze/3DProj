@@ -99,8 +99,8 @@ float Terrain::getHeight(const float & x, const float & z)
 		return 0.0f;
 	}
 
-	float xCoord = fmod(terrainX, this->offset) / this->offset;
-	float zCoord = fmod(terrainZ, this->offset) / this->offset;
+	float xCoord = fmod(terrainX, (float)this->offset) / this->offset;
+	float zCoord = fmod(terrainZ, (float)this->offset) / this->offset;
 	float a, b, c;
 
 	if (xCoord <= (1 - zCoord))
@@ -188,7 +188,6 @@ void Terrain::generateTangent(const Triangle& tri)
 void Terrain::generateVerticies()
 {
 	Vertex vertex;
-	unsigned char hMapPixel;
 
 	//Get HeightMap pixel color values
 	const std::vector<TextureInfo>& textureData = this->heightMap->getTextureData();
@@ -205,7 +204,7 @@ void Terrain::generateVerticies()
 			vertex.uvs = glm::vec2(x/ this->textureScale, z/ this->textureScale);
 			this->verticies.push_back(vertex);
 
-			if (x >= 1 & z >= 1)
+			if (x >= 1 && z >= 1)
 			{
 				this->generateIndicies(x - 1, z - 1);
 			}
@@ -232,7 +231,7 @@ void Terrain::generateIndicies(const unsigned& x, const unsigned& z)
 
 }
 
-const glm::vec3& Terrain::generateNormals(const unsigned& x, const unsigned& z, unsigned char* data)
+const glm::vec3 Terrain::generateNormals(const unsigned& x, const unsigned& z, unsigned char* data)
 {
 	float LH, RH, UH, DH;
 
@@ -241,7 +240,9 @@ const glm::vec3& Terrain::generateNormals(const unsigned& x, const unsigned& z, 
 	UH = this->getHeight(x - 1, z, data);
 	DH = this->getHeight(x + 1, z, data);
 
-	return glm::normalize(glm::vec3(LH - RH, 2.f, DH - UH));
+	glm::vec3 normal = glm::normalize(glm::vec3(LH - RH, 2.f, DH - UH));
+
+	return normal;
 }
 
 float Terrain::getHeight(const unsigned& x, const unsigned& z, unsigned char* data)

@@ -51,7 +51,7 @@ void Shader::compile()
 	glGetShaderiv(this->id, GL_COMPILE_STATUS, &compileResult);
 	if (compileResult == GL_FALSE) {
 		glGetShaderInfoLog(this->id, 1024, nullptr, buff);
-		buff[1023] = '/0';
+		buff[1023] = (char)'/0';
 		Error::printError(buff);
 	}
 }

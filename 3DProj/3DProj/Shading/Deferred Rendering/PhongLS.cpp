@@ -35,7 +35,7 @@ void PhongLS::updateLights()
 		DirectionalLight::DirectionalLightData dirData;
 	} lightData; 
 
-	for (int i = 0; i < this->pointLights.size(); i++)
+	for (int i = 0; i < (int)this->pointLights.size(); i++)
 	{
 		if (i < 5)
 		{

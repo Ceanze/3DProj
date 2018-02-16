@@ -5,7 +5,7 @@
 
 namespace Tools
 {
-	const float PI = 3.141592;
+	const float PI = 3.141592f;
 
 	static float interpolate(const float& x1, const float& x2, const float& t)
 	{
