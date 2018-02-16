@@ -26,17 +26,17 @@ QuadTree::QuadTree(const unsigned & recursionLevel, glm::vec3 corners[4], const 
 		
 		this->children[0] = new QuadTree(recursionLevel - 1, childCorners, height);
 
-		childCorners[0] = corners[0] + v1;
-		childCorners[1] = corners[1];
-		childCorners[2] = corners[0] + v1 + v2;
-		childCorners[3] = corners[1] + v2;
-
-		this->children[1] = new QuadTree(recursionLevel - 1, childCorners, height);
-
 		childCorners[0] = corners[0] + v2;
 		childCorners[1] = corners[0] + v1 + v2;
 		childCorners[2] = corners[2];
 		childCorners[3] = corners[2] + v1;
+
+		this->children[1] = new QuadTree(recursionLevel - 1, childCorners, height);
+
+		childCorners[0] = corners[0] + v1;
+		childCorners[1] = corners[1];
+		childCorners[2] = corners[0] + v1 + v2;
+		childCorners[3] = corners[1] + v2;
 
 		this->children[2] = new QuadTree(recursionLevel - 1, childCorners, height);
 
@@ -93,7 +93,7 @@ void QuadTree::addTriangle(const glm::vec2 & pos, const Triangle& triangle)
 		this->children[0]->triangles.push_back(triangle);
 		this->children[0]->trianglePositions.push_back(pos);
 	}
-	else if (pos.x < center.x && pos.y > center.z)
+	else if (pos.x <= center.x && pos.y >= center.z)
 	{
 		this->children[1]->triangles.push_back(triangle);
 		this->children[1]->trianglePositions.push_back(pos);
@@ -134,8 +134,7 @@ bool QuadTree::statusFrustum(const Plane planes[6])
 		bool in = false;
 		for (int pointBox = 0; pointBox < 8 && !in; pointBox++)
 		{
-			const glm::vec3 boxPoint = this->box.getPoint(pointBox);
-			if (planes[plane].distance(glm::vec3(boxPoint.z, boxPoint.y, boxPoint.x)) > 0)
+			if (planes[plane].distance(this->box.getPoint(pointBox)) > 0)
 			{
 				in = true;
 			}

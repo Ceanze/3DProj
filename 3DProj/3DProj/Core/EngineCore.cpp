@@ -539,13 +539,6 @@ void EngineCore::renderQuadGUI(ImDrawList** draw_list, glm::vec3 offset, QuadTre
 					if (j == 0 || (max.x > box.getPoint(j).x || max.z > box.getPoint(j).z)) max = box.getPoint(j);
 					(*draw_list)->AddCircleFilled(ImVec2(box.getPoint(j).x + offset.x, box.getPoint(j).z + offset.z), 1.5f, ImColor(255, 255, 255), 8);
 				}
-				glm::vec2 temp(min.x, min.z);
-				min.x = temp.y;
-				min.z = temp.x;
-				temp.x = max.x;
-				temp.y = max.z;
-				max.x = temp.y;
-				max.z = temp.x;
 				min += offset;
 				max += offset;
 				ImColor color = ImColor(0, 255, 0);
