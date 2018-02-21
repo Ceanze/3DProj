@@ -243,6 +243,7 @@
     <ClInclude Include="Utils\Utils.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="ClassDiagram.cd" />
     <None Include="Resources\Shaders\Deferred Rendering\PhongLS.fs" />
     <None Include="Resources\Shaders\Deferred Rendering\PhongLS.vs" />
   </ItemGroup>
