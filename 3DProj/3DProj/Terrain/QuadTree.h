@@ -17,8 +17,7 @@ struct Triangle
 
 class QuadTree
 {
-public:
-	QuadTree(const unsigned& recursionLevel, glm::vec3 corners[4], const float& height);
+public:QuadTree(const unsigned& recursionLevel, glm::vec3 corners[4], const float& height);
 	~QuadTree();
 
 	QuadTree** children;

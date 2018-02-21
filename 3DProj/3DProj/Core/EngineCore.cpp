@@ -39,7 +39,7 @@ EngineCore::EngineCore()
 	loader.load(this->cubeMeshes, "Cube2/Cube2.obj", USE_NORMAL_MAP);
 	loader.load(this->armyPilotMeshes, "ArmyPilot/ArmyPilot.obj", FLIP_UV_Y);
 	loader.load(this->swordMeshes, "Sword2a/sword2a.obj");
-	
+
 	// --------------------------- Player ---------------------------
 	this->e2 = new Entity({ 0.0f, 3.0f, 10.0f }, { 0.0f, 0.0f, 0.0f }, false);
 	this->e2->addComponent(this->camera);
@@ -54,7 +54,6 @@ EngineCore::EngineCore()
 	this->directionalLight->addComponent(new DirectionalLight(lightDir, 2.0f, glm::vec3(1.0f), this->deferredRenderer->getPhongShader()));
 	this->e2->addChild(this->directionalLight);
 
-	
 	// --------------------------- Sword ---------------------------
 	this->sword = new Entity({ 0.0f, -2.0f, -1.0f }, { 0.0f, 0.0f, 0.0f }, false);
 	this->sword->getLocalTransform().setScale({ 2.0f, 2.0f, 2.0f });

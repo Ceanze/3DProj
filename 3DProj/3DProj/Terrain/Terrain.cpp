@@ -12,7 +12,7 @@ Terrain::Terrain(const unsigned& terrainScale, const float& textureScale)
 
 	this->heightMap = this->texture = this->textureNormalMap = nullptr;
 
-	this->loadTexture("./Resources/Textures/heightmap.png", &this->heightMap, false);
+	this->loadTexture("./Resources/Textures/heightmapFlat.png", &this->heightMap, false);
 	this->loadTexture("./Resources/Textures/stone.jpg", &this->texture);
 	this->loadTexture("./Resources/Textures/stoneNP.jpg", &this->textureNormalMap);
 	
@@ -30,7 +30,7 @@ Terrain::Terrain(const unsigned& terrainScale, const float& textureScale)
 
 	glm::vec3 corners[4] = { topLeftCorner, topRightCorner, botLeftCorner, botRightCorner };
 
-	quadTree = new QuadTree(2, corners, 10);
+	quadTree = new QuadTree(4, corners, 10);
 
 	this->generateTerrain();
 }
@@ -62,6 +62,9 @@ void Terrain::render(ShaderProgram* shadowShader)
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, this->textureNormalMap->getTexture());
 
+	//Has texture, should be 1 if texture is attached to textureMap
+	glUniform1i(this->hasTextureLocation, 1);
+
 	glBindVertexArray(this->vao );
 	if (shadowShader == nullptr)
 		this->shader->updateUniforms();
@@ -92,17 +95,17 @@ float Terrain::getHeight(const float & x, const float & z)
 	float terrainX = -1 * (this->start.x - x);
 	float terrainZ = -1 * (this->start.z - z);
 	
-	glm::u8vec2 gridPos(floorf(terrainX / this->offset), floorf(terrainZ / this->offset));
+	glm::u8vec2 gridPos(floorf(terrainX / this->offset), floorf(terrainZ / this->offset) - 2);
 
-	if (gridPos.x >= this->rowLength || gridPos.y >= this->rowLength || gridPos.x < 0 || gridPos.y < 0)
+	if (gridPos.x >= this->rowLength - 1 || gridPos.y >= this->rowLength - 1 || gridPos.x < 0 || gridPos.y < 0)
 	{
 		return 0.0f;
 	}
-
+	
 	float xCoord = fmod(terrainX, this->offset) / this->offset;
 	float zCoord = fmod(terrainZ, this->offset) / this->offset;
 	float a, b, c;
-
+	std::cout << (int)gridPos.x << " " << (int)gridPos.y << std::endl;
 	if (xCoord <= (1 - zCoord))
 	{
 		a = this->heights[gridPos.x + gridPos.y * this->rowLength];
@@ -185,6 +188,13 @@ void Terrain::generateTangent(const Triangle& tri)
 
 }
 
+glm::vec3 Terrain::getTriangleMidPoint(const Triangle & tri) const
+{
+	glm::vec3 midPoint = (this->verticies[tri.p1].position + this->verticies[tri.p2].position + this->verticies[tri.p3].position) / 3.0f;
+
+	return midPoint;
+}
+
 void Terrain::generateVerticies()
 {
 	Vertex vertex;
@@ -224,10 +234,14 @@ void Terrain::generateIndicies(const unsigned& x, const unsigned& z)
 	tri2.p2 = z + x * (this->rowLength) + (this->rowLength);
 	tri2.p3 = z + 1 + x * (this->rowLength);
 
-	glm::vec2 pos(x * this->offset - this->size / 2.0f, z * this->offset - this->size / 2.0f);
-
+	glm::vec3 triMidPoint = this->getTriangleMidPoint(tri1);
+	glm::vec2 pos(triMidPoint.x, triMidPoint.z);
 	this->quadTree->addTriangleToRoot(pos, tri1);
+
+	triMidPoint = this->getTriangleMidPoint(tri2);
+	pos = { triMidPoint.x, triMidPoint.z };
 	this->quadTree->addTriangleToRoot(pos, tri2);
+
 
 	this->generateTangent(tri1);
 	this->generateTangent(tri2);
@@ -310,6 +324,10 @@ GLuint Terrain::addVertexVbo()
 	this->useNormalMapLoc = glGetUniformLocation(this->shader->getID(), "useNormalMap");
 	if (this->useNormalMapLoc == -1)
 		Error::printError("Could not find 'useNormalMap' in shader!");
+
+	this->hasTextureLocation = glGetUniformLocation(this->shader->getID(), "hasTexture");
+	if (this->hasTextureLocation == -1)
+		Error::printError("Could not find 'hasTexture' in shader");
 
 	glBindVertexArray(0);
 

@@ -17,6 +17,8 @@ public:
 	glm::vec3 glowColor;
 	float ns;
 
+	bool hasTexture;
+
 	Texture* normalMap;
 	Texture* texture;
 
@@ -24,7 +26,6 @@ public:
 	void loadNormalMap(const std::string& path);
 
 private:
-	void loadDefaultTexture();
 	void loadDefaultNormalMap();
 
 };

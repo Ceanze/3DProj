@@ -17,7 +17,7 @@ Material::Material(bool useNormalMap)
 	this->ns = 90.0f;
 
 	this->texture = nullptr;
-	loadDefaultTexture();
+	this->hasTexture = false;
 
 	this->normalMap = nullptr;
 	if (useNormalMap)
@@ -32,6 +32,7 @@ Material::~Material()
 
 void Material::loadTexture(const std::string & path)
 {
+	this->hasTexture = true;
 	char hasFailed = ResourceManager::loadTexture(path, &this->texture);
 	if (hasFailed == TEXTURE_FAILED)
 		Error::printError("Failed to load texture: " + path);
@@ -46,15 +47,6 @@ void Material::loadNormalMap(const std::string & path)
 		Error::printError("Failed to load normal map: " + path);
 	else if (hasFailed == TEXTURE_SUCCEEDED)
 		Error::print("[Loaded normal map]:", path);
-}
-
-void Material::loadDefaultTexture()
-{
-	char hasFailed = ResourceManager::loadTexture(DEFAULT_TEXTURE_PATH, &this->texture);
-	if (hasFailed == TEXTURE_FAILED)
-		Error::printError("Failed to load default texture: " + std::string(DEFAULT_TEXTURE_PATH));
-	else if (hasFailed == TEXTURE_SUCCEEDED)
-		Error::print("[Loaded default texture]:", std::string(DEFAULT_TEXTURE_PATH));
 }
 
 void Material::loadDefaultNormalMap()

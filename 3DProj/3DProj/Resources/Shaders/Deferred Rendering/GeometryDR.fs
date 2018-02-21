@@ -24,6 +24,7 @@ uniform int useNormalMap;
 uniform sampler2D albedoMap;
 uniform sampler2D normalMap;
 uniform bool useWireframe;
+uniform bool hasTexture;
 
 void main()
 {
@@ -48,7 +49,10 @@ void main()
 	else
 	{
     	finalNormal = vec4(normal, 1.0);
-    	finalAlbedo = texture(albedoMap, fragTextureCoord);
+		if(hasTexture)
+    		finalAlbedo = texture(albedoMap, fragTextureCoord);
+		else
+			finalAlbedo = vec4(material.kd_a.rgb, 1.0);
 	}
 
     finalPosition = vec4(fragPosition, 1.0);
