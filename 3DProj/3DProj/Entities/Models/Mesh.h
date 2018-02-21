@@ -46,6 +46,7 @@ private:
 	GLint vertexTangentID;
 	GLint vertexUvsID;
 
+	GLint hasTextureLocation;
 	GLint textureLocation;
 	GLint normalMapLocation;
 	GLint useNormalMapLoc;

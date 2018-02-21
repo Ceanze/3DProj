@@ -20,7 +20,7 @@ public:
 	DeferredRenderer(Display* display);
 	virtual ~DeferredRenderer();
 
-	void render(Node* node);
+	void render(Node* node, bool useWireframe);
 	void render(Node* node, Terrain* terrain, bool useWireframe);
 
 	void resize(Display* display);
@@ -37,7 +37,7 @@ public:
 	PhongLS* getPhongShader();
 
 private:
-	void renderGBuffer(Node* node);
+	void renderGBuffer(Node* node, bool useWireframe);
 	void renderLightBuffer();
 	void renderCombineBuffer();
 	void renderGlowBlurOrNormal();

@@ -64,6 +64,11 @@ void Mesh::loadToGPU(GLuint shaderProgramID, GLenum usage, bool useUvs)
 	if (this->textureLocation == -1)
 		Error::printError("Could not find 'albedoMap' in shader");
 
+	// bool hasTexture location
+	this->hasTextureLocation = glGetUniformLocation(shaderProgramID, "hasTexture");
+	if (this->textureLocation == -1)
+		Error::printError("Could not find 'hasTexture' in shader");
+
 	// Normal map location
 	if (this->material->normalMap != nullptr)
 	{
@@ -87,9 +92,12 @@ void Mesh::draw()
 	loadMaterialToGPU();
 	glUniform1i(this->useNormalMapLoc, (int)(this->material->normalMap != nullptr));
 
-	glUniform1i(this->textureLocation, 0);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, this->material->texture->getTexture());
+	if (this->material->hasTexture)
+	{
+		glUniform1i(this->textureLocation, 0);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, this->material->texture->getTexture());
+	}
 
 	if (this->material->normalMap != nullptr)
 	{
@@ -97,6 +105,8 @@ void Mesh::draw()
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, this->material->normalMap->getTexture());
 	}
+
+	glUniform1i(this->hasTextureLocation, this->material->hasTexture);
 
 	glBindVertexArray(this->vao);
 	glDrawElements(GL_TRIANGLES, this->indices.size(), GL_UNSIGNED_INT, 0);

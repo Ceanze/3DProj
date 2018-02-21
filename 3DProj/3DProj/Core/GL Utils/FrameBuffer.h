@@ -37,7 +37,7 @@ public:
 private:
 	void createFramebuffer(const std::vector<std::pair<FBO_ATTATCHMENT_TYPE, GLuint>>& attachments);
 
-	GLuint fbo;
+	GLuint fbo, rbo;
 	Texture* textures;
 	unsigned int width, height;
 

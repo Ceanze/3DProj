@@ -19,7 +19,6 @@
 // ------------------- MODEL --------------------
 #define MODEL_PATH				"./Resources/Models/"
 #define DEFAULT_MATERIAL_NAME	"DefaultMTL"
-#define DEFAULT_TEXTURE_PATH	"./Resources/Misc/DefaultTexture2.png"
 #define DEFAULT_NORMAL_MAP_PATH	"./Resources/Misc/DefaultNormalMap2.png"
 
 // ------------------ SHADER --------------------
