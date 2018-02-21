@@ -8,30 +8,18 @@ uniform vec2 dir;
 
 out vec4 finalColor;
 
-#define SIZE 3
-#define STANDARD_DEVIATION 1.5
-
-float gaussian(float x)
-{
-    const float ss2 = 2.0*STANDARD_DEVIATION*STANDARD_DEVIATION; 
-    return (1.0/sqrt(3.1415*ss2)) * exp(-(x*x)/ss2);
-}
+// 9x9 kernal.
+const float blurArr[5] = {0.00759732401586, 0.0359939776755, 0.109340049784, 0.212965337015, 0.265961520268};
+const float sum = 0.997754897248;
+const int lineSize = 9;
+const int halfSize = 4;
 
 void main()
 {
-    float blurArr[SIZE+1];
-    float sum = 0.0;
-    for(int i = -SIZE; i <= 0; i++)
-    {
-        blurArr[i+SIZE] = gaussian(i);
-        sum += blurArr[i+SIZE]*(i==0?1:2);
-    }
     vec3 outColor = vec3(0.0, 0.0, 0.0);
     float hstep = 1.0/textureResolution.x;
     float vstep = 1.0/textureResolution.y;
     
-    const int lineSize = SIZE*2+1;
-    const int halfSize = lineSize/2;
     for(int i = 0; i < lineSize; i++)
     {
         vec2 uv = fragTextureCoord+vec2(hstep*(i-halfSize)*dir.x, vstep*(i-halfSize)*dir.y);

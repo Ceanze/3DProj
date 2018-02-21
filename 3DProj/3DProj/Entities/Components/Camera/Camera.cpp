@@ -73,8 +73,8 @@ void Camera::input(Display * display)
 			yPos -= this->display->getHeight() / 2;
 			if (xPos != 0.0 || yPos != 0.0)
 			{
-				this->yawPitchRoll.x += xPos*dt*sensitivity;
-				this->yawPitchRoll.y -= yPos*dt*sensitivity;
+				this->yawPitchRoll.x += (float)(xPos*dt*sensitivity);
+				this->yawPitchRoll.y -= (float)(yPos*dt*sensitivity);
 
 				rotate(this->yawPitchRoll.x, this->yawPitchRoll.y, this->yawPitchRoll.z);
 			}

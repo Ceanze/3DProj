@@ -37,14 +37,13 @@ void main()
 		normal = normalize((tbn*(texture(normalMap, fragTextureCoord).xyz*2.0 - 1.0)));
 	}
 
-	const float epsilon = 0.025;
 	if(useWireframe)
 	{
-		if(dist.x < epsilon || dist.y < epsilon || dist.z < epsilon)
-		{
-			finalAlbedo = vec4(1.0, 1.0, 1.0, 1.0);
-			finalNormal = vec4(normalize(fragNormal), 1.0);
-		}
+		vec3 d = fwidth(dist);
+		d = smoothstep(vec3(0.0), d*2.0, dist);
+		float a = min(min(d.x, d.y), d.z);
+		finalAlbedo = mix(vec4(1.0, 1.0, 1.0, 1.0), vec4(0.0, 0.0, 0.0, 0.0), a);
+		finalNormal = vec4(normalize(fragNormal), 1.0);
 	}
 	else
 	{

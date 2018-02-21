@@ -65,7 +65,7 @@ void ShaderProgram::link(bool shouldDeleteShaders)
 	if (compileResult == GL_FALSE) {
 		memset(buff, 0, 1024);
 		glGetProgramInfoLog(this->id, 1024, nullptr, buff);
-		buff[1023] = '/0';
+		buff[1023] = (char)'/0';
 		Error::printError(buff);
 	}
 

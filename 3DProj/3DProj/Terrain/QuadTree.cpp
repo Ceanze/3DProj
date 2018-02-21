@@ -64,7 +64,7 @@ void QuadTree::init()
 {
 	if (this->triangles.size() > 0 && this->hasChildren)
 	{
-		for (int i = 0; i < this->triangles.size(); i++)
+		for (int i = 0; i < (int)this->triangles.size(); i++)
 		{
 			this->addTriangle(this->trianglePositions[i], this->triangles[i]);
 		}

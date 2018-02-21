@@ -39,7 +39,7 @@ private:
 	void generateTerrain();
 	void generateVerticies();
 	void generateIndicies(const unsigned& x, const unsigned& z);
-	const glm::vec3& generateNormals(const unsigned& x, const unsigned& z, unsigned char* data);
+	const glm::vec3 generateNormals(const unsigned& x, const unsigned& z, unsigned char* data);
 	void generateTangent(const Triangle& tri);
 	glm::vec3 getTriangleMidPoint(const Triangle& tri) const;
 

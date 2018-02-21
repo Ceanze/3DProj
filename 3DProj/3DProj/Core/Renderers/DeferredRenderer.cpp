@@ -36,8 +36,8 @@ DeferredRenderer::DeferredRenderer(Display* display)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	this->combineBuffer->unbindTexture();
 
-	this->shadowResScale = 4.0f;
-	this->shadowBuffer = new FrameBuffer(display->getWidth()*this->shadowResScale, display->getHeight()*this->shadowResScale);
+	this->shadowResScale = 2.0f;
+	this->shadowBuffer = new FrameBuffer((unsigned int)(display->getWidth()*this->shadowResScale), (unsigned int)(display->getHeight()*this->shadowResScale));
 	this->shadowBuffer->createTextures(std::vector<std::pair<FrameBuffer::FBO_ATTATCHMENT_TYPE, GLuint>>{
 		{ FrameBuffer::FBO_DEPTH_ATTACHMENT, GL_RGBA16F } // Depth from shadow camera.
 	});
@@ -73,9 +73,9 @@ DeferredRenderer::~DeferredRenderer()
 	delete this->shadowShader;
 }
 
-void DeferredRenderer::render(Node * node)
+void DeferredRenderer::render(Node * node, bool useWireframe)
 {
-	renderGBuffer(node);
+	renderGBuffer(node, useWireframe);
 
 	this->shadowBuffer->bind();
 	glUseProgram(this->shadowShader->getID());
@@ -125,7 +125,7 @@ void DeferredRenderer::resize(Display * display)
 	//this->glowBuffer->resize(display->getWidth(), display->getHeight());
 	this->glowFilter->resize(display->getWidth(), display->getHeight());
 	this->blurFilter->resize(display->getWidth(), display->getHeight());
-	this->shadowBuffer->resize(display->getWidth()*this->shadowResScale, display->getHeight()*this->shadowResScale);
+	this->shadowBuffer->resize((unsigned int)(display->getWidth()*this->shadowResScale), (unsigned int)(display->getHeight()*this->shadowResScale));
 }
 
 const FrameBuffer * DeferredRenderer::getGBuffer() const
@@ -168,10 +168,19 @@ PhongLS * DeferredRenderer::getPhongShader()
 	return this->phongShader;
 }
 
-void DeferredRenderer::renderGBuffer(Node * node)
+void DeferredRenderer::renderGBuffer(Node * node, bool useWireframe)
 {
 	this->gBuffer->bind();
+	if (useWireframe)
+	{
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_ONE, GL_ONE);
+	}
 	node->render();
+	if (useWireframe)
+	{
+		glDisable(GL_BLEND);
+	}
 	this->gBuffer->unbind();
 }
 

@@ -182,7 +182,6 @@
     <ClCompile Include="Shading\Deferred Rendering\QuadShader.cpp" />
     <ClCompile Include="Shading\Shader.cpp" />
     <ClCompile Include="Shading\ShaderProgram.cpp" />
-    <ClCompile Include="Loaders\StateLoader.cpp" />
     <ClCompile Include="Entities\Components\Movement\Movement.cpp" />
     <ClCompile Include="Terrain\Terrain.cpp" />
     <ClCompile Include="Utils\Transform.cpp" />
@@ -237,7 +236,6 @@
     <ClInclude Include="Shading\Deferred Rendering\QuadShader.h" />
     <ClInclude Include="Shading\Shader.h" />
     <ClInclude Include="Shading\ShaderProgram.h" />
-    <ClInclude Include="Loaders\StateLoader.h" />
     <ClInclude Include="Entities\Components\Movement\Movement.h" />
     <ClInclude Include="Stb\stb_image.h" />
     <ClInclude Include="Terrain\Terrain.h" />
