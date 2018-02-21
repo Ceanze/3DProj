@@ -3,9 +3,13 @@
 100 % Height-map terrain rendering, user can walk on the terrain using WASD keys.
 100 % Normal Mapping
 100 % Shadow Mapping
-99  % View frustum culling against a quadtree
+100 % View frustum culling against a quadtree
 100 % Back face culling using Geometry Shader
 100 % Gaussian Filter
 100 % Glow-effect
 
-Error when minimize window. (Trying to create a perspective matrix when window size is 0.)
+-Remove the extra frame buffer pass in the blur shader.
+-Remove the depth texture from the gbuffer.
+-Fix the back face culling for the orthographic projection in the gbuffers geometry shader.
+-Add material to terrain.
+-Fix shadow mapping.
