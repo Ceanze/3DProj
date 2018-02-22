@@ -12,7 +12,7 @@ Terrain::Terrain(const unsigned& terrainScale, const float& textureScale)
 
 	this->heightMap = this->texture = this->textureNormalMap = nullptr;
 
-	this->loadTexture("./Resources/Textures/heightmapFlat.png", &this->heightMap, false);
+	this->loadTexture("./Resources/Textures/heightmap.png", &this->heightMap, false);
 	this->loadTexture("./Resources/Textures/stone.jpg", &this->texture);
 	this->loadTexture("./Resources/Textures/stoneNP.jpg", &this->textureNormalMap);
 	
