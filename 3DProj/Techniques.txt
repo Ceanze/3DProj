@@ -13,3 +13,4 @@
 *Fix the back face culling for the orthographic projection in the gbuffers geometry shader.
 -Add material to terrain.
 -Fix shadow mapping.
+-Frustum too small when change window size.
