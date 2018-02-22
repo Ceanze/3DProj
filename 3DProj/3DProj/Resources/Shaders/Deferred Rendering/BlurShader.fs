@@ -22,8 +22,8 @@ void main()
     
     for(int i = 0; i < lineSize; i++)
     {
-        vec2 uv = fragTextureCoord+vec2(hstep*(i-halfSize)*dir.x, vstep*(i-halfSize)*dir.y);
-        outColor += texture(finalTexture, uv).xyz * (blurArr[i>halfSize?lineSize-1-i:i]/sum);
+        vec2 uv = fragTextureCoord + vec2(hstep * (i - halfSize) * dir.x, vstep * (i - halfSize) * dir.y);
+        outColor += texture(finalTexture, uv).xyz * (blurArr[i > halfSize ? lineSize - 1 - i: i] / sum);
     }
 
     finalColor = min(vec4(outColor, 1.0f), 1.0);

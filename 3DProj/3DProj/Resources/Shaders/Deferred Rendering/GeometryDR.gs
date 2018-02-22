@@ -31,7 +31,7 @@ void main()
     {                
         vec3 pointToCam = camPos - geometryPosition[i];
             
-        if(dot(pointToCam, normal) > 0 || (orthoVisible > 0))
+        if((normal_ortho.w == 0.0 && dot(pointToCam, normal) > 0 )|| (orthoVisible > 0 && normal_ortho.w == 1.0)) 
         {
             fragPosition = geometryPosition[i].xyz;
             fragTextureCoord = geometryTextureCoord[i];
