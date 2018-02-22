@@ -56,11 +56,11 @@ private:
 	FrameBuffer* lightingBuffer;
 	FrameBuffer* combineBuffer;
 	FrameBuffer* shadowBuffer;
-	//FrameBuffer* glowBuffer;
 	float shadowResScale;
 
 	GlowFilter* glowFilter;
 	BlurFilter* blurFilter;
+	BlurFilter* blurFilter2;
 
 	GLuint quadVAO;
 	GLuint quadVBO;
