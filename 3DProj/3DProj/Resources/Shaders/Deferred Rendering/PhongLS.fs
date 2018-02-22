@@ -65,15 +65,17 @@ void main()
 		specular += diffuseFactor*specularFactor*lightFactor;
 	}
  
+	//Shadows part
 	float visibility = 1.0;
+	float bias = 0.01;
 	vec4 shadowCoord = shadowCamera*vec4(fragPos, 1.0);
 	shadowCoord.x = shadowCoord.x*0.5 + 0.5;
 	shadowCoord.y = shadowCoord.y*0.5 + 0.5;
 	shadowCoord.z = shadowCoord.z*0.5 + 0.5;
 	if(shadowCoord.x >= 0.0 && shadowCoord.x <= 1.0 && shadowCoord.y >= 0.0 && shadowCoord.y <= 1.0 && shadowCoord.z >= 0.0 && shadowCoord.z <= 1.0)
-		if(texture(shadowMap, shadowCoord.xy).x+0.001 < shadowCoord.z)
+		if(texture(shadowMap, shadowCoord.xy).x < shadowCoord.z - bias)
 			visibility = 0.0;
-	
+
 	// Directonal Light
 	// Diffuse part
 	vec3 lightDirection = -directionalLightData.direction.xyz;
