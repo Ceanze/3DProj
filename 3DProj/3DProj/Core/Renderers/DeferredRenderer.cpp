@@ -12,13 +12,13 @@ DeferredRenderer::DeferredRenderer(Display* display)
 
 	this->gBuffer = new FrameBuffer(display->getWidth(), display->getHeight());
 	this->gBuffer->createTextures(std::vector<std::pair<FrameBuffer::FBO_ATTATCHMENT_TYPE, GLuint>>{ 
-		{ FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16F }, // Position
-		{ FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16F }, // Normal
-		{ FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16F }, // Albedo
-		{ FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16F }, // Material diffuse color and ambient factor
-		{ FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16F }, // Material specular color and specular exponent. 
-		{ FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16F }, // Glow color
-		{ FrameBuffer::FBO_DEPTH_ATTACHMENT, GL_RGBA16F }  // Depth texture
+		{ FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16F },			// Position
+		{ FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16F },			// Normal
+		{ FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16F },			// Albedo
+		{ FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16F },			// Material diffuse color and ambient factor
+		{ FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16F },			// Material specular color and specular exponent. 
+		{ FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16F },			// Glow color
+		{ FrameBuffer::FBO_DEPTH_ATTACHMENT_HIDDEN, GL_RGBA16F }	// Depth render buffer
 	});
 
 	this->lightingBuffer = new FrameBuffer(display->getWidth(), display->getHeight());

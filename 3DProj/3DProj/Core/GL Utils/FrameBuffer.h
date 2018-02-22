@@ -13,7 +13,8 @@ public:
 	enum FBO_ATTATCHMENT_TYPE
 	{
 		FBO_COLOR_ATTACHMENT,
-		FBO_DEPTH_ATTACHMENT
+		FBO_DEPTH_ATTACHMENT,
+		FBO_DEPTH_ATTACHMENT_HIDDEN
 	};
 
 public:
@@ -42,6 +43,7 @@ private:
 	unsigned int width, height;
 
 	bool hasDepthAttachment;
+	bool hasDepthAttachmentHidden;
 	bool hasColorAttachment;
 };
 

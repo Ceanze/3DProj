@@ -135,7 +135,7 @@ void Mesh::loadMaterialToGPU()
 		glm::vec4 kd_a;
 		glm::vec4 ks_ns;
 		glm::vec4 glowColor;
-	} materialData = { glm::vec4(this->material->kd, ambient), glm::vec4(this->material->ks, this->material->ns), glm::vec4(this->material->glowColor, 0.0f)};
+	} materialData = { glm::vec4(this->material->kd, ambient), glm::vec4(this->material->ks, this->material->ns), glm::vec4(this->material->glowColor, 1.0f)};
 	
 	glBindBuffer(GL_UNIFORM_BUFFER, this->ubo);
 

@@ -71,7 +71,7 @@ void main()
 	shadowCoord.y = shadowCoord.y*0.5 + 0.5;
 	shadowCoord.z = shadowCoord.z*0.5 + 0.5;
 	if(shadowCoord.x >= 0.0 && shadowCoord.x <= 1.0 && shadowCoord.y >= 0.0 && shadowCoord.y <= 1.0 && shadowCoord.z >= 0.0 && shadowCoord.z <= 1.0)
-		if(texture(shadowMap, shadowCoord.xy).x+0.001 < shadowCoord.z)
+		if(texture(shadowMap, shadowCoord.xy).x <= shadowCoord.z-0.001)
 			visibility = 0.0;
 	
 	// Directonal Light
