@@ -1,9 +1,10 @@
 #include "BlurFilter.h"
 #include "GlowFilter.h"
 
-BlurFilter::BlurFilter(unsigned int width, unsigned int height, float scale)
+BlurFilter::BlurFilter(unsigned int width, unsigned int height, float blurSize, float scale)
 {
 	this->scale = scale;
+	this->blurSize = blurSize;
 	this->blurShader = new BlurShader();
 	this->frameBufferV = new FrameBuffer((unsigned int)(width*scale), (unsigned int)(height*scale));
 	this->frameBufferV->createTextures(std::vector<std::pair<FrameBuffer::FBO_ATTATCHMENT_TYPE, GLuint>>{
@@ -41,23 +42,23 @@ void BlurFilter::render(FrameBuffer* fb, GLuint quadVAO)
 {
 	glUseProgram(this->blurShader->getID());
 	glBindVertexArray(quadVAO);
-	/*
+	
 	this->frameBufferH->bind();
 
 	this->blurShader->sendTextureSize(glm::vec2(fb->getWidth(), fb->getHeight()));
-	this->blurShader->sendDirection({ 0.0f, 1.0f });
+	this->blurShader->sendDirection({ 0.0f, 0.0f }); // No blur, only scale down to match the size of the filter.
 	this->blurShader->updateUniforms(fb->getTextures(), 1);
 
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 
 	this->frameBufferH->unbind();
-	*/
+	
 	// Vertical blur
 	this->frameBufferV->bind();
 
-	this->blurShader->sendTextureSize(glm::vec2(fb->getWidth(), fb->getHeight()));
-	this->blurShader->sendDirection({ 0.0f, 1.0f });
-	this->blurShader->updateUniforms(fb->getTextures(), 1);
+	this->blurShader->sendTextureSize(glm::vec2(this->frameBufferH->getWidth(), this->frameBufferH->getHeight()));
+	this->blurShader->sendDirection({ 0.0f, blurSize });
+	this->blurShader->updateUniforms(this->frameBufferH->getTextures(), 1);
 
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 
@@ -68,7 +69,7 @@ void BlurFilter::render(FrameBuffer* fb, GLuint quadVAO)
 
 	glUseProgram(this->blurShader->getID());
 	this->blurShader->sendTextureSize(glm::vec2(this->frameBufferV->getWidth(), this->frameBufferV->getHeight()));
-	this->blurShader->sendDirection({ 1.0f, 0.0f });
+	this->blurShader->sendDirection({ blurSize, 0.0f });
 	this->blurShader->updateUniforms(this->frameBufferV->getTextures(), 1);
 
 	glDrawArrays(GL_TRIANGLES, 0, 6);
