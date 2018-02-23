@@ -30,6 +30,7 @@ layout(location = 1) out vec4 finalSpecular;
 
 in vec2 fragTextureCoord;
 uniform vec3 camPos;
+uniform vec3 shadowDirection;
 
 uniform mat4 shadowCamera;
 uniform sampler2D shadowMap;
@@ -67,7 +68,8 @@ void main()
  
 	//Shadows part
 	float visibility = 1.0;
-	float bias = 0.01;
+	float bias = 0.005 * tan(acos(max(dot(fragNormal, -shadowDirection), 0)));
+	clamp(bias, 0, 0.01);
 	vec4 shadowCoord = shadowCamera*vec4(fragPos, 1.0);
 	shadowCoord.x = shadowCoord.x*0.5 + 0.5;
 	shadowCoord.y = shadowCoord.y*0.5 + 0.5;

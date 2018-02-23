@@ -54,6 +54,7 @@ EngineCore::EngineCore()
 	this->directionalLight->addComponent(new DirectionalLight(lightDir, 2.0f, glm::vec3(1.0f), this->deferredRenderer->getPhongShader()));
 	this->e2->addChild(this->directionalLight);
 
+
 	// --------------------------- Sword ---------------------------
 	this->sword = new Entity({ 0.0f, -2.0f, -1.0f }, { 0.0f, 0.0f, 0.0f }, false);
 	this->sword->getLocalTransform().setScale({ 2.0f, 2.0f, 2.0f });

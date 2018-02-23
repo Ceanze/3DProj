@@ -36,7 +36,7 @@ DeferredRenderer::DeferredRenderer(Display* display)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	this->combineBuffer->unbindTexture();
 
-	this->shadowResScale = 2.0f;
+	this->shadowResScale = 4.0f;
 	this->shadowBuffer = new FrameBuffer((unsigned int)(display->getWidth()*this->shadowResScale), (unsigned int)(display->getHeight()*this->shadowResScale));
 	this->shadowBuffer->createTextures(std::vector<std::pair<FrameBuffer::FBO_ATTATCHMENT_TYPE, GLuint>>{
 		{ FrameBuffer::FBO_DEPTH_ATTACHMENT, GL_RGBA16F } // Depth from shadow camera.
