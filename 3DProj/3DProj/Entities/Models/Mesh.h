@@ -13,9 +13,12 @@ public:
 	Mesh();
 	~Mesh();
 
-	void loadToGPU(GLuint shaderProgramID, GLenum usage = GL_STATIC_DRAW, bool useUvs = false);
+	void loadToGPU(GLuint shaderProgramID, GLenum usage = GL_STATIC_DRAW, bool useEBO = true);
 
 	void draw();
+	void prepareForDraw();
+
+	
 
 	GLuint getVAO() const;
 

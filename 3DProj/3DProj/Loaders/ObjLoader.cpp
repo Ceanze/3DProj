@@ -13,7 +13,6 @@
 
 void ObjLoader::load(Mesh * mesh, const std::string & name, unsigned int flags)
 {
-	MTLLoader mtlLoader;
 	std::vector<std::map<std::string, Material*>> materials;
 
 	mesh->vertices.clear();
@@ -49,7 +48,7 @@ void ObjLoader::load(Mesh * mesh, const std::string & name, unsigned int flags)
 					ss >> str;
 					std::string mtlName(name);
 					mtlName = mtlName.substr(0, mtlName.find_last_of("/\\") +1).append(str);
-					materials.push_back(mtlLoader.load(mtlName, flags & USE_NORMAL_MAP));
+					materials.push_back(MTLLoader::load(mtlName, flags & USE_NORMAL_MAP));
 					str.clear();
 				}
 
@@ -170,7 +169,6 @@ void ObjLoader::load(Mesh * mesh, const std::string & name, unsigned int flags)
 
 void ObjLoader::load(std::vector<Mesh*>& meshes, const std::string & name, unsigned int flags)
 {
-	MTLLoader mtlLoader;
 	std::vector<std::map<std::string, Material*>> materials;
 
 	std::vector<glm::vec3> temp_vertices;
@@ -205,7 +203,7 @@ void ObjLoader::load(std::vector<Mesh*>& meshes, const std::string & name, unsig
 					ss >> str;
 					std::string mtlName(name);
 					mtlName = mtlName.substr(0, mtlName.find_last_of("/\\") + 1).append(str);
-					materials.push_back(mtlLoader.load(mtlName, flags & USE_NORMAL_MAP));
+					materials.push_back(MTLLoader::load(mtlName, flags & USE_NORMAL_MAP));
 					str.clear();
 				}
 

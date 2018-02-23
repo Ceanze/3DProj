@@ -12,7 +12,7 @@ class MTLLoader
 public:
 	MTLLoader();
 
-	std::map<std::string, Material*> load(const std::string & name, bool useNormalMap);
+	static std::map<std::string, Material*> load(const std::string & name, bool useNormalMap);
 
 private:
 

@@ -1,0 +1,14 @@
+# Wavefront MTL
+# Created by fragMOTION
+# http://www.fragmosoft.com
+
+newmtl TerrainMtl
+Ns 96.078431
+Ka 0.2 0.2 0.2
+Kd 0.6 0.6 0.6
+Ks 1.0 1.0 1.0
+Ni 1.000000
+d 1.000000
+illum 2
+map_bump stoneNP.jpg
+map_kd stone.jpg

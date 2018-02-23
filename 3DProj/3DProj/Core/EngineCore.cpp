@@ -34,7 +34,7 @@ EngineCore::EngineCore()
 
 	this->m2 = new Mesh();
 	loader.load(this->m2, "Cube/Cube.obj", USE_NORMAL_MAP);
-	this->m2->material->glowColor = glm::vec3(1.0f, 1.0f, 1.0f);
+	this->m2->material->glowColor = glm::vec3(1.0f, 0.0f, 1.0f);
 
 	loader.load(this->cubeMeshes, "Cube2/Cube2.obj", USE_NORMAL_MAP);
 	loader.load(this->armyPilotMeshes, "ArmyPilot/ArmyPilot.obj", FLIP_UV_Y);

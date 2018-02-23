@@ -50,6 +50,12 @@ void FrameBuffer::resize(unsigned int width, unsigned int height)
 	this->textures->recreate(width, height, nullptr);
 	this->width = width;
 	this->height = height;
+
+	if (this->hasDepthAttachmentHidden)
+	{
+		glDeleteRenderbuffers(1, &this->rbo);
+		this->createRenderBuffer(this->width, this->height);
+	}
 }
 
 void FrameBuffer::bind()
@@ -122,10 +128,7 @@ void FrameBuffer::createFramebuffer(const std::vector<std::pair<FBO_ATTATCHMENT_
 	
 	if (this->hasDepthAttachmentHidden)
 	{
-		glGenRenderbuffers(1, &this->rbo);
-		glBindRenderbuffer(GL_RENDERBUFFER, this->rbo);
-		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, this->width, this->height);
-		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, this->rbo);
+		this->createRenderBuffer(this->width, this->height);
 		drawBuffers[drawBuffersSize - 1] = GL_NONE;
 	}
 
@@ -136,4 +139,12 @@ void FrameBuffer::createFramebuffer(const std::vector<std::pair<FBO_ATTATCHMENT_
 		Error::printError("Failed to attach and draw texture to the framebuffer!");
 
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+}
+
+void FrameBuffer::createRenderBuffer(const unsigned& width, const unsigned& height)
+{
+	glGenRenderbuffers(1, &this->rbo);
+	glBindRenderbuffer(GL_RENDERBUFFER, this->rbo);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, this->rbo);
 }

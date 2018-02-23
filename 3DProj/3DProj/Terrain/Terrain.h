@@ -7,19 +7,20 @@
 #include "../Shading/ShaderProgram.h"
 #include "../Core/GL Utils/Texture.h"
 #include "../Terrain/QuadTree.h"
+#include "../Entities/Models/Mesh.h"
 
 #include <vector>
 
 #define MAX_PIXEL_COLOR 256
 #define MAX_HEIGHT 10
 
-struct Vertex
-{
-	glm::vec3 position;
-	glm::vec3 normal;
-	glm::vec3 tangent;
-	glm::vec2 uvs;
-};
+//struct Vertex
+//{
+//	glm::vec3 position;
+//	glm::vec3 normal;
+//	glm::vec3 tangent;
+//	glm::vec2 uvs;
+//};
 
 class Terrain
 {
@@ -60,15 +61,17 @@ private:
 	unsigned size, offset, rowLength;
 	glm::vec3 start;
 
-	std::vector<Vertex> verticies;
-	std::vector<GLuint> indicies;
+	Mesh* mesh;
+
+	//Material material;
+	//std::vector<Vertex> verticies;
+	//std::vector<GLuint> indicies;
 
 	QuadTree* quadTree;
 
 	ShaderProgram* shader;
 	Texture* heightMap;
-	Texture *texture, *textureNormalMap;
-	GLuint textureLocation, textureNPlocation, hasTextureLocation;
+	GLuint hasTextureLocation;
 
 };
 

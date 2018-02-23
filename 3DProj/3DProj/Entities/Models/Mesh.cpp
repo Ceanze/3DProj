@@ -21,7 +21,7 @@ Mesh::~Mesh()
 	glDisableVertexAttribArray(this->vertexUvsID);
 }
 
-void Mesh::loadToGPU(GLuint shaderProgramID, GLenum usage, bool useUvs)
+void Mesh::loadToGPU(GLuint shaderProgramID, GLenum usage, bool useEBO)
 {
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
@@ -79,15 +79,26 @@ void Mesh::loadToGPU(GLuint shaderProgramID, GLenum usage, bool useUvs)
 
 	initMaterialUniformBlock(shaderProgramID);
 
-	// Indices
-	glGenBuffers(1, &(this->indexBufferID));
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->indexBufferID);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint)*this->indices.size(), &this->indices[0], usage);
+	if (useEBO)
+	{
+		// Indices
+		glGenBuffers(1, &(this->indexBufferID));
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->indexBufferID);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint)*this->indices.size(), &this->indices[0], usage);
 
+	}
+	
 	glBindVertexArray(0);
 }
 
 void Mesh::draw()
+{
+	this->prepareForDraw();
+	glDrawElements(GL_TRIANGLES, this->indices.size(), GL_UNSIGNED_INT, 0);
+	glBindVertexArray(0);
+}
+
+void Mesh::prepareForDraw()
 {
 	loadMaterialToGPU();
 	glUniform1i(this->useNormalMapLoc, (int)(this->material->normalMap != nullptr));
@@ -107,10 +118,8 @@ void Mesh::draw()
 	}
 
 	glUniform1i(this->hasTextureLocation, this->material->hasTexture);
-
 	glBindVertexArray(this->vao);
-	glDrawElements(GL_TRIANGLES, this->indices.size(), GL_UNSIGNED_INT, 0);
-	glBindVertexArray(0);
+
 }
 
 GLuint Mesh::getVAO() const
