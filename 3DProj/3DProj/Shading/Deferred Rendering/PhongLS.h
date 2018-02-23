@@ -7,6 +7,7 @@
 
 #include "glm.hpp"
 
+class Camera;
 
 class PhongLS : public ShaderProgram
 {
@@ -29,6 +30,8 @@ private:
 	DirectionalLight::DirectionalLightData* directionalLight;
 
 	GLuint ubo, bindingPoint;
+
+	Camera* shadowCamera;
 };
 
 #endif
