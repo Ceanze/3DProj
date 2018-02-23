@@ -3,13 +3,14 @@
 #include "../../Entities/Components/Camera/Camera.h"
 #include "../../Error.h"
 #include "AABox.h"
+#include "../Display.h"
 
 void Frustum::calculateWidthAndHeight()
 {
 	float tang = tan(fov / 2);
-	this->nearHeight = this->zNear * tang * 2.0f;
+	this->nearHeight = this->camera->getNearPlane() * tang * 2.0f;
 	this->nearWidth = this->nearHeight * this->ratio;
-	this->farHeight = this->zFar * tang * 2.0f;
+	this->farHeight = this->camera->getFarPlane() * tang * 2.0f;
 	this->farWidth = this->farHeight * this->ratio;
 }
 
@@ -60,6 +61,12 @@ void Frustum::update(glm::vec3 camPos)
 		this->quadTree->statusFrustum(this->planes);
 	else
 		Error::printWarning("No 'QuadTree' attached to frustum!");
+}
+
+void Frustum::resize(const Display& display)
+{
+	this->ratio = display.getRatio();
+	calculateWidthAndHeight();
 }
 
 float Frustum::getZNear() const

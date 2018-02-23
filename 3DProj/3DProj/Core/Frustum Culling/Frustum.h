@@ -6,6 +6,7 @@
 
 #include "glm.hpp"
 
+class Display;
 class Camera;
 class AABox;
 
@@ -22,7 +23,7 @@ private:
 
 	void calculateWidthAndHeight();
 	void calculatePlanes();
-
+	
 
 public:
 	Frustum(Camera* camera, QuadTree* quadTree, float ratio);
@@ -30,6 +31,7 @@ public:
 
 	void init();
 	void update(glm::vec3 camPos);
+	void resize(const Display& display);
 
 	float getZNear() const;
 	float getZFar() const;

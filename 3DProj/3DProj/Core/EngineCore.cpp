@@ -147,6 +147,7 @@ void EngineCore::init()
 		{
 			this->camera->updateProj();
 			this->deferredRenderer->resize(&this->display);
+			this->frustum->resize(this->display);
 			this->display.sizeUpdated = false;
 		}
 

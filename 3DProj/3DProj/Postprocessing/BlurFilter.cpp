@@ -41,7 +41,7 @@ void BlurFilter::render(FrameBuffer* fb, GLuint quadVAO)
 {
 	glUseProgram(this->blurShader->getID());
 	glBindVertexArray(quadVAO);
-	/*
+	
 	this->frameBufferH->bind();
 
 	this->blurShader->sendTextureSize(glm::vec2(fb->getWidth(), fb->getHeight()));
@@ -51,7 +51,7 @@ void BlurFilter::render(FrameBuffer* fb, GLuint quadVAO)
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 
 	this->frameBufferH->unbind();
-	*/
+	
 	// Vertical blur
 	this->frameBufferV->bind();
 
