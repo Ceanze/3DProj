@@ -8,8 +8,9 @@
 100 % Gaussian Filter
 100 % Glow-effect
 
--Remove the extra frame buffer pass in the blur shader.
--Remove the depth texture from the gbuffer.
--Fix the back face culling for the orthographic projection in the gbuffers geometry shader.
+*Remove the extra frame buffer pass in the blur shader.
+*Remove the depth texture from the gbuffer.
+*Fix the back face culling for the orthographic projection in the gbuffers geometry shader.
 -Add material to terrain.
 -Fix shadow mapping.
+-Frustum too small when change window size.

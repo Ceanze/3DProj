@@ -21,31 +21,27 @@ void main()
 {
     //Calculate normal for the triangle insted of using the normals for the specific verticies.
     vec3 normal = normalize(cross(geometryPosition[1] - geometryPosition[0], geometryPosition[2] - geometryPosition[0]));
-    vec3 p = (geometryPosition[0] + geometryPosition[1] + geometryPosition[2])/3.0;
-    vec3 pcp = p - camPos;
-    vec3 pp = -dot(pcp, normal_ortho.xyz)*normal_ortho.xyz;
+    // vec3 point = (geometryPosition[0] + geometryPosition[1] + geometryPosition[2])/3.0;
+    // vec3 pcp = point - camPos;
+    // vec3 pp = -dot(pcp, normal_ortho.xyz)*normal_ortho.xyz;
+    float orthoVisible = -dot(normal, normal_ortho.xyz);
 
-    //if(normal_ortho.w == 0.0 || dot(pp, normal) > 0)
-    //{
-        for(int i = 0; i < gl_in.length(); i++)
+
+    for(int i = 0; i < gl_in.length(); i++)
+    {                
+        vec3 pointToCam = camPos - geometryPosition[i];
+            
+        if((normal_ortho.w == 0.0 && dot(pointToCam, normal) > 0 )|| (orthoVisible > 0 && normal_ortho.w == 1.0)) 
         {
-            vec3 pointToCam = camPos - geometryPosition[i];
-            if(dot(pointToCam, normal) > 0 || normal_ortho.w == 1.0)
-            {
-                fragPosition = geometryPosition[i].xyz;
-                fragTextureCoord = geometryTextureCoord[i];
-                fragNormal = geometryNormal[i];
-                fragTangent = geometryTangent[i];
-                gl_Position = camera*vec4(fragPosition, 1.0);
-                dist = vec3(0.0);
-                dist[i] = 1.0;
-                EmitVertex();
-            }
+            fragPosition = geometryPosition[i].xyz;
+            fragTextureCoord = geometryTextureCoord[i];
+            fragNormal = geometryNormal[i];
+            fragTangent = geometryTangent[i];
+            gl_Position = camera*vec4(fragPosition, 1.0);
+            dist = vec3(0.0);
+            dist[i] = 1.0;
+            EmitVertex();
         }
-    //}
+    }
     EndPrimitive();
-
-    
-
-
 }

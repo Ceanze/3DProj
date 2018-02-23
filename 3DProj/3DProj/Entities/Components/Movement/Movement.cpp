@@ -12,7 +12,8 @@ Movement::Movement(float speed, unsigned forward, unsigned left, unsigned backwa
 {
 	this->terrain = nullptr;
 	this->speed = this->normalSpeed = speed;
-	this->shiftSpeed = speed * 4;
+	this->shiftSpeed = speed * 4.f;
+	this->slowSpeed = speed * 0.2f;
 	this->forward = forward;
 	this->left = left;
 	this->backward = backward;
@@ -23,7 +24,8 @@ Movement::Movement(Terrain * terrain, float speed, unsigned forward, unsigned le
 {
 	this->terrain = terrain;
 	this->speed = this->normalSpeed = speed;
-	this->shiftSpeed = speed * 4;
+	this->shiftSpeed = speed * 4.f;
+	this->slowSpeed = speed * 0.2f;
 	this->forward = forward;
 	this->left = left;
 	this->backward = backward;
@@ -62,6 +64,8 @@ void Movement::input(Display * display)
 
 	static bool ShiftLock = false;
 	static bool isShiftKeyPressed = false;
+	static bool altLock = false;
+	static bool isAltKeyPressed = false;
 
 	glm::vec3 forward = this->getEntity()->getLocalTransform().getDirection();
 	glm::vec3 right = glm::normalize(glm::cross(forward, GLOBAL_UP_VECTOR));
@@ -78,6 +82,17 @@ void Movement::input(Display * display)
 	}
 	else isShiftKeyPressed = true;
 
+	if (glfwGetKey(display->getWindowPtr(), GLFW_KEY_LEFT_ALT) != GLFW_PRESS)
+	{
+		if (isAltKeyPressed)
+		{
+			altLock = !altLock;
+			isAltKeyPressed = false;
+			this->speed = this->normalSpeed;
+		}
+	}
+	else isAltKeyPressed = true;
+
 	if (terrainLock && this->terrain != nullptr) //If space has been pressed, lock the player to the terrain
 	{ 
 		setHeight(this->terrain->getHeight(position.x, position.z));
@@ -91,6 +106,13 @@ void Movement::input(Display * display)
 
 		ShiftLock = false;
 	}
+
+	if (isAltKeyPressed)
+	{
+		this->speed = this->slowSpeed;
+		altLock = false;
+	}
+
 
 	// -------------------------------- Move position --------------------------------
 	if (glfwGetKey(display->getWindowPtr(), this->forward) == GLFW_PRESS)
