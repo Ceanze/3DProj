@@ -108,9 +108,12 @@ void DeferredRenderer::render(Node * node, Terrain * terrain, bool useWireframe)
 
 	this->shadowBuffer->bind();
 	glUseProgram(this->shadowShader->getID());
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_FRONT);
 	node->render(this->shadowShader);
 	glUseProgram(0);
 	this->shadowBuffer->unbind();
+	glDisable(GL_CULL_FACE);
 
 	renderLightBuffer();
 	renderCombineBuffer();
@@ -199,6 +202,7 @@ void DeferredRenderer::renderLightBuffer()
 	this->phongShader->updateUniforms(this->texturesTempArr, 5);
 
 	this->phongShader->setShadowCamera(this->shadowShader->getCamera());
+	this->phongShader->setShadowSize(glm::vec2(this->shadowBuffer->getWidth(), this->shadowBuffer->getHeight()));
 
 	glBindVertexArray(this->quadVAO);
 	glDrawArrays(GL_TRIANGLES, 0, 6);

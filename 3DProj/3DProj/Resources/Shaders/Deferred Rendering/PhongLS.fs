@@ -32,6 +32,7 @@ in vec2 fragTextureCoord;
 uniform vec3 camPos;
 uniform vec3 shadowDirection;
 
+uniform vec2 shadowSize;
 uniform mat4 shadowCamera;
 uniform sampler2D shadowMap;
 
@@ -68,16 +69,26 @@ void main()
  
 	//Shadows part
 	float visibility = 1.0;
-	float bias = 0.005 * tan(acos(max(dot(fragNormal, -shadowDirection), 0)));
-	clamp(bias, 0, 0.01);
+	//float bias = 0.001 * tan(acos(max(dot(fragNormal, -shadowDirection), 0)));
+	//clamp(bias, 0, 0.01);
+	float bias = clamp(0.005 * (1.0 - dot(fragNormal, -shadowDirection)), 0.001, 0.01);
 	vec4 shadowCoord = shadowCamera*vec4(fragPos, 1.0);
 	shadowCoord.x = shadowCoord.x*0.5 + 0.5;
 	shadowCoord.y = shadowCoord.y*0.5 + 0.5;
 	shadowCoord.z = shadowCoord.z*0.5 + 0.5;
 	if(shadowCoord.x >= 0.0 && shadowCoord.x <= 1.0 && shadowCoord.y >= 0.0 && shadowCoord.y <= 1.0 && shadowCoord.z >= 0.0 && shadowCoord.z <= 1.0)
-		if(texture(shadowMap, shadowCoord.xy).x < shadowCoord.z - bias)
-			visibility = 0.0;
+	{
+		float dx = 1.0/shadowSize.x;
+		float dy = 1.0/shadowSize.y;
+		float s1 = texture(shadowMap, shadowCoord.xy).x + bias < shadowCoord.z ? 0.0 : 1.0;
+		float s2 = texture(shadowMap, shadowCoord.xy + vec2(dx, 0.0)).x + bias < shadowCoord.z ? 0.0 : 1.0;
+		float s3 = texture(shadowMap, shadowCoord.xy + vec2(0.0, dy)).x + bias < shadowCoord.z ? 0.0 : 1.0;
+		float s4 = texture(shadowMap, shadowCoord.xy + vec2(dx, dy)).x + bias < shadowCoord.z ? 0.0 : 1.0;
 
+		vec2 texelPos = vec2(shadowCoord.x*shadowSize.x, shadowCoord.y*shadowSize.y);
+		vec2 lerps = fract(texelPos);
+		visibility = mix(mix(s1, s2, lerps.x), mix(s3, s4, lerps.x), lerps.y);
+	}
 	// Directonal Light
 	// Diffuse part
 	vec3 lightDirection = -directionalLightData.direction.xyz;

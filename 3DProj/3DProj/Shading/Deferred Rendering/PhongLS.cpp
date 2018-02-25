@@ -70,6 +70,11 @@ void PhongLS::setShadowCamera(Camera* shadowCamera)
 	setUniformMatrix4fv("shadowCamera", 1, false, &shadowCamera->getVP()[0][0]);
 }
 
+void PhongLS::setShadowSize(const glm::vec2 & shadowSize)
+{
+	setUniform2fv("shadowSize", 1, &shadowSize[0]);
+}
+
 void PhongLS::selfUpdateUniforms(Node * entity)
 {
 }

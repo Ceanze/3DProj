@@ -1,8 +1,8 @@
 #version 330
 
-out float finalColor;
+//out float finalColor;
 
 void main()
 {
-    finalColor = gl_FragCoord.z;
+    //finalColor = gl_FragCoord.z;
 }

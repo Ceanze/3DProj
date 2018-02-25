@@ -22,6 +22,7 @@ public:
 	void setDirectionalLight(DirectionalLight::DirectionalLightData* data);
 
 	void setShadowCamera(Camera* shadowCamera);
+	void setShadowSize(const glm::vec2& shadowSize);
 
 private:
 	void selfUpdateUniforms(Node* entity);
