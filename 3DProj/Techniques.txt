@@ -15,3 +15,4 @@
 90  % Fix shadow mapping.
 100 % Frustum too small when change window size.
 0   % Camera zooming 
+0   % Fix resize of framebuffer
