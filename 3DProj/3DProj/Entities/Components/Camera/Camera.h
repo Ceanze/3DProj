@@ -10,8 +10,8 @@
 class Camera : public Component
 {
 public:
-	Camera(Display* display, glm::vec3 relativePosition = glm::vec3(0.f, 0.f, 0.f), float fov = 0.7853975f, float zNear = ZNEAR, float zFar = ZFAR);
-	Camera(Display* display, float width, float height, glm::vec3 relativePosition = glm::vec3(0.f, 0.f, 0.f), float zNear = ZNEAR, float zFar = ZFAR);
+	Camera(Display* display, glm::vec3 target = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 relativePosition = glm::vec3(0.01f, 0.01f, 0.01f), float fov = 0.7853975f, float zNear = ZNEAR, float zFar = ZFAR);
+	Camera(Display* display, float width, float height, glm::vec3 direction = glm::vec3(1, -2, 0), glm::vec3 relativePosition = glm::vec3(0.01f, 0.01f, 0.01f), float zNear = ZNEAR, float zFar = ZFAR);
 	virtual ~Camera();
 
 	void init();
@@ -55,6 +55,7 @@ private:
 	glm::vec3 relativePosition;
 	glm::vec3 yawPitchRoll;
 	glm::vec3 f, r, u;
+	glm::vec3 target;
 	float fov, zNear, zFar;
 	float dt;
 	float width, height;
