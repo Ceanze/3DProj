@@ -6,16 +6,19 @@
 
 #include <gtc\matrix_transform.hpp>
 
-Camera::Camera(Display * display, glm::vec3 relativePosition, float fov, float zNear, float zFar) //Used for normal "fps" camera
+Camera::Camera(Display * display, glm::vec3 target, glm::vec3 relativePosition, float fov, float zNear, float zFar) //Used for normal "fps" camera
 {
 	this->display = display;
 	this->relativePosition = relativePosition;
+	this->target = target;
 	this->orthoCam = false;
-	updateProj(fov, zNear, zFar);
 	this->active = false;
+	this->zFar = zFar;
+	this->zNear = zNear;
+	this->fov = fov;
 }
 
-Camera::Camera(Display * display, float width, float height, glm::vec3 relativePosition, float zNear, float zFar) //Used for ortholinear camera
+Camera::Camera(Display * display, float width, float height, glm::vec3 direction, glm::vec3 relativePosition, float zNear, float zFar) //Used for ortholinear camera
 {
 	this->display = display;
 	this->width = width;
@@ -23,8 +26,10 @@ Camera::Camera(Display * display, float width, float height, glm::vec3 relativeP
 	this->relativePosition = relativePosition;
 	this->orthoCam = true;
 	this->fov = 0.0f;
-	updateProj(this->fov, zNear, zFar);
+	this->zNear = zNear;
+	this->zFar = zFar;
 	this->active = false;
+	this->f = glm::normalize(direction);
 }
 
 Camera::~Camera()
@@ -36,8 +41,12 @@ void Camera::init()
 	this->isCClicked = 0;
 	this->isCPressed = false;
 
-	setRelativePosition(this->relativePosition);
-	lookAt(glm::vec3(0.0f, 0.0f, 0.0f));
+	updateProj(this->fov, this->zNear, this->zFar);
+	setWorldPosition();
+	if (orthoCam)
+		setDirection(this->f);
+	else
+		lookAt(glm::vec3(this->target));
 
 	glfwSetCursorPos(this->display->getWindowPtr(), this->display->getWidth() / 2, this->display->getHeight() / 2);
 }
@@ -96,6 +105,8 @@ void Camera::lookAt(const glm::vec3 & target)
 	this->yawPitchRoll.y = atan2(this->f.y, -this->f.z);
 	this->yawPitchRoll.z = atan2(this->u.y, this->f.x);
 
+	//this->view = glm::lookAt(this->worldPosition, target, GLOBAL_UP_VECTOR);
+
 	updateView(this->f, this->r, this->u, this->worldPosition);
 	this->getEntity()->getLocalTransform().setDirection(this->f);
 }
@@ -104,6 +115,7 @@ void Camera::setRelativePosition(const glm::vec3 & relativePosition)
 {
 	this->relativePosition = relativePosition;
 	setWorldPosition();
+	//if(abs(glm::length(this->f)) > 0.001)
 	updateView(this->f, this->r, this->u, this->worldPosition);
 }
 
