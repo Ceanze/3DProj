@@ -131,6 +131,7 @@ void FrameBuffer::createFramebuffer(const std::vector<std::pair<FBO_ATTATCHMENT_
 		this->createRenderBuffer(this->width, this->height);
 		drawBuffers[drawBuffersSize - 1] = GL_NONE;
 	}
+	glBindFramebuffer(GL_FRAMEBUFFER, this->fbo);
 
 	glDrawBuffers(drawBuffersSize, drawBuffers);
 	delete[] drawBuffers;
@@ -143,8 +144,12 @@ void FrameBuffer::createFramebuffer(const std::vector<std::pair<FBO_ATTATCHMENT_
 
 void FrameBuffer::createRenderBuffer(const unsigned& width, const unsigned& height)
 {
+	glBindFramebuffer(GL_FRAMEBUFFER, this->fbo);
+
 	glGenRenderbuffers(1, &this->rbo);
 	glBindRenderbuffer(GL_RENDERBUFFER, this->rbo);
 	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, this->rbo);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
