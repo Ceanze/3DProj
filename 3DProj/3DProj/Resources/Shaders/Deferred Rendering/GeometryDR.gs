@@ -21,11 +21,7 @@ void main()
 {
     //Calculate normal for the triangle insted of using the normals for the specific verticies.
     vec3 normal = normalize(cross(geometryPosition[1] - geometryPosition[0], geometryPosition[2] - geometryPosition[0]));
-    // vec3 point = (geometryPosition[0] + geometryPosition[1] + geometryPosition[2])/3.0;
-    // vec3 pcp = point - camPos;
-    // vec3 pp = -dot(pcp, normal_ortho.xyz)*normal_ortho.xyz;
-    float orthoVisible = -dot(normal, normal_ortho.xyz);
-
+    float orthoVisible = dot(normal, normal_ortho.xyz); // Will cull the front face instead of the back face.
 
     for(int i = 0; i < gl_in.length(); i++)
     {                

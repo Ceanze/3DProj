@@ -108,12 +108,9 @@ void DeferredRenderer::render(Node * node, Terrain * terrain, bool useWireframe)
 
 	this->shadowBuffer->bind();
 	glUseProgram(this->shadowShader->getID());
-	glEnable(GL_CULL_FACE);
-	glCullFace(GL_FRONT);
 	node->render(this->shadowShader);
 	glUseProgram(0);
 	this->shadowBuffer->unbind();
-	glDisable(GL_CULL_FACE);
 
 	renderLightBuffer();
 	renderCombineBuffer();

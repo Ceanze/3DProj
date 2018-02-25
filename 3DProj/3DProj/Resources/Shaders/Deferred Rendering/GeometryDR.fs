@@ -26,6 +26,11 @@ uniform sampler2D normalMap;
 uniform bool useWireframe;
 uniform bool hasTexture;
 
+vec2 encodeNormal(vec3 n)
+{
+	return n.xy;
+}
+
 void main()
 {
 	vec3 normal = normalize(fragNormal);
@@ -43,7 +48,7 @@ void main()
 		d = smoothstep(vec3(0.0), d*2.0, dist);
 		float a = min(min(d.x, d.y), d.z);
 		finalAlbedo = mix(vec4(1.0, 1.0, 1.0, 1.0), vec4(0.0, 0.0, 0.0, 0.0), a);
-		finalNormal = vec4(normalize(fragNormal), 1.0);
+		finalNormal = vec4(fragNormal, 1.0);
 	}
 	else
 	{

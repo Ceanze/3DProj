@@ -44,9 +44,11 @@ void main()
 	vec4 ks_ns = texture(ks_ns_Texture, fragTextureCoord);
 
 	vec3 fragPos = texture(positionTexture, fragTextureCoord).xyz;
+	
 	vec3 fragNormal = texture(normalTexture, fragTextureCoord).xyz;
 	bool isBackground = fragNormal.x == 0.0 && fragNormal.y == 0.0 && fragNormal.z == 0.0;
 	fragNormal = normalize(fragNormal);
+
 	vec3 specular = vec3(0.0, 0.0, 0.0);
 	vec3 diffuseOut = vec3(0.0, 0.0, 0.0);
    
@@ -69,17 +71,14 @@ void main()
  
 	//Shadows part
 	float visibility = 1.0;
-	//float bias = 0.001 * tan(acos(max(dot(fragNormal, -shadowDirection), 0)));
-	//clamp(bias, 0, 0.01);
-	float bias = clamp(0.005 * (1.0 - dot(fragNormal, -shadowDirection)), 0.001, 0.01);
+	float dx = 1.0/shadowSize.x;
+	float dy = 1.0/shadowSize.y;
+	float bias = 0.001 * tan(acos(max(dot(fragNormal, -shadowDirection), 0)));
+	clamp(bias, 0.001, 0.01);
 	vec4 shadowCoord = shadowCamera*vec4(fragPos, 1.0);
-	shadowCoord.x = shadowCoord.x*0.5 + 0.5;
-	shadowCoord.y = shadowCoord.y*0.5 + 0.5;
-	shadowCoord.z = shadowCoord.z*0.5 + 0.5;
+	shadowCoord.xyz = (shadowCoord.xyz / shadowCoord.w)*vec3(0.5) + vec3(0.5);
 	if(shadowCoord.x >= 0.0 && shadowCoord.x <= 1.0 && shadowCoord.y >= 0.0 && shadowCoord.y <= 1.0 && shadowCoord.z >= 0.0 && shadowCoord.z <= 1.0)
 	{
-		float dx = 1.0/shadowSize.x;
-		float dy = 1.0/shadowSize.y;
 		float s1 = texture(shadowMap, shadowCoord.xy).x + bias < shadowCoord.z ? 0.0 : 1.0;
 		float s2 = texture(shadowMap, shadowCoord.xy + vec2(dx, 0.0)).x + bias < shadowCoord.z ? 0.0 : 1.0;
 		float s3 = texture(shadowMap, shadowCoord.xy + vec2(0.0, dy)).x + bias < shadowCoord.z ? 0.0 : 1.0;
