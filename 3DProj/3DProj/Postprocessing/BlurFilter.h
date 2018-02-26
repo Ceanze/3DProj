@@ -13,6 +13,7 @@ public:
 	void resize(unsigned int newWidth, unsigned int newHeight);
 	void render(FrameBuffer* fb, GLuint quadVAO);
 
+	void setBlurSize(float blurSize);
 	FrameBuffer* getFrameBufferV();
 	FrameBuffer* getFrameBufferH();
 	GLuint getTexture();

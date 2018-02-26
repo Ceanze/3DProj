@@ -27,6 +27,7 @@ public:
 	void setTexture2D(const std::string& name, unsigned int unit, GLuint textureID);
 	void setUniform1i(const std::string& name, int value);
 	void setUniform1b(const std::string& name, bool value);
+	void setUniform1f(const std::string& name, float v1);
 	void setUniform2f(const std::string& name, float v1, float v2);
 	void setUniform2fv(const std::string& name, unsigned int count, const float* values);
 	void setUniform3f(const std::string& name, float v1, float v2, float v3);

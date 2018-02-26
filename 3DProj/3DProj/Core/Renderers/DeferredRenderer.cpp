@@ -42,8 +42,10 @@ DeferredRenderer::DeferredRenderer(Display* display)
 	this->shadowBuffer->createTextures(std::vector<std::pair<FrameBuffer::FBO_ATTATCHMENT_TYPE, GLuint>>{
 		{ FrameBuffer::FBO_DEPTH_ATTACHMENT, GL_RGBA16F } // Depth from shadow camera.
 	});
-
-	this->blurFilter = new BlurFilter(display->getWidth(), display->getHeight(), 5.0f, 0.6f);
+	
+	this->blurIntensity = 5.0;
+	this->glowIntensity = 8.0;
+	this->blurFilter = new BlurFilter(display->getWidth(), display->getHeight(), this->blurIntensity, 0.6f);
 	this->blurFilter2 = new BlurFilter(display->getWidth(), display->getHeight(), 1.0f, 0.3f);
 	this->glowFilter = new GlowFilter(display->getWidth(), display->getHeight(), this->blurFilter);
 
@@ -260,6 +262,7 @@ void DeferredRenderer::renderGlowBlurOrNormal()
 
 	if (isGClicked) // Glow effect
 	{
+		this->blurFilter->setBlurSize(this->glowIntensity);
 		this->glowFilter->render(this->gBuffer->getTexture(5), this->quadVAO);
 		this->blurFilter2->render(this->glowFilter->getFrameBuffer(), this->quadVAO);
 
@@ -279,6 +282,7 @@ void DeferredRenderer::renderGlowBlurOrNormal()
 	}
 	else if (isBClicked) // Blured
 	{
+		this->blurFilter->setBlurSize(this->blurIntensity);
 		this->blurFilter->render(this->combineBuffer, this->quadVAO);
 		this->blurFilter2->render(this->blurFilter->getFrameBufferH(), this->quadVAO);
 

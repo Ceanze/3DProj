@@ -3,6 +3,7 @@
 #include "../../../Core/Display.h"
 #include "..\..\Entity.h"
 #include "../../../Error.h"
+#include "../../../Utils/Utils.h"
 
 #include <gtc\matrix_transform.hpp>
 
@@ -89,7 +90,7 @@ void Camera::input(Display * display)
 					yawPitchRoll.y = glm::radians(89.0f);
 				if (yawPitchRoll.y < -glm::radians(89.0f))
 					yawPitchRoll.y = -glm::radians(89.0f);
-
+				
 				rotate(this->yawPitchRoll.x, this->yawPitchRoll.y, this->yawPitchRoll.z);
 			}
 
@@ -106,10 +107,10 @@ void Camera::lookAt(const glm::vec3 & target)
 	this->r = glm::cross(f, GLOBAL_UP_VECTOR);
 	this->u = glm::cross(r, f);
 
-	this->yawPitchRoll.x = atan2(this->f.z, this->f.x) + 3.1415f / 2.0f;
+	this->yawPitchRoll.x = atan2(this->f.z, this->f.x);
 	this->yawPitchRoll.y = atan2(this->f.y, -this->f.z);
 	this->yawPitchRoll.z = atan2(this->u.y, this->f.x);
-
+	
 	//this->view = glm::lookAt(this->worldPosition, target, GLOBAL_UP_VECTOR);
 
 	updateView(this->f, this->r, this->u, this->worldPosition);
@@ -120,15 +121,14 @@ void Camera::setRelativePosition(const glm::vec3 & relativePosition)
 {
 	this->relativePosition = relativePosition;
 	setWorldPosition();
-	//if(abs(glm::length(this->f)) > 0.001)
 	updateView(this->f, this->r, this->u, this->worldPosition);
 }
 
 void Camera::rotate(float yaw, float pitch, float roll)
 {
-	this->f.x = cos(yaw - 3.1415f / 2.0f)*cos(pitch);
+	this->f.x = cos(yaw)*cos(pitch);
 	this->f.y = sin(pitch);
-	this->f.z = sin(yaw - 3.1415f / 2.0f)*cos(pitch);
+	this->f.z = sin(yaw)*cos(pitch);
 	this->r = glm::normalize(glm::cross(f, GLOBAL_UP_VECTOR));
 	this->u = glm::cross(r, f);
 
@@ -161,8 +161,8 @@ void Camera::setDirection(const glm::vec3 & direction)
 	this->f = glm::normalize(direction);
 	this->r = glm::cross(f, GLOBAL_UP_VECTOR);
 	this->u = glm::cross(r, f);
-
-	this->yawPitchRoll.x = atan2(this->f.z, this->f.x) + 3.1415f / 2.0f;
+	
+	this->yawPitchRoll.x = atan2(this->f.z, this->f.x);
 	this->yawPitchRoll.y = atan2(this->f.y, -this->f.z);
 	this->yawPitchRoll.z = atan2(this->u.y, this->f.x);
 

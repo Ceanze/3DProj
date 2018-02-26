@@ -80,6 +80,11 @@ void BlurFilter::render(FrameBuffer* fb, GLuint quadVAO)
 	glUseProgram(0);
 }
 
+void BlurFilter::setBlurSize(float blurSize)
+{
+	this->blurSize = blurSize;
+}
+
 FrameBuffer * BlurFilter::getFrameBufferV()
 {
 	return this->frameBufferV;
