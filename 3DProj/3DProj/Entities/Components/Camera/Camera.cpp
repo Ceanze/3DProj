@@ -85,6 +85,11 @@ void Camera::input(Display * display)
 				this->yawPitchRoll.x += (float)(xPos*dt*sensitivity);
 				this->yawPitchRoll.y -= (float)(yPos*dt*sensitivity);
 
+				if (yawPitchRoll.y > glm::radians(89.0f))
+					yawPitchRoll.y = glm::radians(89.0f);
+				if (yawPitchRoll.y < -glm::radians(89.0f))
+					yawPitchRoll.y = -glm::radians(89.0f);
+
 				rotate(this->yawPitchRoll.x, this->yawPitchRoll.y, this->yawPitchRoll.z);
 			}
 

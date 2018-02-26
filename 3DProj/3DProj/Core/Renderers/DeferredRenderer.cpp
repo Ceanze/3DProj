@@ -18,6 +18,7 @@ DeferredRenderer::DeferredRenderer(Display* display)
 		{ FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16F },			// Material diffuse color and ambient factor
 		{ FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16F },			// Material specular color and specular exponent. 
 		{ FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16F },			// Glow color
+		{ FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16F },			// Normals for primitives
 		{ FrameBuffer::FBO_DEPTH_ATTACHMENT_HIDDEN, GL_RGBA16F }	// Depth render buffer
 	});
 
@@ -196,7 +197,8 @@ void DeferredRenderer::renderLightBuffer()
 	this->texturesTempArr[2] = this->gBuffer->getTexture(3);
 	this->texturesTempArr[3] = this->gBuffer->getTexture(4);
 	this->texturesTempArr[4] = this->shadowBuffer->getTexture(0);
-	this->phongShader->updateUniforms(this->texturesTempArr, 5);
+	this->texturesTempArr[5] = this->gBuffer->getTexture(6);
+	this->phongShader->updateUniforms(this->texturesTempArr, 6);
 
 	this->phongShader->setShadowCamera(this->shadowShader->getCamera());
 	this->phongShader->setShadowSize(glm::vec2(this->shadowBuffer->getWidth(), this->shadowBuffer->getHeight()));
