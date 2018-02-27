@@ -2,6 +2,7 @@
 
 #include "../Utils/Utils.h"
 #include "../glm/glm.hpp"
+#include "../glm/gtc/matrix_transform.hpp"
 #include "../Error.h"
 #include "../Core/ResourceManager.h"
 #include "../Loaders/MTLLoader.h"
@@ -268,6 +269,14 @@ const glm::vec3 Terrain::generateNormals(const unsigned& x, const unsigned& z, u
 	DH = this->getHeight(x + 1, z, data);
 
 	glm::vec3 normal = glm::normalize(glm::vec3(LH - RH, 2.f, DH - UH));
+	glm::mat4 rotateMatrix(1.0f);
+	rotateMatrix = glm::rotate(rotateMatrix, -Tools::PI / 2.0f, glm::vec3(0.0, 1.0, 0.0));
+
+	glm::vec4 rotatedNormal = (rotateMatrix * glm::vec4(normal, 1.0f));
+
+	normal.x = rotatedNormal.x;
+	normal.y = rotatedNormal.y;
+	normal.z = rotatedNormal.z;
 
 	return normal;
 }
