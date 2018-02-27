@@ -99,6 +99,11 @@ void ShaderProgram::setUniform1b(const std::string & name, bool value)
 	setUniform1i(name, (int)value);
 }
 
+void ShaderProgram::setUniform1f(const std::string & name, float v1)
+{
+	glUniform1f(addUniform(name), v1);
+}
+
 void ShaderProgram::setUniform2f(const std::string & name, float v1, float v2)
 {
 	glUniform2f(addUniform(name), v1, v2);

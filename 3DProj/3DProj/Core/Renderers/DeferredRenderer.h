@@ -58,6 +58,8 @@ private:
 	FrameBuffer* shadowBuffer;
 	float shadowResScale;
 
+	float glowIntensity;
+	float blurIntensity;
 	GlowFilter* glowFilter;
 	BlurFilter* blurFilter;
 	BlurFilter* blurFilter2;
