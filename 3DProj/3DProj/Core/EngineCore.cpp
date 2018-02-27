@@ -19,9 +19,11 @@ EngineCore::EngineCore()
 	this->geometryShader = new GeometryShader();
 	this->deferredRenderer = new DeferredRenderer(&this->display);
 
-	this->shadowCamera = new Camera(&this->display, 50, 50, { 1.0f, -2.0, 0.0 }, {0.0f, 0.0f, 0.0f}, -100, 200);
+	const glm::vec3 lightDir = glm::normalize(glm::vec3(-1.0f, -2.0f, 0.0f));
+
+	this->shadowCamera = new Camera(&this->display, 50, 50, lightDir, {0.0f, 0.0f, 0.0f}, -100, 200);
 	this->deferredRenderer->setShadowCamera(this->shadowCamera);
-	this->camera = new Camera(&this->display, glm::vec3{0.0f, 0.0f, 0.0f});
+	this->camera = new Camera(&this->display, glm::vec3{10.0f, 0.0f, 0.0f});
 	this->activeCamera = this->camera;
 	this->camInc = 0;
 	attachCamera(this->activeCamera);
@@ -48,7 +50,7 @@ EngineCore::EngineCore()
 
 	this->directionalLight = new Entity({ 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f });
 	this->directionalLight->addComponent(this->shadowCamera);
-	const glm::vec3 lightDir = glm::normalize(glm::vec3(1.0f, -2.0f, 0.0f));
+	
 	//this->shadowCamera->setDirection(lightDir);
 	//this->shadowCamera->rotate(Tools::getYaw(lightDir)+ 3.1415f / 2.0f, Tools::getPitch(lightDir), 0.0f);
 	this->directionalLight->addComponent(new DirectionalLight(lightDir, 2.0f, glm::vec3(1.0f), this->deferredRenderer->getPhongShader()));

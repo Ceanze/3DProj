@@ -49,6 +49,8 @@ void Camera::init()
 	else
 		lookAt(this->target);
 
+	rotate(this->yawPitchRoll.x, this->yawPitchRoll.y, this->yawPitchRoll.z);
+
 	glfwSetCursorPos(this->display->getWindowPtr(), this->display->getWidth() / 2, this->display->getHeight() / 2);
 }
 
@@ -161,10 +163,11 @@ void Camera::setDirection(const glm::vec3 & direction)
 	this->f = glm::normalize(direction);
 	this->r = glm::cross(f, GLOBAL_UP_VECTOR);
 	this->u = glm::cross(r, f);
-	
-	this->yawPitchRoll.x = atan2(this->f.z, this->f.x);
-	this->yawPitchRoll.y = atan2(this->f.y, -this->f.z);
-	this->yawPitchRoll.z = atan2(this->u.y, this->f.x);
+
+	this->yawPitchRoll.y = asin(direction.y);
+	this->yawPitchRoll.x = atan2(direction.x, direction.z) - Tools::PI/2;
+	this->yawPitchRoll.z = 0;
+
 
 	updateView(this->f, this->r, this->u, this->worldPosition);
 	this->getEntity()->getLocalTransform().setDirection(this->f);
