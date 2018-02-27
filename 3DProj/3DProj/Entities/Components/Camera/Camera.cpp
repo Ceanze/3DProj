@@ -18,7 +18,7 @@ Camera::Camera(Display * display, glm::vec3 target, glm::vec3 relativePosition, 
 	this->fov = fov;
 }
 
-Camera::Camera(Display * display, float width, float height, glm::vec3 direction, glm::vec3 relativePosition, float zNear, float zFar) //Used for ortholinear camera
+Camera::Camera(Display * display, float width, float height, glm::vec3 direction, glm::vec3 relativePosition, float zNear, float zFar) //Used for orthographic camera
 {
 	this->display = display;
 	this->width = width;
@@ -43,10 +43,10 @@ void Camera::init()
 
 	updateProj(this->fov, this->zNear, this->zFar);
 	setWorldPosition();
-	if (orthoCam)
+	if (this->orthoCam)
 		setDirection(this->f);
 	else
-		lookAt(glm::vec3(this->target));
+		lookAt(this->target);
 
 	glfwSetCursorPos(this->display->getWindowPtr(), this->display->getWidth() / 2, this->display->getHeight() / 2);
 }
@@ -115,7 +115,6 @@ void Camera::setRelativePosition(const glm::vec3 & relativePosition)
 {
 	this->relativePosition = relativePosition;
 	setWorldPosition();
-	//if(abs(glm::length(this->f)) > 0.001)
 	updateView(this->f, this->r, this->u, this->worldPosition);
 }
 
