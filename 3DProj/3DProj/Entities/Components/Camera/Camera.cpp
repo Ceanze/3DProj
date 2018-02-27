@@ -19,7 +19,7 @@ Camera::Camera(Display * display, glm::vec3 target, glm::vec3 relativePosition, 
 	this->fov = fov;
 }
 
-Camera::Camera(Display * display, float width, float height, glm::vec3 direction, glm::vec3 relativePosition, float zNear, float zFar) //Used for ortholinear camera
+Camera::Camera(Display * display, float width, float height, glm::vec3 direction, glm::vec3 relativePosition, float zNear, float zFar) //Used for orthographic camera
 {
 	this->display = display;
 	this->width = width;
@@ -44,10 +44,12 @@ void Camera::init()
 
 	updateProj(this->fov, this->zNear, this->zFar);
 	setWorldPosition();
-	if (orthoCam)
+	if (this->orthoCam)
 		setDirection(this->f);
 	else
-		lookAt(glm::vec3(this->target));
+		lookAt(this->target);
+
+	rotate(this->yawPitchRoll.x, this->yawPitchRoll.y, this->yawPitchRoll.z);
 
 	glfwSetCursorPos(this->display->getWindowPtr(), this->display->getWidth() / 2, this->display->getHeight() / 2);
 }
@@ -161,10 +163,11 @@ void Camera::setDirection(const glm::vec3 & direction)
 	this->f = glm::normalize(direction);
 	this->r = glm::cross(f, GLOBAL_UP_VECTOR);
 	this->u = glm::cross(r, f);
-	
-	this->yawPitchRoll.x = atan2(this->f.z, this->f.x);
-	this->yawPitchRoll.y = atan2(this->f.y, -this->f.z);
-	this->yawPitchRoll.z = atan2(this->u.y, this->f.x);
+
+	this->yawPitchRoll.y = asin(direction.y);
+	this->yawPitchRoll.x = atan2(direction.x, direction.z) - Tools::PI/2;
+	this->yawPitchRoll.z = 0;
+
 
 	updateView(this->f, this->r, this->u, this->worldPosition);
 	this->getEntity()->getLocalTransform().setDirection(this->f);
