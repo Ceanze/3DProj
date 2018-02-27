@@ -5,6 +5,7 @@ in vec3 fragNormal;
 in vec3 fragTangent;
 in vec2 fragTextureCoord; 
 in vec3 dist;
+in vec3 primitiveNormal;
 
 layout(std140) uniform Material
 {
@@ -19,6 +20,7 @@ layout(location=2) out vec4 finalAlbedo;
 layout(location=3) out vec4 finalKd_a;
 layout(location=4) out vec4 finalKs_ns;
 layout(location=5) out vec4 finalGlowColor;
+layout(location=6) out vec4 finalPrimitiveNormal;
 
 uniform int useNormalMap;
 uniform sampler2D albedoMap;
@@ -61,6 +63,7 @@ void main()
 
     finalPosition = vec4(fragPosition, 1.0);
 
+	finalPrimitiveNormal = vec4(primitiveNormal, 1.0);
 	finalKd_a = material.kd_a;
 	finalKs_ns = material.ks_ns;
 	finalGlowColor = material.glowColor;

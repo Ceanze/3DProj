@@ -18,6 +18,7 @@ DeferredRenderer::DeferredRenderer(Display* display)
 		{ FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16F },			// Material diffuse color and ambient factor
 		{ FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16F },			// Material specular color and specular exponent. 
 		{ FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16F },			// Glow color
+		{ FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16F },			// Normals for primitives
 		{ FrameBuffer::FBO_DEPTH_ATTACHMENT_HIDDEN, GL_RGBA16F }	// Depth render buffer
 	});
 
@@ -41,8 +42,10 @@ DeferredRenderer::DeferredRenderer(Display* display)
 	this->shadowBuffer->createTextures(std::vector<std::pair<FrameBuffer::FBO_ATTATCHMENT_TYPE, GLuint>>{
 		{ FrameBuffer::FBO_DEPTH_ATTACHMENT, GL_RGBA16F } // Depth from shadow camera.
 	});
-
-	this->blurFilter = new BlurFilter(display->getWidth(), display->getHeight(), 5.0f, 0.6f);
+	
+	this->blurIntensity = 5.0;
+	this->glowIntensity = 8.0;
+	this->blurFilter = new BlurFilter(display->getWidth(), display->getHeight(), this->blurIntensity, 0.6f);
 	this->blurFilter2 = new BlurFilter(display->getWidth(), display->getHeight(), 1.0f, 0.3f);
 	this->glowFilter = new GlowFilter(display->getWidth(), display->getHeight(), this->blurFilter);
 
@@ -196,7 +199,8 @@ void DeferredRenderer::renderLightBuffer()
 	this->texturesTempArr[2] = this->gBuffer->getTexture(3);
 	this->texturesTempArr[3] = this->gBuffer->getTexture(4);
 	this->texturesTempArr[4] = this->shadowBuffer->getTexture(0);
-	this->phongShader->updateUniforms(this->texturesTempArr, 5);
+	this->texturesTempArr[5] = this->gBuffer->getTexture(6);
+	this->phongShader->updateUniforms(this->texturesTempArr, 6);
 
 	this->phongShader->setShadowCamera(this->shadowShader->getCamera());
 	this->phongShader->setShadowSize(glm::vec2(this->shadowBuffer->getWidth(), this->shadowBuffer->getHeight()));
@@ -258,6 +262,7 @@ void DeferredRenderer::renderGlowBlurOrNormal()
 
 	if (isGClicked) // Glow effect
 	{
+		this->blurFilter->setBlurSize(this->glowIntensity);
 		this->glowFilter->render(this->gBuffer->getTexture(5), this->quadVAO);
 		this->blurFilter2->render(this->glowFilter->getFrameBuffer(), this->quadVAO);
 
@@ -277,6 +282,7 @@ void DeferredRenderer::renderGlowBlurOrNormal()
 	}
 	else if (isBClicked) // Blured
 	{
+		this->blurFilter->setBlurSize(this->blurIntensity);
 		this->blurFilter->render(this->combineBuffer, this->quadVAO);
 		this->blurFilter2->render(this->blurFilter->getFrameBufferH(), this->quadVAO);
 

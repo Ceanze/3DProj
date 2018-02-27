@@ -50,7 +50,7 @@ private:
 	GlowShader* glowShader;
 	ShadowShader* shadowShader;
 
-	GLuint texturesTempArr[5];
+	GLuint texturesTempArr[6];
 
 	FrameBuffer* gBuffer;
 	FrameBuffer* lightingBuffer;
@@ -58,6 +58,8 @@ private:
 	FrameBuffer* shadowBuffer;
 	float shadowResScale;
 
+	float glowIntensity;
+	float blurIntensity;
 	GlowFilter* glowFilter;
 	BlurFilter* blurFilter;
 	BlurFilter* blurFilter2;
