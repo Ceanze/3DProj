@@ -30,7 +30,7 @@ EngineCore::EngineCore()
 	
 	this->terrain.setShader(this->geometryShader);
 
-	this->base = new Entity({ 0.0f, 10.0f, -5.0f }, {0.0f, 0.0f, 0.0f});
+	this->base = new Entity({ 0.0f, 5.0f, -5.0f }, {0.0f, 0.0f, 0.0f});
 
 	this->m2 = new Mesh();
 	loader.load(this->m2, "Cube/Cube.obj", USE_NORMAL_MAP);

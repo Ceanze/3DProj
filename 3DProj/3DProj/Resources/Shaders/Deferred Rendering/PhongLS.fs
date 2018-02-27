@@ -35,7 +35,6 @@ uniform vec3 shadowDirection;
 uniform vec2 shadowSize;
 uniform mat4 shadowCamera;
 uniform sampler2D shadowMap;
-uniform sampler2D primitiveNormalTexture;
 
 void main()
 {
@@ -75,10 +74,7 @@ void main()
 	float dx = 1.0/shadowSize.x;
 	float dy = 1.0/shadowSize.y;
 	
-	vec3 primitiveNormal = normalize(texture(primitiveNormalTexture, fragTextureCoord).xyz);
-	float bias = 0.003 * tan(acos(max(dot(primitiveNormal, -shadowDirection), 0.0)));
-	clamp(bias, 0.0005, 0.005);
-	//float bias = max(0.0001 * (1.0 - dot(vec3(0.0, 1.0, 0.0), -shadowDirection)), 0.0001);
+	float bias = 0.001;
 
 	vec4 shadowCoord = shadowCamera*vec4(fragPos, 1.0);
 	shadowCoord.xyz = (shadowCoord.xyz / shadowCoord.w)*vec3(0.5) + vec3(0.5);
@@ -91,7 +87,7 @@ void main()
 
 		vec2 texelPos = vec2(shadowCoord.x*shadowSize.x, shadowCoord.y*shadowSize.y);
 		vec2 lerps = fract(texelPos);
-		visibility = mix(mix(s1, s2, lerps.x), mix(s3, s4, lerps.x), lerps.y);
+		visibility = max(mix(mix(s1, s2, lerps.x), mix(s3, s4, lerps.x), lerps.y), 0.3);
 
 	}
 	// Directonal Light

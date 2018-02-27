@@ -25,7 +25,6 @@ void PhongLS::updateUniforms(GLuint* textures, unsigned nrOf)
 	setTexture2D("kd_a_Texture", 2, textures[2]);
 	setTexture2D("ks_ns_Texture", 3, textures[3]);
 	setTexture2D("shadowMap", 4, textures[4]);
-	setTexture2D("primitiveNormalTexture", 5, textures[5]);
 	
 }
 

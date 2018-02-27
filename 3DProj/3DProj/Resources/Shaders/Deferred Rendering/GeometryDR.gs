@@ -16,14 +16,13 @@ out vec3 fragNormal;
 out vec3 fragTangent;
 out vec2 fragTextureCoord;
 out vec3 dist;
-out vec3 primitiveNormal;
 
 void main()
 {
     //Calculate normal for the triangle insted of using the normals for the specific verticies.
     vec3 normal = normalize(cross(geometryPosition[1] - geometryPosition[0], geometryPosition[2] - geometryPosition[0]));
-    float orthoVisible = -dot(normal, normal_ortho.xyz); // Will cull the front face instead of the back face.
-	primitiveNormal = normal;
+    float orthoVisible = dot(normal, normal_ortho.xyz); // Will cull the front face instead of the back face.
+	
     for(int i = 0; i < gl_in.length(); i++)
     {                
         vec3 pointToCam = camPos - geometryPosition[i];

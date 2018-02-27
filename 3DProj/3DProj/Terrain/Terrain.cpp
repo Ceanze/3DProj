@@ -31,7 +31,7 @@ Terrain::Terrain(const unsigned& terrainScale, const float& textureScale)
 
 	this->heightMap = nullptr;
 
-	this->loadTexture("./Resources/Terrain/heightmap.png", &this->heightMap, false);
+	this->loadTexture("./Resources/Terrain/heightmapFlat.png", &this->heightMap, false);
 	
 	this->size = this->heightMap->getWidth() * terrainScale;
 	this->offset = terrainScale;

@@ -50,7 +50,7 @@ private:
 	GlowShader* glowShader;
 	ShadowShader* shadowShader;
 
-	GLuint texturesTempArr[6];
+	GLuint texturesTempArr[5];
 
 	FrameBuffer* gBuffer;
 	FrameBuffer* lightingBuffer;
