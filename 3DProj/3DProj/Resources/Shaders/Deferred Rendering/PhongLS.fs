@@ -30,7 +30,6 @@ layout(location = 1) out vec4 finalSpecular;
 
 in vec2 fragTextureCoord;
 uniform vec3 camPos;
-uniform vec3 shadowDirection;
 
 uniform vec2 shadowSize;
 uniform mat4 shadowCamera;

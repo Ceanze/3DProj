@@ -1,7 +1,6 @@
 #ifndef ENGINECORE_H
 #define ENGINECORE_H
 
-#include "States\StateManager.h"
 #include "Display.h"
 #include "Config.h"
 
@@ -65,10 +64,13 @@ private:
 	Entity* lightBase;
 	Entity* directionalLight;
 	std::vector<Entity*> arm;
-	Mesh* m2;
 	std::vector<Mesh*> cubeMeshes;
-	std::vector<Mesh*> swordMeshes;
+	std::vector<Mesh*> cube2Meshes;
 	std::vector<Mesh*> armyPilotMeshes;
+
+	std::vector<Mesh*> knightMeshes;
+	std::vector<Mesh*> dragonMeshes;
+
 	ObjLoader loader;
 	Camera* camera;
 	Camera* shadowCamera;

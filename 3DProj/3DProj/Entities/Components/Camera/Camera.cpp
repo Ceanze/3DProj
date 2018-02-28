@@ -43,13 +43,14 @@ void Camera::init()
 	this->isCPressed = false;
 
 	updateProj(this->fov, this->zNear, this->zFar);
-	setWorldPosition();
+	setRelativePosition(this->relativePosition);
+	
 	if (this->orthoCam)
 		setDirection(this->f);
 	else
 		lookAt(this->target);
 
-	rotate(this->yawPitchRoll.x, this->yawPitchRoll.y, this->yawPitchRoll.z);
+	rotate(this->sphericalCoords.x, this->sphericalCoords.y);
 
 	glfwSetCursorPos(this->display->getWindowPtr(), this->display->getWidth() / 2, this->display->getHeight() / 2);
 }
@@ -85,15 +86,15 @@ void Camera::input(Display * display)
 			yPos -= this->display->getHeight() / 2;
 			if (xPos != 0.0 || yPos != 0.0)
 			{
-				this->yawPitchRoll.x += (float)(xPos*dt*sensitivity);
-				this->yawPitchRoll.y -= (float)(yPos*dt*sensitivity);
+				this->sphericalCoords.x += (float)(xPos*dt*sensitivity);
+				this->sphericalCoords.y -= (float)(yPos*dt*sensitivity);
 
-				if (yawPitchRoll.y > glm::radians(89.0f))
-					yawPitchRoll.y = glm::radians(89.0f);
-				if (yawPitchRoll.y < -glm::radians(89.0f))
-					yawPitchRoll.y = -glm::radians(89.0f);
+				if (sphericalCoords.y > glm::radians(89.0f))
+					sphericalCoords.y = glm::radians(89.0f);
+				if (sphericalCoords.y < -glm::radians(89.0f))
+					sphericalCoords.y = -glm::radians(89.0f);
 				
-				rotate(this->yawPitchRoll.x, this->yawPitchRoll.y, this->yawPitchRoll.z);
+				rotate(this->sphericalCoords.x, this->sphericalCoords.y);
 			}
 
 			glfwSetCursorPos(this->display->getWindowPtr(), this->display->getWidth() / 2, this->display->getHeight() / 2);
@@ -108,13 +109,10 @@ void Camera::lookAt(const glm::vec3 & target)
 	this->f = glm::normalize(target - this->worldPosition);
 	this->r = glm::cross(f, GLOBAL_UP_VECTOR);
 	this->u = glm::cross(r, f);
-
-	this->yawPitchRoll.x = atan2(this->f.z, this->f.x);
-	this->yawPitchRoll.y = atan2(this->f.y, -this->f.z);
-	this->yawPitchRoll.z = atan2(this->u.y, this->f.x);
 	
-	//this->view = glm::lookAt(this->worldPosition, target, GLOBAL_UP_VECTOR);
-
+	this->sphericalCoords.x = atan2(this->f.z, this->f.x);
+	this->sphericalCoords.y = atan2(this->f.y, -this->f.z);
+	
 	updateView(this->f, this->r, this->u, this->worldPosition);
 	this->getEntity()->getLocalTransform().setDirection(this->f);
 }
@@ -126,17 +124,16 @@ void Camera::setRelativePosition(const glm::vec3 & relativePosition)
 	updateView(this->f, this->r, this->u, this->worldPosition);
 }
 
-void Camera::rotate(float yaw, float pitch, float roll)
+void Camera::rotate(float phi, float theta)
 {
-	this->f.x = cos(yaw)*cos(pitch);
-	this->f.y = sin(pitch);
-	this->f.z = sin(yaw)*cos(pitch);
+	this->f.x = cos(phi)*cos(theta);
+	this->f.y = sin(theta);
+	this->f.z = sin(phi)*cos(theta);
 	this->r = glm::normalize(glm::cross(f, GLOBAL_UP_VECTOR));
 	this->u = glm::cross(r, f);
 
-	this->yawPitchRoll.x = yaw;
-	this->yawPitchRoll.y = pitch;
-	this->yawPitchRoll.z = roll;
+	this->sphericalCoords.x = phi;
+	this->sphericalCoords.y = theta;
 
 	updateView(this->f, this->r, this->u, this->worldPosition);
 	this->getEntity()->getLocalTransform().setDirection(this->f);
@@ -164,11 +161,13 @@ void Camera::setDirection(const glm::vec3 & direction)
 	this->r = glm::cross(f, GLOBAL_UP_VECTOR);
 	this->u = glm::cross(r, f);
 
+	this->sphericalCoords.x = atan2(this->f.z, this->f.x);
+	this->sphericalCoords.y = atan2(this->f.y, -this->f.z);
+	/*
 	this->yawPitchRoll.y = asin(direction.y);
 	this->yawPitchRoll.x = atan2(direction.x, direction.z) - Tools::PI/2;
 	this->yawPitchRoll.z = 0;
-
-
+	*/
 	updateView(this->f, this->r, this->u, this->worldPosition);
 	this->getEntity()->getLocalTransform().setDirection(this->f);
 }

@@ -31,6 +31,7 @@ void Entity::addMesh(Mesh * mesh, ShaderProgram * shader)
 {
 	mesh->loadToGPU(shader->getID(), GL_STATIC_DRAW, true);
 	this->meshes.push_back(mesh);
+	// Add shader to list if not added.
 	if (this->shaderMap.find(shader) == this->shaderMap.end())
 		this->shaders.push_back(shader);
 	this->shaderMap[shader].push_back(this->meshes.size() - 1);
@@ -82,8 +83,11 @@ void Entity::selfRender(ShaderProgram* shadowShader)
 		}
 		else
 			shadowShader->updateUniforms(this);
+
+		// Draw each mesh which uses this shader.
 		for (unsigned int j = 0; j < meshIds.size(); j++)
 			this->meshes[meshIds[j]]->draw();
+
 		if(shadowShader == nullptr)
 			glUseProgram(0);
 	}

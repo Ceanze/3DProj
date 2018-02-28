@@ -32,7 +32,7 @@ Terrain::Terrain(const unsigned& terrainScale, const float& textureScale)
 
 	this->heightMap = nullptr;
 
-	this->loadTexture("./Resources/Terrain/heightmapFlat.png", &this->heightMap, false);
+	this->loadTexture("./Resources/Terrain/heightmap.png", &this->heightMap, false);
 	
 	this->size = this->heightMap->getWidth() * terrainScale;
 	this->offset = terrainScale;
@@ -114,8 +114,8 @@ float Terrain::getHeight(const float & x, const float & z)
 		return 0.0f;
 	}
 	
-	float xCoord = fmod(terrainX, this->offset) / this->offset;
-	float zCoord = fmod(terrainZ, this->offset) / this->offset;
+	float xCoord = (float)fmod(terrainX, this->offset) / this->offset;
+	float zCoord = (float)fmod(terrainZ, this->offset) / this->offset;
 	float a, b, c;
 
 	if (xCoord <= (1 - zCoord))

@@ -148,9 +148,6 @@
     <ClCompile Include="Entities\Components\Component.cpp" />
     <ClCompile Include="Core\Display.cpp" />
     <ClCompile Include="Core\EngineCore.cpp" />
-    <ClCompile Include="Core\States\GameState.cpp" />
-    <ClCompile Include="Core\States\State.cpp" />
-    <ClCompile Include="Core\States\StateManager.cpp" />
     <ClCompile Include="Entities\Components\Lightning\DirectionalLight.cpp" />
     <ClCompile Include="Entities\Components\Lightning\LightComponent.cpp" />
     <ClCompile Include="Entities\Components\Lightning\PointLight.cpp" />
@@ -200,9 +197,6 @@
     <ClInclude Include="Core\EngineCore.h" />
     <ClInclude Include="Core\StateManager.h" />
     <ClInclude Include="Core\State.h" />
-    <ClInclude Include="Core\States\GameState.h" />
-    <ClInclude Include="Core\States\State.h" />
-    <ClInclude Include="Core\States\StateManager.h" />
     <ClInclude Include="Entities\Components\Lightning\DirectionalLight.h" />
     <ClInclude Include="Entities\Components\Lightning\LightComponent.h" />
     <ClInclude Include="Entities\Components\Lightning\PointLight.h" />
@@ -243,7 +237,6 @@
     <ClInclude Include="Utils\Utils.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="ClassDiagram.cd" />
     <None Include="Resources\Shaders\Deferred Rendering\PhongLS.fs" />
     <None Include="Resources\Shaders\Deferred Rendering\PhongLS.vs" />
   </ItemGroup>

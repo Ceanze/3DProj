@@ -39,15 +39,6 @@ namespace Tools
 		float l2 = abs(((v1.z - v3.z) * (xz.x - v3.x) - (v1.x - v3.x) * (xz.y - v3.z)) / det);
 		float l3 = 1.0f - l1 - l2;
 		return l1 * v1.y + l2 * v2.y + l3 * v3.y;
-
-		
-
-		//float det = (v3.x - v1.x) * (v2.z - v1.z) - (v3.z - v1.z) * (v2.x - v1.x);
-		//float l1 = abs(((xz.x - v3.x) * (v2.z - v3.z) - (xz.y - v3.z) * (v2.x - v3.x)) / det);
-		//float l2 = abs((xz.x - v3.x) * (v1.z - v3.z) - (xz.y - v3.z) * (v1.x - v3.x) / det);
-		//float l3 = 1.0f - l1 - l2;
-
-		//return l1 * v1.y + l2 * v2.y + l3 * v3.y;
 	}
 
 	static float getYaw(const glm::vec3& v)

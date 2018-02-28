@@ -39,15 +39,6 @@
     <ClCompile Include="Entities\Models\Material.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Core\States\GameState.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Core\States\State.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Core\States\StateManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Shading\Shader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -188,15 +179,6 @@
     <ClInclude Include="Core\State.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Core\States\GameState.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Core\States\State.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Core\States\StateManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Error.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -324,6 +306,5 @@
   <ItemGroup>
     <None Include="Resources\Shaders\Deferred Rendering\PhongLS.fs" />
     <None Include="Resources\Shaders\Deferred Rendering\PhongLS.vs" />
-    <None Include="ClassDiagram.cd" />
   </ItemGroup>
 </Project>

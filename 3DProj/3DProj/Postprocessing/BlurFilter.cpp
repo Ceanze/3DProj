@@ -6,6 +6,8 @@ BlurFilter::BlurFilter(unsigned int width, unsigned int height, float blurSize, 
 	this->scale = scale;
 	this->blurSize = blurSize;
 	this->blurShader = new BlurShader();
+
+	// Framebuffer to blur verticaly.
 	this->frameBufferV = new FrameBuffer((unsigned int)(width*scale), (unsigned int)(height*scale));
 	this->frameBufferV->createTextures(std::vector<std::pair<FrameBuffer::FBO_ATTATCHMENT_TYPE, GLuint>>{
 		{ FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16 }
@@ -15,6 +17,7 @@ BlurFilter::BlurFilter(unsigned int width, unsigned int height, float blurSize, 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	this->frameBufferV->unbindTexture();
 	
+	// Framebuffer to blur horizontaly.
 	this->frameBufferH = new FrameBuffer((unsigned int)(width*scale), (unsigned int)(height*scale));
 	this->frameBufferH->createTextures(std::vector<std::pair<FrameBuffer::FBO_ATTATCHMENT_TYPE, GLuint>>{
 		{ FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16 }
@@ -43,6 +46,7 @@ void BlurFilter::render(FrameBuffer* fb, GLuint quadVAO)
 	glUseProgram(this->blurShader->getID());
 	glBindVertexArray(quadVAO);
 	
+	// Scale down to match the size of the filter. 
 	this->frameBufferH->bind();
 
 	this->blurShader->sendTextureSize(glm::vec2(fb->getWidth(), fb->getHeight()));

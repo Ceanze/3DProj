@@ -7,7 +7,6 @@
 class ObjLoader
 {
 public:
-	void load(Mesh* mesh, const std::string& name, unsigned int flags = 0);
 	void load(std::vector<Mesh*>& meshes, const std::string& name, unsigned int flags = 0);
 
 private:

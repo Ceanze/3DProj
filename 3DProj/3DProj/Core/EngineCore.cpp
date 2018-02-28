@@ -19,11 +19,11 @@ EngineCore::EngineCore()
 	this->geometryShader = new GeometryShader();
 	this->deferredRenderer = new DeferredRenderer(&this->display);
 
-	const glm::vec3 lightDir = glm::normalize(glm::vec3(-1.0f, -2.0f, 0.0f));
+	const glm::vec3 lightDir = glm::normalize(-glm::vec3(0.0f, 8.0f, 5.0f));
 
 	this->shadowCamera = new Camera(&this->display, 50, 50, lightDir, {0.0f, 0.0f, 0.0f}, -100, 200);
 	this->deferredRenderer->setShadowCamera(this->shadowCamera);
-	this->camera = new Camera(&this->display, glm::vec3{10.0f, 0.0f, 0.0f});
+	this->camera = new Camera(&this->display, glm::vec3{0.0f, 13.5f, 0.0f});
 	this->activeCamera = this->camera;
 	this->camInc = 0;
 	attachCamera(this->activeCamera);
@@ -32,37 +32,37 @@ EngineCore::EngineCore()
 	
 	this->terrain.setShader(this->geometryShader);
 
-	this->base = new Entity({ 0.0f, 5.0f, -5.0f }, {0.0f, 0.0f, 0.0f});
+	this->base = new Entity({ 0.0f, 10.0f, 0.0f }, {0.0f, 0.0f, 0.0f});
 
-	this->m2 = new Mesh();
-	loader.load(this->m2, "Cube/Cube.obj", USE_NORMAL_MAP);
-	this->m2->material->glowColor = glm::vec3(1.0f, 0.0f, 1.0f);
+	loader.load(this->cubeMeshes, "Cube/Cube.obj", USE_NORMAL_MAP);
+	this->cubeMeshes[0]->material->glowColor = glm::vec3(1.0f, 0.5f, 1.0f);
 
-	loader.load(this->cubeMeshes, "Cube2/Cube2.obj", USE_NORMAL_MAP);
+	loader.load(this->cube2Meshes, "Cube2/Cube2.obj", USE_NORMAL_MAP);
 	loader.load(this->armyPilotMeshes, "ArmyPilot/ArmyPilot.obj", FLIP_UV_Y);
-	loader.load(this->swordMeshes, "Sword2a/sword2a.obj");
+	loader.load(this->knightMeshes, "Knight/knight.obj", FLIP_UV_Y);
+	loader.load(this->dragonMeshes, "Dragon/dragon.obj");
+
+	// --------------------------- Knight ---------------------------
+	Entity* temp2 = new Entity({ 8.0f, -5.f, 5.0f }, { 0.0f, 0.0f, 0.0f }, false);
+	temp2->getLocalTransform().setScale({ 0.2f, 0.2f, 0.2f });
+	temp2->addMeshes(this->knightMeshes, this->geometryShader);
+	base->addChild(temp2);
+
+	Entity* temp3 = new Entity({ -10.0f, 0.0f, 15.0f }, { 0.0f, 0.0f, 0.0f }, false);
+	temp3->getLocalTransform().setScale({ 0.5f, 0.5f, 0.5f });
+	temp3->addMeshes(this->dragonMeshes, this->geometryShader);
+	base->addChild(temp3);
 
 	// --------------------------- Player ---------------------------
-	this->e2 = new Entity({ 0.0f, 3.0f, 10.0f }, { 0.0f, 0.0f, 0.0f }, false);
+	this->e2 = new Entity({ 0.0f, 3.0f, 15.0f }, { 0.0f, 0.0f, 0.0f }, false);
 	this->e2->addComponent(this->camera);
 	this->e2->addComponent(new Movement(&this->terrain, 10, GLFW_KEY_W, GLFW_KEY_A, GLFW_KEY_S, GLFW_KEY_D));
 	base->addChild(e2);
 
 	this->directionalLight = new Entity({ 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f });
 	this->directionalLight->addComponent(this->shadowCamera);
-	
-	//this->shadowCamera->setDirection(lightDir);
-	//this->shadowCamera->rotate(Tools::getYaw(lightDir)+ 3.1415f / 2.0f, Tools::getPitch(lightDir), 0.0f);
 	this->directionalLight->addComponent(new DirectionalLight(lightDir, 2.0f, glm::vec3(1.0f), this->deferredRenderer->getPhongShader()));
 	this->e2->addChild(this->directionalLight);
-
-
-	// --------------------------- Sword ---------------------------
-	this->sword = new Entity({ 0.0f, -2.0f, -1.0f }, { 0.0f, 0.0f, 0.0f }, false);
-	this->sword->getLocalTransform().setScale({ 2.0f, 2.0f, 2.0f });
-	this->sword->getLocalTransform().setRotation({ 0.0f, 0.0f, -3.1415f / 2.0f });
-	this->sword->addMeshes(this->swordMeshes, this->geometryShader);
-	base->addChild(sword);
 
 	// --------------------------- Army pilot ---------------------------
 	this->armyPilot = new Entity({ 0.0f, -5.f, 5.0f }, { 0.0f, 0.0f, 0.0f }, false);
@@ -72,17 +72,12 @@ EngineCore::EngineCore()
 
 	// --------------------------- Arm ---------------------------
 	Entity* temp = new Entity({ 0.0f, -3.0f, 0.0f }, { 0.0f, 0.0f, 0.0f });
-	temp->addMesh(this->m2, this->geometryShader);
+	temp->addMeshes(this->cubeMeshes, this->geometryShader);
 	base->addChild(temp);
 	this->arm.push_back(temp);
 
 	temp = new Entity({ 0.0f, 2.0f, 0.0f }, { 0.0f, 0.0f, 0.0f });
-	temp->addMesh(this->m2, this->geometryShader);
-	this->arm[this->arm.size() - 1]->addChild(temp);
-	this->arm.push_back(temp);
-
-	temp = new Entity({ 0.0f, 2.0f, 0.0f }, { 0.0f, 0.0f, 0.0f });
-	temp->addMesh(this->m2, this->geometryShader);
+	temp->addMeshes(this->cubeMeshes, this->geometryShader);
 	this->arm[this->arm.size() - 1]->addChild(temp);
 	this->arm.push_back(temp);
 
@@ -91,40 +86,44 @@ EngineCore::EngineCore()
 	this->arm[this->arm.size() - 1]->addChild(temp);
 	this->arm.push_back(temp);
 
+	temp = new Entity({ 0.0f, 2.0f, 0.0f }, { 0.0f, 0.0f, 0.0f });
+	temp->addMeshes(this->cube2Meshes, this->geometryShader);
+	this->arm[this->arm.size() - 1]->addChild(temp);
+	this->arm.push_back(temp);
+
 	// ------------------------- Lights ---------------------------
-	this->lightBase = new Entity({ 0.0f, 2.0f, 40.0f }, { 0.0f, 0.0f, 0.0f });
+	this->lightBase = new Entity({ 0.0f, 2.0f, -20.0f }, { 0.0f, 0.0f, 0.0f });
 	this->base->addChild(this->lightBase);
 	
 	temp = new Entity({ 0.0f, 0.0f, 10.0f }, { 0.0f, 0.0f, 0.0f });
 	temp->addComponent(new PointLight(50.0f, 1.0f, glm::vec3(1.0f, 0.0f, 1.0f), this->deferredRenderer->getPhongShader()));
-	temp->addMesh(this->m2, this->geometryShader);
+	temp->addMeshes(this->cubeMeshes, this->geometryShader);
 	temp->getLocalTransform().setScale({ 0.2f, 0.2f, 0.2f });
 	this->lightBase->addChild(temp);
 	
 	temp = new Entity({ 4.0f, 0.0f, -6.0f }, { 0.0f, 0.0f, 0.0f });
 	temp->addComponent(new PointLight(50.0f, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f), this->deferredRenderer->getPhongShader()));
-	temp->addMesh(this->m2, this->geometryShader);
+	temp->addMeshes(this->cubeMeshes, this->geometryShader);
 	temp->getLocalTransform().setScale({ 0.2f, 0.2f, 0.2f });
 	this->lightBase->addChild(temp);
 
 	temp = new Entity({ -4.0f, 0.0f, 6.0f }, { 0.0f, 0.0f, 0.0f });
 	temp->addComponent(new PointLight(50.0f, 1.0f, glm::vec3(0.0f, 0.0f, 1.0f), this->deferredRenderer->getPhongShader()));
-	temp->addMesh(this->m2, this->geometryShader);
+	temp->addMeshes(this->cubeMeshes, this->geometryShader);
 	temp->getLocalTransform().setScale({ 0.2f, 0.2f, 0.2f });
 	this->lightBase->addChild(temp);
 
-	this->base->update(0.16f);
 	this->base->init();
 	this->frustum->init();
-	//this->shadowCamera->setDirection(lightDir);
 }
 
 EngineCore::~EngineCore()
 {
-	delete this->m2;
 	for (Mesh* m : this->cubeMeshes) delete m;
+	for (Mesh* m : this->cube2Meshes) delete m;
 	for (Mesh* m : this->armyPilotMeshes) delete m;
-	for (Mesh* m : this->swordMeshes) delete m;
+	for (Mesh* m : this->dragonMeshes) delete m;
+	for (Mesh* m : this->knightMeshes) delete m;
 	delete this->base;
 	delete this->frustum;
 
@@ -187,23 +186,14 @@ void EngineCore::update(const float & dt)
 {
 	this->frustum->update(this->camera->getPosition());
 
-	/*Transform& tb = this->base->getWorldTransform();
-	tb.setRotation(tb.getRotation() + glm::vec3{ 0.0f, -dt, 0.0f });
-	
 	Transform& a1 = this->arm[1]->getWorldTransform();
 	a1.setRotation(a1.getRotation() + glm::vec3{ dt, 0.0f, dt });
 	Transform& a2 = this->arm[2]->getLocalTransform();
 	a2.setRotation(a2.getRotation() + glm::vec3{ -dt, 0.0f, dt });
-	*/
-
+	
 	Transform& lightT = this->lightBase->getWorldTransform();
 	lightT.setRotation(lightT.getRotation() + glm::vec3{ 0.0f, -dt, 0.0f });
-	/*
-	DirectionalLight* dirLight = dynamic_cast<DirectionalLight*>(this->directionalLight->getComponent(1));
-	glm::vec3 newDir = glm::normalize(glm::rotate(glm::mat4(1.0f), dt*0.1f, { 0.0f, 0.0f, 1.0f })*glm::vec4(dirLight->getDirection(), 0.0f));
-	dirLight->setDirection(newDir);
-	this->shadowCamera->rotate(Tools::getYaw(newDir) + 3.1415f / 2.0f, Tools::getPitch(newDir), 0.0f);
-	*/
+	
 	this->base->update(dt);
 	
 }
@@ -328,10 +318,6 @@ void EngineCore::renderNodeGUI(Node* e, int level)
 		t.setTranslation(pos);
 
 		Transform& t2 = e->getLocalTransform();
-		glm::vec3 rot = t2.getRotation();
-		ImGui::DragFloat3("Rotation", &rot[0], 0.01f, 0.0f, 2 * 3.1415f);
-		t2.setRotation(rot);
-
 		glm::vec3 scale = t2.getScale();
 		ImGui::DragFloat3("Scale", &scale[0], 0.01f, 0.01f, 100.0f);
 		t2.setScale(scale);

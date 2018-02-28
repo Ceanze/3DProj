@@ -66,7 +66,6 @@ void PhongLS::setDirectionalLight(DirectionalLight::DirectionalLightData * data)
 void PhongLS::setShadowCamera(Camera* shadowCamera)
 {
 	this->shadowCamera = shadowCamera;
-	setUniform3fv("shadowDirection", 1, &this->shadowCamera->getDirection()[0]);
 	setUniformMatrix4fv("shadowCamera", 1, false, &shadowCamera->getVP()[0][0]);
 }
 

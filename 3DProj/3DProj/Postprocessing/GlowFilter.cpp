@@ -30,12 +30,14 @@ void GlowFilter::resize(unsigned int newWidth, unsigned int newHeight)
 
 void GlowFilter::render(GLuint texture, GLuint quadVAO)
 {
+	// Change contrast firts then blur.
 	this->brightnessFilter->render(texture, quadVAO);
 	this->blurFilter->render(this->brightnessFilter->getFrameBuffer(), quadVAO);
 }
 
 void GlowFilter::render(FrameBuffer * fb, GLuint quadVAO)
 {
+	// Change contrast firts then blur.
 	this->brightnessFilter->render(fb, quadVAO);
 	this->blurFilter->render(this->brightnessFilter->getFrameBuffer(), quadVAO);
 }

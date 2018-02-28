@@ -11,170 +11,16 @@
 #include "../Error.h"
 #include "../Core/ResourceManager.h"
 
-void ObjLoader::load(Mesh * mesh, const std::string & name, unsigned int flags)
-{
-	std::vector<std::map<std::string, Material*>> materials;
-
-	mesh->vertices.clear();
-	mesh->indices.clear();
-	
-	std::vector<glm::vec3> temp_vertices;
-	std::vector<glm::vec3> temp_normals;
-	std::vector<glm::vec2> temp_uvs;
-
-	std::vector<Material*> outMaterials;
-
-	int numv = 0;
-
-	std::ifstream file(MODEL_PATH+name);
-	if (file.is_open())
-	{
-		std::string line;
-
-		std::string str;
-		unsigned int indexGroup[3] = {0, 0, 0};
-		Mesh::Vertex vertex;
-		bool hasNormal = false;
-		bool hasUvs = false;
-		while (std::getline(file, line))
-		{
-			std::stringstream ss(line);
-			if (line[0] != '#') // If it is not a comment
-			{
-				std::string c;
-				ss >> c;
-				if (c == "mtllib")
-				{
-					ss >> str;
-					std::string mtlName(name);
-					mtlName = mtlName.substr(0, mtlName.find_last_of("/\\") +1).append(str);
-					materials.push_back(MTLLoader::load(mtlName, flags & USE_NORMAL_MAP));
-					str.clear();
-				}
-
-				if (c == "v") // Vertex position
-				{
-					glm::vec3 pos;
-					ss >> pos.x >> pos.y >> pos.z;
-					temp_vertices.push_back(pos);
-				}
-
-				if (c == "vt") // Vertex uvs
-				{
-					glm::vec2 texCoords;
-					ss >> texCoords.x >> texCoords.y;
-					if (flags & FLIP_UV_X)
-						texCoords.x = 1.0f - texCoords.x;
-					if (flags & FLIP_UV_Y)
-						texCoords.y = 1.0f - texCoords.y;
-					temp_uvs.push_back(texCoords);
-					hasUvs = true;
-				}
-
-				if (c == "vn") // Vertex normal
-				{
-					glm::vec3 normal;
-					ss >> normal.x >> normal.y >> normal.z;
-					temp_normals.push_back(normal);
-					hasNormal = true;
-				}
-
-				if (c == "usemtl") // Use material
-				{
-					ss >> str;
-					std::map<std::string, Material*>::iterator it;
-					const int numMtllib = materials.size();
-					for (int i = 0; i < numMtllib; i++)
-					{
-						it = materials[i].find(str);
-						if (it != materials[i].end())
-						{
-							mesh->material = it->second;
-							addMaterial(&mesh->material, outMaterials);
-						}
-					}
-					str.clear();
-				}
-
-				if (c == "f") // Face (triangle)
-				{
-					unsigned int triangle[3];
-					ss >> str;
-					for (uint8_t i = 0; !str.empty(); ss >> str, i++) // Loop until there are no vertices left in this face.
-					{
-						// Get vertex data.
-						if (!hasUvs && hasNormal)
-							sscanf_s(str.c_str(), "%d//%d", &indexGroup[0], &indexGroup[2]);
-						else if (!hasNormal && hasUvs)
-							sscanf_s(str.c_str(), "%d/%d", &indexGroup[0], &indexGroup[1]);
-						else if (!hasNormal && !hasUvs)
-							sscanf_s(str.c_str(), "%d", &indexGroup[0]);
-						else
-							sscanf_s(str.c_str(), "%d/%d/%d", &indexGroup[0], &indexGroup[1], &indexGroup[2]);
-
-						vertex.position = temp_vertices[indexGroup[0] - 1];
-
-						if (hasNormal)
-							vertex.normal = temp_normals[indexGroup[2] - 1];
-
-						if (hasUvs)
-							vertex.uvs = temp_uvs[indexGroup[1] - 1];
-						else
-							vertex.uvs = { 0.0f, 0.0f };
-
-						mesh->vertices.push_back(vertex);
-						int vertIndex = mesh->vertices.size() - 1;
-
-						if (i == 0)
-							triangle[0] = vertIndex;
-
-						if (i > 1) // This runs for each triangle.
-						{
-							numv += 3;
-							triangle[1] = vertIndex - 1;
-							triangle[2] = vertIndex;
-
-							mesh->indices.push_back(triangle[0]);
-							mesh->indices.push_back(triangle[1]);
-							mesh->indices.push_back(triangle[2]);
-
-							if (!hasNormal)
-								calculateNormal(mesh, triangle);
-							if (flags & USE_NORMAL_MAP)
-								calculateTangent(mesh, triangle);
-						}
-
-						str.clear();
-					}
-				}
-			}
-		}
-
-		if (materials.empty())
-		{
-			mesh->material = new Material(flags & USE_NORMAL_MAP);
-			addMaterial(&mesh->material, outMaterials);
-		}
-
-		ResourceManager::addMaterials(outMaterials);
-
-		Error::print("[Mesh detail]:", "[" + std::string(MODEL_PATH) + name + "] num triangles: " + std::to_string(numv));
-		file.close();
-	}
-	else
-	{
-		Error::printError("Could not open obj file: " + name);
-	}
-}
-
 void ObjLoader::load(std::vector<Mesh*>& meshes, const std::string & name, unsigned int flags)
 {
+	// Holds the loaded materials.
 	std::vector<std::map<std::string, Material*>> materials;
 
 	std::vector<glm::vec3> temp_vertices;
 	std::vector<glm::vec3> temp_normals;
 	std::vector<glm::vec2> temp_uvs;
 
+	// Used to apply material to mesh and send to ResourceManager. ResourceManager will delete them.
 	std::vector<Material*> outMaterials;
 
 	int meshIndex = -1;
@@ -198,12 +44,12 @@ void ObjLoader::load(std::vector<Mesh*>& meshes, const std::string & name, unsig
 			{
 				std::string c;
 				ss >> c;
-				if (c == "mtllib")
+				if (c == "mtllib") // Load materials from mtl file.
 				{
 					ss >> str;
 					std::string mtlName(name);
-					mtlName = mtlName.substr(0, mtlName.find_last_of("/\\") + 1).append(str);
-					materials.push_back(MTLLoader::load(mtlName, flags & USE_NORMAL_MAP));
+					mtlName = mtlName.substr(0, mtlName.find_last_of("/\\") + 1).append(str); // Get path without obj file name and append the mtl file name.
+					materials.push_back(MTLLoader::load(mtlName, flags & USE_NORMAL_MAP)); // Load the materials in the mtl file.
 					str.clear();
 				}
 
@@ -254,7 +100,7 @@ void ObjLoader::load(std::vector<Mesh*>& meshes, const std::string & name, unsig
 					str.clear();
 				}
 
-				if (c == "f") // Face (triangle)
+				if (c == "f") // Face
 				{
 					unsigned int triangle[3];
 					ss >> str;
@@ -270,22 +116,27 @@ void ObjLoader::load(std::vector<Mesh*>& meshes, const std::string & name, unsig
 						else
 							sscanf_s(str.c_str(), "%d/%d/%d", &indexGroup[0], &indexGroup[1], &indexGroup[2]);
 
+						// Position
 						vertex.position = temp_vertices[indexGroup[0] - 1];
 
+						// Normal
 						if (hasNormal)
 							vertex.normal = temp_normals[indexGroup[2] - 1];
 
+						// Uvs
 						if (hasUvs)
 							vertex.uvs = temp_uvs[indexGroup[1] - 1];
 						else
 							vertex.uvs = { 0.0f, 0.0f };
 
+						// Add vertex
 						meshes[meshIndex]->vertices.push_back(vertex);
 						int vertIndex = meshes[meshIndex]->vertices.size() - 1;
 
 						if (i == 0)
 							triangle[0] = vertIndex;
 
+						// Set the indices of the mesh. This will create a triangle for each iteration of this loop, except for the two first iterations.
 						if (i > 1) // This runs for each triangle.
 						{
 							numv += 3;
@@ -296,8 +147,10 @@ void ObjLoader::load(std::vector<Mesh*>& meshes, const std::string & name, unsig
 							meshes[meshIndex]->indices.push_back(triangle[1]);
 							meshes[meshIndex]->indices.push_back(triangle[2]);
 							
+							// Calculate normals if no normals where found.
 							if (!hasNormal)
 								calculateNormal(meshes[meshIndex], triangle);
+							// Calculate tangents if using normal map.
 							if (flags & USE_NORMAL_MAP)
 								calculateTangent(meshes[meshIndex], triangle);
 						}
@@ -308,7 +161,7 @@ void ObjLoader::load(std::vector<Mesh*>& meshes, const std::string & name, unsig
 			}
 		}
 
-		if (materials.empty())
+		if (materials.empty()) // If no material where found, set to a standard material.
 		{
 			for (int i = 0; i < meshIndex + 1; i++)
 			{
@@ -319,7 +172,7 @@ void ObjLoader::load(std::vector<Mesh*>& meshes, const std::string & name, unsig
 		else
 		{
 			for (int i = 0; i < meshIndex + 1; i++)
-				if (meshes[i]->material == nullptr)
+				if (meshes[i]->material == nullptr) // If a mesh do not have a material, set to a standard material.
 				{
 					meshes[i]->material = new Material(flags & USE_NORMAL_MAP);
 					addMaterial(&meshes[i]->material, outMaterials);
@@ -339,6 +192,7 @@ void ObjLoader::load(std::vector<Mesh*>& meshes, const std::string & name, unsig
 
 void ObjLoader::calculateNormal(Mesh * mesh, unsigned int triangle[3]) const
 {
+	// This calculates the normal of the triangle face.
 	const glm::vec3 v1 = mesh->vertices[triangle[0]].position;
 	const glm::vec3 v2 = mesh->vertices[triangle[1]].position;
 	const glm::vec3 v3 = mesh->vertices[triangle[2]].position;
@@ -365,7 +219,7 @@ void ObjLoader::calculateTangent(Mesh * mesh, unsigned int triangle[3])
 	float r = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV1.y * deltaUV2.x);
 	glm::vec3 tangent = (deltaPos1 * deltaUV2.y - deltaPos2 * deltaUV1.y)*r;
 
-	// Make the tangent perpendicular to its corresponding normal.
+	// Make the tangent perpendicular to its corresponding normal by using the Gram–Schmidt process.
 	v0.tangent = glm::normalize(tangent - v0.normal*glm::dot(v0.normal, tangent));
 	v1.tangent = glm::normalize(tangent - v1.normal*glm::dot(v1.normal, tangent));
 	v2.tangent = glm::normalize(tangent - v2.normal*glm::dot(v2.normal, tangent));

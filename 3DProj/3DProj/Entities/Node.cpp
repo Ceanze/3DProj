@@ -29,10 +29,14 @@ void Node::setParent(Node * parent)
 
 void Node::init()
 {
+	updateChainTransform();
+
 	selfInit();
 
 	for (Node* node : this->children)
 		node->init();
+
+	updateChainTransform();
 }
 
 void Node::update(float dt)
@@ -42,10 +46,7 @@ void Node::update(float dt)
 	for (Node* node : this->children)
 		node->update(dt);
 
-	if (this->parent != nullptr)
-		this->chainTransform.setMatrix(this->parent->getChainTransform().getMatrix()*this->worldTransform.getMatrix());
-	else
-		this->chainTransform.setMatrix(this->worldTransform.getMatrix());
+	updateChainTransform();
 }
 
 void Node::input(Display * display)
@@ -88,5 +89,13 @@ Transform& Node::getLocalTransform()
 Transform & Node::getChainTransform()
 {
 	return this->chainTransform;
+}
+
+void Node::updateChainTransform()
+{
+	if (this->parent != nullptr)
+		this->chainTransform.setMatrix(this->parent->getChainTransform().getMatrix()*this->worldTransform.getMatrix());
+	else
+		this->chainTransform.setMatrix(this->worldTransform.getMatrix());
 }
 

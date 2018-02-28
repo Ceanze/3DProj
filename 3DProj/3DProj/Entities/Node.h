@@ -36,6 +36,8 @@ private:
 	virtual void selfInput(Display* display) = 0;
 	virtual void selfInit() = 0;
 
+	void updateChainTransform();
+
 	Node* parent;
 	std::vector<Node*> children;
 	

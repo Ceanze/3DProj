@@ -20,7 +20,7 @@ public:
 
 	void lookAt(const glm::vec3& target);
 	void setRelativePosition(const glm::vec3& relativePosition);
-	void rotate(float yaw, float pitch, float roll);
+	void rotate(float phi, float theta);
 
 	void updateProj();
 
@@ -53,7 +53,7 @@ private:
 	glm::mat4 view;
 	glm::vec3 worldPosition;
 	glm::vec3 relativePosition;
-	glm::vec3 yawPitchRoll;
+	glm::vec2 sphericalCoords;
 	glm::vec3 f, r, u;
 	glm::vec3 target;
 	float fov, zNear, zFar;

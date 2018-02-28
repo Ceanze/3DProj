@@ -43,7 +43,7 @@ DeferredRenderer::DeferredRenderer(Display* display)
 	});
 	
 	this->blurIntensity = 5.0;
-	this->glowIntensity = 8.0;
+	this->glowIntensity = 5.0;
 	this->blurFilter = new BlurFilter(display->getWidth(), display->getHeight(), this->blurIntensity, 0.6f);
 	this->blurFilter2 = new BlurFilter(display->getWidth(), display->getHeight(), 1.0f, 0.3f);
 	this->glowFilter = new GlowFilter(display->getWidth(), display->getHeight(), this->blurFilter);
@@ -111,7 +111,6 @@ void DeferredRenderer::render(Node * node, Terrain * terrain, bool useWireframe)
 	this->shadowBuffer->bind();
 	glUseProgram(this->shadowShader->getID());
 	node->render(this->shadowShader);
-	//terrain->render(this->shadowShader);
 	glUseProgram(0);
 	this->shadowBuffer->unbind();
 
