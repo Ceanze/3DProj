@@ -14,14 +14,6 @@
 #define MAX_PIXEL_COLOR 256
 #define MAX_HEIGHT 10
 
-//struct Vertex
-//{
-//	glm::vec3 position;
-//	glm::vec3 normal;
-//	glm::vec3 tangent;
-//	glm::vec2 uvs;
-//};
-
 class Terrain
 {
 public:
@@ -40,17 +32,13 @@ private:
 	void generateTerrain();
 	void generateVerticies();
 	void generateIndicies(const unsigned& x, const unsigned& z);
-	const glm::vec3 generateNormals(const unsigned& x, const unsigned& z, unsigned char* data);
 	void generateTangent(const Triangle& tri);
+	void setTextureSettings();
+
+	const glm::vec3 generateNormals(const unsigned& x, const unsigned& z, unsigned char* data);
 	glm::vec3 getTriangleMidPoint(const Triangle& tri) const;
 
 	float getHeight(const unsigned& x, const unsigned& z, unsigned char* data);
-
-	void loadToGPU();
-
-	GLuint addVao();
-	GLuint addVertexVbo();
-	GLuint addEbo();
 
 	GLuint vao, vertexVbo, ebo;
 	GLuint vPosLocation, normalLocation, uvsLocation, tangentLocation;
@@ -62,17 +50,9 @@ private:
 	glm::vec3 start;
 
 	Mesh* mesh;
-
-	//Material material;
-	//std::vector<Vertex> verticies;
-	//std::vector<GLuint> indicies;
-
-	QuadTree* quadTree;
-
 	ShaderProgram* shader;
+	QuadTree* quadTree;
 	Texture* heightMap;
-	GLuint hasTextureLocation;
-
 };
 
 #endif

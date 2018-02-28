@@ -10,6 +10,7 @@ DeferredRenderer::DeferredRenderer(Display* display)
 {
 	this->display = display;
 
+	//Creates the G-buffer which used to store all attributes in textures
 	this->gBuffer = new FrameBuffer(display->getWidth(), display->getHeight());
 	this->gBuffer->createTextures(std::vector<std::pair<FrameBuffer::FBO_ATTATCHMENT_TYPE, GLuint>>{ 
 		{ FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16F },			// Position
@@ -21,30 +22,30 @@ DeferredRenderer::DeferredRenderer(Display* display)
 		{ FrameBuffer::FBO_DEPTH_ATTACHMENT_HIDDEN, GL_RGBA16F }	// Depth render buffer
 	});
 
+	//Creates the Lightning buffer which used to store all diffuse and ambient and specular light
 	this->lightingBuffer = new FrameBuffer(display->getWidth(), display->getHeight());
 	this->lightingBuffer->createTextures(std::vector<std::pair<FrameBuffer::FBO_ATTATCHMENT_TYPE, GLuint>>{
 		{ FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16F}, // Diffuse (and ambient) light
 		{FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16F }  // Specular light
 	});
 
+	//Creates the buffer that combines lightning buffers rendered textures
 	this->combineBuffer = new FrameBuffer(display->getWidth(), display->getHeight());
 	this->combineBuffer->createTextures(std::vector<std::pair<FrameBuffer::FBO_ATTATCHMENT_TYPE, GLuint>>{
 		{ FrameBuffer::FBO_COLOR_ATTACHMENT, GL_RGBA16F } // Final image
 	});
-	this->combineBuffer->bindTexture(0);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	this->combineBuffer->unbindTexture();
 
+	//Creates the shadow buffer which draws the directional lights ortographic views depth to a texture
 	this->shadowResScale = 4.0f;
 	this->shadowBuffer = new FrameBuffer((unsigned int)(display->getWidth()*this->shadowResScale), (unsigned int)(display->getHeight()*this->shadowResScale));
 	this->shadowBuffer->createTextures(std::vector<std::pair<FrameBuffer::FBO_ATTATCHMENT_TYPE, GLuint>>{
 		{ FrameBuffer::FBO_DEPTH_ATTACHMENT, GL_RGBA16F } // Depth from shadow camera.
 	});
 	
+	//Settings for blur 
 	this->blurIntensity = 5.0;
 	this->glowIntensity = 8.0;
-	this->blurFilter = new BlurFilter(display->getWidth(), display->getHeight(), this->blurIntensity, 0.6f);
+	this->blurFilter = new BlurFilter(display->getWidth(), display->getHeight(), this->blurIntensity, 0.4f);
 	this->blurFilter2 = new BlurFilter(display->getWidth(), display->getHeight(), 1.0f, 0.3f);
 	this->glowFilter = new GlowFilter(display->getWidth(), display->getHeight(), this->blurFilter);
 
@@ -95,6 +96,7 @@ void DeferredRenderer::render(Node * node, bool useWireframe)
 void DeferredRenderer::render(Node * node, Terrain * terrain, bool useWireframe)
 {
 	this->gBuffer->bind();
+	//Turns on alpha when wireframe is on
 	if (useWireframe)
 	{
 		glEnable(GL_BLEND);
@@ -102,6 +104,7 @@ void DeferredRenderer::render(Node * node, Terrain * terrain, bool useWireframe)
 	}
 	node->render();
 	terrain->render();
+	//Turns off alpha when wireframe is off
 	if (useWireframe)
 	{
 		glDisable(GL_BLEND);
@@ -110,8 +113,10 @@ void DeferredRenderer::render(Node * node, Terrain * terrain, bool useWireframe)
 
 	this->shadowBuffer->bind();
 	glUseProgram(this->shadowShader->getID());
+
+	//Renders shadows for chosen objects
 	node->render(this->shadowShader);
-	//terrain->render(this->shadowShader);
+
 	glUseProgram(0);
 	this->shadowBuffer->unbind();
 
@@ -194,6 +199,7 @@ void DeferredRenderer::renderLightBuffer()
 	this->lightingBuffer->bind();
 
 	glUseProgram(this->phongShader->getID());
+	//Sends in the textures that lightbuffer is going to use
 	this->texturesTempArr[0] = this->gBuffer->getTexture(0);
 	this->texturesTempArr[1] = this->gBuffer->getTexture(1);
 	this->texturesTempArr[2] = this->gBuffer->getTexture(3);
@@ -217,6 +223,7 @@ void DeferredRenderer::renderCombineBuffer()
 	this->combineBuffer->bind();
 
 	glUseProgram(this->combineShader->getID());
+	//Sends in the ambient, diffuse and specular textures 
 	this->texturesTempArr[0] = this->lightingBuffer->getTexture(0);
 	this->texturesTempArr[1] = this->lightingBuffer->getTexture(1);
 	this->texturesTempArr[2] = this->gBuffer->getTexture(2);
@@ -316,6 +323,7 @@ void DeferredRenderer::renderGlowBlurOrNormal()
 
 void DeferredRenderer::createQuad()
 {
+	//The quad which the final texture is drawn to
 	static const GLfloat quadVertexBufferData[30] = {
 		-1.0f, -1.0f, 0.0f,		0.0f, 0.0f,
 		1.0f, -1.0f, 0.0f,		1.0f, 0.0f,
