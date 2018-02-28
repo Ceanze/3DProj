@@ -8,8 +8,7 @@
 class Display
 {
 public:
-	Display(const std::string& title);
-	Display(const std::string& title, unsigned int width, unsigned int height);
+	Display(const std::string& title, unsigned int width = DEFAULT_WIDTH, unsigned int height = DEFAULT_HEIGHT);
 	virtual ~Display();
 
 	void updateView(unsigned int width, unsigned int height);

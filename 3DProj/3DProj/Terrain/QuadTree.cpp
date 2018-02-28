@@ -13,6 +13,7 @@ QuadTree::QuadTree(const unsigned & recursionLevel, glm::vec3 corners[4], const 
 		this->box.addPoint({ corners[i].x,  corners[i].y + height, corners[i].z });
 	}
 
+	//Calculates quad corners for the children
 	if (recursionLevel > 0)
 	{
 		this->hasChildren = true;
@@ -62,6 +63,7 @@ QuadTree::~QuadTree()
 
 void QuadTree::init()
 {
+	//Goes through the tree and sorts the triangles to the children depeding on positon
 	if (this->triangles.size() > 0 && this->hasChildren)
 	{
 		for (int i = 0; i < (int)this->triangles.size(); i++)
@@ -71,6 +73,7 @@ void QuadTree::init()
 		this->triangles.clear();
 		this->trianglePositions.clear();
 
+		//Does the same for children
 		for (int i = 0; i < CHILDREN_AMOUNT; i++)
 		{
 			this->children[i]->init();
@@ -86,7 +89,6 @@ void QuadTree::addTriangleToRoot(const glm::vec2 pos, const Triangle triangle)
 
 void QuadTree::addTriangle(const glm::vec2 & pos, const Triangle& triangle)
 {
-	//float childQuadSize = this->quadSize / 2.0f;
 	glm::vec3 center = this->box.getCenterPoint();
 	if (pos.x <= center.x && pos.y <= center.z)
 	{
@@ -115,7 +117,6 @@ void QuadTree::render()
 	for (int i = 0; i < CHILDREN_AMOUNT && this->hasChildren && this->inFrustum; i++)
 		this->children[i]->render();
 
-
 	if (this->triangles.size() > 0 && this->inFrustum && !this->hasChildren)
 	{
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->ebo);
@@ -127,8 +128,9 @@ void QuadTree::render()
 bool QuadTree::statusFrustum(const Plane planes[6])
 {
 	bool result = false;
-
 	this->setChildrenInFrustum(false);
+
+	//Checks which quads is in the frustum
 	for (int plane = 0; plane < 6; plane++)
 	{
 		bool in = false;
@@ -169,6 +171,7 @@ bool QuadTree::statusFrustum(const Plane planes[6])
 
 void QuadTree::addEbo()
 {
+	//Creates ebo for each leaf in the tree
 	if (this->triangles.size() > 0 && !this->hasChildren)
 	{
 		glGenBuffers(1, &this->ebo);
@@ -195,7 +198,7 @@ bool QuadTree::isInFrustum() const
 
 void QuadTree::setChildrenInFrustum(bool state)
 {
-	this->inFrustum = false;
+	this->inFrustum = state;
 	if(this->hasChildren)
 		for (int i = 0; i < CHILDREN_AMOUNT; i++)
 			this->children[i]->setChildrenInFrustum(state);

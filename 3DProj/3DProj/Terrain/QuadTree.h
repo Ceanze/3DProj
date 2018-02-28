@@ -33,7 +33,7 @@ public:QuadTree(const unsigned& recursionLevel, glm::vec3 corners[4], const floa
 
 	AABox getBox() const;
 	bool isInFrustum() const;
-	void setChildrenInFrustum(bool state);
+	void setChildrenInFrustum(bool state = false);
 
 private:
 	void addTriangle(const glm::vec2 & pos, const Triangle& triangle);
@@ -42,9 +42,6 @@ private:
 	GLuint ebo;
 
 	bool inFrustum;
-
-	//glm::vec3 corners[4];
-
 	AABox box;
 	float quadSize;
 

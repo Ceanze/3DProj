@@ -15,19 +15,11 @@ Terrain::Terrain(const unsigned& terrainScale, const float& textureScale)
 	this->textureScale = textureScale;
 
 	this->mesh->material->texture->bind();
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+	this->setTextureSettings();
 
-	glGenerateMipmap(GL_TEXTURE_2D);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	this->mesh->material->normalMap->bind();
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+	this->setTextureSettings();
 
-	glGenerateMipmap(GL_TEXTURE_2D);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	this->mesh->material->normalMap->unbind();
 
 	this->heightMap = nullptr;
@@ -39,8 +31,10 @@ Terrain::Terrain(const unsigned& terrainScale, const float& textureScale)
 	this->rowLength = (this->size / this->offset);
 	this->start = glm::vec3(-(int)this->size / 2, 0, -(int)this->size / 2);
 
+	//Generates array to store all the height from the heightmap
 	this->heights = new float[(int)size * (int)size];
 
+	//Calculates the corners for the first quad
 	glm::vec3 topLeftCorner(this->start.x, 0, this->start.z);
 	glm::vec3 topRightCorner(this->start.x + this->size, 0, this->start.z);
 	glm::vec3 botLeftCorner(this->start.x, 0, this->start.z + this->size);
@@ -69,11 +63,6 @@ void Terrain::render(ShaderProgram* shadowShader)
 {
 	if(shadowShader == nullptr)
 		glUseProgram(this->shader->getID());
-
-	//glUniform1i(this->useNormalMapLoc, 1);
-
-	//Has texture, should be 1 if texture is attached to textureMap
-	//glUniform1i(this->hasTextureLocation, 1);
 
 	this->mesh->prepareForDraw();
 
@@ -109,15 +98,17 @@ float Terrain::getHeight(const float & x, const float & z)
 	
 	glm::u8vec2 gridPos(floorf(terrainX / this->offset), floorf(terrainZ / this->offset) - 2);
 
+	//Checks if the pos is inside terrain
 	if (gridPos.x >= this->rowLength - 1 || gridPos.y >= this->rowLength - 1 || gridPos.x < 0 || gridPos.y < 0)
 	{
 		return 0.0f;
 	}
-	
+	//Calculates which triangle the position is on
 	float xCoord = (float)fmod(terrainX, this->offset) / this->offset;
 	float zCoord = (float)fmod(terrainZ, this->offset) / this->offset;
 	float a, b, c;
 
+	//uses barycentric coordinates to get height inside the triangle
 	if (xCoord <= (1 - zCoord))
 	{
 		a = this->heights[gridPos.x + gridPos.y * this->rowLength];
@@ -174,13 +165,14 @@ void Terrain::loadTexture(const std::string& path, Texture** texture, const bool
 
 void Terrain::generateTerrain()
 {
+	//Generates all vertcies
 	this->generateVerticies();
+	//Splits all triangle to corrosponding quad depending on world position
 	this->quadTree->init();
 }
 
 void Terrain::generateTangent(const Triangle& tri)
 {
-
 	Mesh::Vertex& v0 = this->mesh->vertices[tri.p1];
 	Mesh::Vertex& v1 = this->mesh->vertices[tri.p2];
 	Mesh::Vertex& v2 = this->mesh->vertices[tri.p3];
@@ -198,6 +190,15 @@ void Terrain::generateTangent(const Triangle& tri)
 	v1.tangent = glm::normalize(tangent - v1.normal*glm::dot(v1.normal, tangent));
 	v2.tangent = glm::normalize(tangent - v2.normal*glm::dot(v2.normal, tangent));
 
+}
+
+void Terrain::setTextureSettings()
+{
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+	glGenerateMipmap(GL_TEXTURE_2D);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 }
 
 glm::vec3 Terrain::getTriangleMidPoint(const Triangle & tri) const
@@ -220,12 +221,15 @@ void Terrain::generateVerticies()
 	{ 
 		for (unsigned z = 0; z < rowLength; z++)
 		{
+			//Get height from heightmap to be used later for calculating normals
 			this->heights[x + z * rowLength] = this->getHeight(x, z, data);
+			
 			vertex.position = this->start + glm::vec3(offset * x, this->heights[x + z * rowLength], offset * z);
 			vertex.normal = this->generateNormals(x, z, data);
 			vertex.uvs = glm::vec2(x/ this->textureScale, z/ this->textureScale);
 			this->mesh->vertices.push_back(vertex);
 
+			//starts generating indicies when we are in the second row second column
 			if (x >= 1 && z >= 1)
 			{
 				this->generateIndicies(x - 1, z - 1);
@@ -236,6 +240,7 @@ void Terrain::generateVerticies()
 
 void Terrain::generateIndicies(const unsigned& x, const unsigned& z)
 {
+	//Generates indicies for triangles (for a quad)
 	Triangle tri1, tri2;
 	tri1.p1 = z + x * (this->rowLength);
 	tri1.p2 = z + 1 + x * (this->rowLength);
@@ -245,14 +250,19 @@ void Terrain::generateIndicies(const unsigned& x, const unsigned& z)
 	tri2.p2 = z + x * (this->rowLength) + (this->rowLength);
 	tri2.p3 = z + 1 + x * (this->rowLength);
 
+	//Gets middle point of every triangle to know which quad the triangle is in
 	glm::vec3 triMidPoint = this->getTriangleMidPoint(tri1);
 	glm::vec2 pos(triMidPoint.x, triMidPoint.z);
+
+	//adds triangles to quadtree
 	this->quadTree->addTriangleToRoot(pos, tri1);
 
+	//Gets middle point of every triangle to know which quad the triangle is in
 	triMidPoint = this->getTriangleMidPoint(tri2);
 	pos = { triMidPoint.x, triMidPoint.z };
-	this->quadTree->addTriangleToRoot(pos, tri2);
 
+	//adds triangles to quadtree
+	this->quadTree->addTriangleToRoot(pos, tri2);
 
 	this->generateTangent(tri1);
 	this->generateTangent(tri2);
@@ -263,15 +273,17 @@ const glm::vec3 Terrain::generateNormals(const unsigned& x, const unsigned& z, u
 {
 	float LH, RH, UH, DH;
 
+	//Get height from heightmap image then calculate normals with the height
 	LH = this->getHeight(x, z - 1, data);
 	RH = this->getHeight(x, z + 1, data);
 	UH = this->getHeight(x - 1, z, data);
 	DH = this->getHeight(x + 1, z, data);
 
 	glm::vec3 normal = glm::normalize(glm::vec3(LH - RH, 2.f, DH - UH));
+
+	//Rotates all normals to the same direction as the entities
 	glm::mat4 rotateMatrix(1.0f);
 	rotateMatrix = glm::rotate(rotateMatrix, -Tools::PI / 2.0f, glm::vec3(0.0, 1.0, 0.0));
-
 	glm::vec4 rotatedNormal = (rotateMatrix * glm::vec4(normal, 1.0f));
 
 	normal.x = rotatedNormal.x;
@@ -291,75 +303,4 @@ float Terrain::getHeight(const unsigned& x, const unsigned& z, unsigned char* da
 	height = ((float)height / MAX_PIXEL_COLOR) * MAX_HEIGHT;
 
 	return height;
-}
-
-void Terrain::loadToGPU()
-{
-	//this->vao = addVao();
-	//this->vertexVbo = addVertexVbo();
-	//this->ebo = addEbo();
-}
-
-GLuint Terrain::addVao()
-{
-	GLuint vao;
-	//glGenVertexArrays(1, &vao);
-	//
-	return vao;
-}
-
-GLuint Terrain::addVertexVbo()
-{
-	GLuint vbo;
-	//glBindVertexArray(this->vao);
-	//glGenBuffers(1, &vbo);
-	//glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	//glBufferData(GL_ARRAY_BUFFER, this->mesh->vertices.size() * sizeof(Mesh::Vertex), &this->mesh->vertices[0], GL_STATIC_DRAW);
-
-	//this->vPosLocation = 0;// glGetAttribLocation(this->shader->getID(), "vertexPosition");
-	//if (this->vPosLocation == -1)
-	//	Error::printError("Terrain couldn't find 'vertexPosition' in GeometryDR.vs");
-
-	//glEnableVertexAttribArray(vPosLocation);
-	//glVertexAttribPointer(vPosLocation, 3, GL_FLOAT, GL_FALSE, sizeof(Mesh::Vertex), (char*)nullptr);
-
-	//this->normalLocation = 1;// glGetAttribLocation(this->shader->getID(), "vertexNormal");
-	//if (this->normalLocation == -1)
-	//	Error::printError("Terrain couldn't find 'vertexNormal' in GeometryDR.vs");
-	//glEnableVertexAttribArray(this->normalLocation);
-	//glVertexAttribPointer(this->normalLocation, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (char*)(sizeof(GLfloat) * 3));
-
-	//this->tangentLocation = 2;// glGetAttribLocation(this->shader->getID(), "vertexUvs");
-	//if (this->tangentLocation == -1)
-	//	Error::printError("Terrain couldn't find 'vertexTangent' in GeometryDR.vs");
-	//glEnableVertexAttribArray(tangentLocation);
-	//glVertexAttribPointer(tangentLocation, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (char*)(sizeof(GLfloat) * 6));
-
-	//this->uvsLocation = 3;// glGetAttribLocation(this->shader->getID(), "vertexUvs");
-	//if (this->uvsLocation == -1)
-	//	Error::printError("Terrain couldn't find 'vertexUvs' in GeometryDR.vs");
-	//glEnableVertexAttribArray(uvsLocation);
-	//glVertexAttribPointer(uvsLocation, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (char*)(sizeof(GLfloat) * 9));
-
-	//
-	//this->useNormalMapLoc = glGetUniformLocation(this->shader->getID(), "useNormalMap");
-	//if (this->useNormalMapLoc == -1)
-	//	Error::printError("Could not find 'useNormalMap' in shader!");
-
-	//this->hasTextureLocation = glGetUniformLocation(this->shader->getID(), "hasTexture");
-	//if (this->hasTextureLocation == -1)
-	//	Error::printError("Could not find 'hasTexture' in shader");
-
-	//glBindVertexArray(0);
-
-	return vbo;
-}
-
-GLuint Terrain::addEbo()
-{
-	/*glBindVertexArray(this->vao);
-
-	this->quadTree->addEbo();
-*/
-	return 0;
 }

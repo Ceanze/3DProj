@@ -27,12 +27,12 @@ ShaderProgram::ShaderProgram(const Shader & vertexShader, const Shader & fragmen
 
 ShaderProgram::ShaderProgram(const Shader & vertexShader, const Shader & fragmentShader, const Shader & geometryShader)
 {
-	this->id = glCreateProgram();
+	this->id = glCreateProgram();			//Create a shaderprogram ID for the new shaderprogram
 	this->name = "";
-	addShader(vertexShader);
+	addShader(vertexShader);				//Add the shaders given to the constructor
 	addShader(fragmentShader);
 	addShader(geometryShader);
-	link();
+	link();									//Link the shaders
 }
 
 ShaderProgram::~ShaderProgram()
@@ -42,7 +42,7 @@ ShaderProgram::~ShaderProgram()
 
 void ShaderProgram::addShader(const Shader & shader)
 {
-	std::string sname = "[" + shader.getName() + ": ";
+	std::string sname = "[" + shader.getName() + ": ";					//Used in case the shaderprogram can't find a uniform later on
 	switch (shader.getType())
 	{
 	case GL_FRAGMENT_SHADER:	sname += "Fragment shader"; break;
@@ -50,15 +50,16 @@ void ShaderProgram::addShader(const Shader & shader)
 	case GL_VERTEX_SHADER:		sname += "Vertex shader | "; break;
 	}
 	this->name += sname + "]";
-	this->shaderIds.push_back(shader.getID());
-	glAttachShader(this->id, shader.getID());
+
+	this->shaderIds.push_back(shader.getID());				//Put the shader in a vector
+	glAttachShader(this->id, shader.getID());				//Attach the shader to the shader program
 }
 
 void ShaderProgram::link(bool shouldDeleteShaders)
 {
-	glLinkProgram(this->id);
+	glLinkProgram(this->id);												//Link the shaders with the shader program
 
-	char buff[1024];
+	char buff[1024];														//Prints error if the link failed
 	memset(buff, 0, 1024);
 	GLint compileResult = GL_FALSE;
 	glGetProgramiv(this->id, GL_LINK_STATUS, &compileResult);
@@ -69,13 +70,16 @@ void ShaderProgram::link(bool shouldDeleteShaders)
 		Error::printError(buff);
 	}
 
-	for (unsigned int i = 0; i < this->shaderIds.size(); i++)
+	for (unsigned int i = 0; i < this->shaderIds.size(); i++)				//Detach the shaders from the shaderprogram
 	{
 		glDetachShader(this->id, shaderIds[i]);
 		if (shouldDeleteShaders)
 			glDeleteShader(shaderIds[i]);
 	}
 }
+
+
+// ---------------------------- HELP FUNCTIONS FOR EASIED UNIFORMS AND TEXTURES ------------------------------------------
 
 void ShaderProgram::setTexture2D(const std::string & name, unsigned int unit)
 {
@@ -146,14 +150,14 @@ void ShaderProgram::setCamera(Camera * camera)
 
 int ShaderProgram::addUniform(const std::string & name)
 {
-	if (this->uniforms.find(name) == this->uniforms.end())
+	if (this->uniforms.find(name) == this->uniforms.end()) //if the uniform isn't in the map
 	{
-		int uniformLocation = glGetUniformLocation(this->id, name.c_str());
-		if (uniformLocation == -1)
+		int uniformLocation = glGetUniformLocation(this->id, name.c_str());		//Get the uniform location
+		if (uniformLocation == -1)												//If the uniform can't be found in the shader
 			Error::printError("Can't find uniform '" + name + "' in shader '" + this->name + "'");
-		this->uniforms.insert({ name, uniformLocation });
+		this->uniforms.insert({ name, uniformLocation });						//Add the uniform to the map with it's location
 	}
-	return this->uniforms[name];
+	return this->uniforms[name];												//Return the location of the uniform
 }
 
 void ShaderProgram::updateUniforms()
