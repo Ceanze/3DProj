@@ -58,7 +58,7 @@ private:
 	Terrain terrain;
 	Entity* base;
 	Entity* tree;
-	Entity* e2;
+	Entity* player;
 	Entity* armyPilot;
 	Entity* sword;
 	Entity* lightBase;

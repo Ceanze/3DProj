@@ -28,22 +28,34 @@ EngineCore::EngineCore()
 	this->camInc = 0;																						//Used to swtich between cameras
 	attachCamera(this->activeCamera);																		//Attach the active camera to the two shaders
 	this->frustum = new Frustum(this->activeCamera, this->terrain.getQuadTree(), this->display.getRatio()); //Create a frustum for perspective camera with reference to the quadTree
-
 	
 	// ---------------------- Terrain -----------------------------
 	this->terrain.setShader(this->geometryShader);															//Set the shader for the terrain
 
-
-
 	// --------------------- Multi-use mesh -----------------------
-	loader.load(this->cubeMeshes, "Cube/Cube.obj", USE_NORMAL_MAP);													//Load a mesh to the object
-	this->cubeMeshes->material->glowColor = glm::vec3(1.0f, 0.5f, 1.0f);											//Set a glowColor for the material
+	loader.load(this->cubeMeshes, "Cube/Cube.obj", USE_NORMAL_MAP);											//Load a mesh to the object
+	this->cubeMeshes[0]->material->glowColor = glm::vec3(1.0f, 0.5f, 1.0f);									//Set a glowColor for the material
 
-	loader.load(this->cube2Meshes, "Cube2/Cube2.obj", USE_NORMAL_MAP);
 	// --------------------- Load the meshes ----------------------
+	loader.load(this->cube2Meshes, "Cube2/Cube2.obj", USE_NORMAL_MAP);
 	loader.load(this->armyPilotMeshes, "ArmyPilot/ArmyPilot.obj", FLIP_UV_Y);
 	loader.load(this->knightMeshes, "Knight/knight.obj", FLIP_UV_Y);
 	loader.load(this->dragonMeshes, "Dragon/dragon.obj");
+
+	// Base node for the node system. Every node is being moved with reference to this. Every entity is a node
+	this->base = new Entity({ 0.0f, 10.0f, -5.0f }, {0.0f, 0.0f, 0.0f});
+
+	// --------------------------- Player ---------------------------
+	this->player = new Entity({ 0.0f, 3.0f, 15.0f }, { 0.0f, 0.0f, 0.0f }, false);
+	this->player->addComponent(this->camera);																	 //Adding the camera to the player entity
+	this->player->addComponent(new Movement(&this->terrain, 10, GLFW_KEY_W, GLFW_KEY_A, GLFW_KEY_S, GLFW_KEY_D));//Player entity can now move with WASD
+	base->addChild(player);																						 //Add the entity to the base node
+
+	this->directionalLight = new Entity({ 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f });						 //Create the directional light
+	this->directionalLight->addComponent(this->shadowCamera);												 //shadowCamera is a component and is added to directionalLight
+	
+	this->directionalLight->addComponent(new DirectionalLight(lightDir, 2.0f, glm::vec3(1.0f), this->deferredRenderer->getPhongShader())); //Add the light to the entity
+	this->player->addChild(this->directionalLight);
 
 	// --------------------------- Knight ---------------------------
 	Entity* temp2 = new Entity({ 8.0f, -5.f, 5.0f }, { 0.0f, 0.0f, 0.0f }, false);
@@ -51,25 +63,11 @@ EngineCore::EngineCore()
 	temp2->addMeshes(this->knightMeshes, this->geometryShader);
 	base->addChild(temp2);
 
+	// --------------------------- Dragon ---------------------------
 	Entity* temp3 = new Entity({ -10.0f, 0.0f, 15.0f }, { 0.0f, 0.0f, 0.0f }, false);
 	temp3->getLocalTransform().setScale({ 0.5f, 0.5f, 0.5f });
 	temp3->addMeshes(this->dragonMeshes, this->geometryShader);
 	base->addChild(temp3);
-
-	// Base node for the node system. Every node is being moved with reference to this. Every entity is a node
-	this->base = new Entity({ 0.0f, 10.0f, -5.0f }, {0.0f, 0.0f, 0.0f});
-
-	// --------------------------- Player ---------------------------
-	this->e2 = new Entity({ 0.0f, 3.0f, 15.0f }, { 0.0f, 0.0f, 0.0f }, false);
-	this->e2->addComponent(this->camera);																	 //Adding the camera to the player entity
-	this->e2->addComponent(new Movement(&this->terrain, 10, GLFW_KEY_W, GLFW_KEY_A, GLFW_KEY_S, GLFW_KEY_D));//Player entity can now move with WASD
-	base->addChild(e2);																						 //Add the entity to the base node
-
-	this->directionalLight = new Entity({ 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f });						 //Create the directional light
-	this->directionalLight->addComponent(this->shadowCamera);												 //shadowCamera is a component and is added to directionalLight
-	
-	this->directionalLight->addComponent(new DirectionalLight(lightDir, 2.0f, glm::vec3(1.0f), this->deferredRenderer->getPhongShader())); //Add the light to the entity
-	this->e2->addChild(this->directionalLight);
 
 	// --------------------------- Army pilot ---------------------------
 	this->armyPilot = new Entity({ 0.0f, -5.f, 5.0f }, { 0.0f, 0.0f, 0.0f }, false);
@@ -118,7 +116,9 @@ EngineCore::EngineCore()
 	temp->addComponent(new PointLight(50.0f, 1.0f, glm::vec3(0.0f, 0.0f, 1.0f), this->deferredRenderer->getPhongShader()));
 	temp->addMeshes(this->cubeMeshes, this->geometryShader);
 	temp->getLocalTransform().setScale({ 0.2f, 0.2f, 0.2f });
-	this->lightBase->addChild(temp)	this->base->init();		//init all the nodes
+	this->lightBase->addChild(temp);
+	
+	this->base->init();		//init all the nodes
 	this->frustum->init();	//Init the frustum
 }
 
