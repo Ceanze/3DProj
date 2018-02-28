@@ -11,13 +11,13 @@ char ResourceManager::loadTexture(const std::string & path, Texture** texture)
 	int width;
 	int height;
 	unsigned char* data;
-	if (isTextureLoaded(path) == false)
+	if (isTextureLoaded(path) == false)								//Only load the texture if it hasn't been loaded before
 	{
-		int comp; // Not used
-		data = stbi_load(path.c_str(), &width, &height, &comp, 4);
-		if (data == nullptr)
+		int comp;													//Not used (but must exist for the stbi)
+		data = stbi_load(path.c_str(), &width, &height, &comp, 4);	//Load the texture
+		if (data == nullptr)										//If it failed, end.
 			return TEXTURE_FAILED;
-		texturesData.insert({ path, TextureData(data, (unsigned int)width, (unsigned int)height) });
+		texturesData.insert({ path, TextureData(data, (unsigned int)width, (unsigned int)height) }); //When loaded successfully add that to the map
 
 		if (*texture != nullptr)
 			delete *texture;

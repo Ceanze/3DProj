@@ -5,14 +5,6 @@
 
 Display* Display::displayPtr = nullptr;
 
-Display::Display(const std::string & title)
-{
-	this->title = title;
-	this->width = DEFAULT_WIDTH;
-	this->height = DEFAULT_HEIGHT;
-	init();
-}
-
 Display::Display(const std::string & title, unsigned int width, unsigned int height)
 {
 	this->title = title;
@@ -32,7 +24,7 @@ Display::~Display()
 
 void Display::resizeCallback(GLFWwindow * window, int width, int height)
 {
-	if (width != 0 || height != 0)
+	if (width != 0 || height != 0)							//Only resize if if width and height != 0
 	{
 		Display::displayPtr->updateView(width, height);
 		Display::displayPtr->sizeUpdated = true;
@@ -48,7 +40,7 @@ void Display::updateView(unsigned int width, unsigned int height)
 
 void Display::bindAsRenderTarget()
 {
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);		//Renders the framebuffer to the display
 	glViewport(0, 0, getWidth(), getHeight());
 }
 

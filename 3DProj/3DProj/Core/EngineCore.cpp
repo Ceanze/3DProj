@@ -15,45 +15,51 @@ EngineCore::EngineCore()
 	:	display("test window"),
 		terrain()
 {
-	// Create Shader
+	// ----------------------- Shaders ----------------------------
 	this->geometryShader = new GeometryShader();
 	this->deferredRenderer = new DeferredRenderer(&this->display);
 
-	const glm::vec3 lightDir = glm::normalize(glm::vec3(-1.0f, -2.0f, 0.0f));
 
-	this->shadowCamera = new Camera(&this->display, 50, 50, lightDir, {0.0f, 0.0f, 0.0f}, -100, 200);
-	this->deferredRenderer->setShadowCamera(this->shadowCamera);
-	this->camera = new Camera(&this->display, glm::vec3{10.0f, 0.0f, 0.0f});
-	this->activeCamera = this->camera;
-	this->camInc = 0;
-	attachCamera(this->activeCamera);
+	// ----------------------- Cameras ----------------------------
+	const glm::vec3 lightDir = glm::normalize(glm::vec3(-1.0f, -2.0f, 0.0f));								//Used for shadowCamera and directional light
+	this->shadowCamera = new Camera(&this->display, 50, 50, lightDir, {0.0f, 0.0f, 0.0f}, -100, 200);		//Create the shadowCamera
+	this->deferredRenderer->setShadowCamera(this->shadowCamera);											//Send the shadowCamera to the deferred renderer
+	this->camera = new Camera(&this->display, glm::vec3{10.0f, 0.0f, 0.0f});								//Create the perspecive camera (player)
+	this->activeCamera = this->camera;																		//Sets the current active camera to the perspective camera
+	this->camInc = 0;																						//Used to swtich between cameras
+	attachCamera(this->activeCamera);																		//Attach the active camera to the two shaders
+	this->frustum = new Frustum(this->activeCamera, this->terrain.getQuadTree(), this->display.getRatio()); //Create a frustum for perspective camera with reference to the quadTree
 
-	this->frustum = new Frustum(this->activeCamera, this->terrain.getQuadTree(), this->display.getRatio());
 	
-	this->terrain.setShader(this->geometryShader);
+	// ---------------------- Terrain -----------------------------
+	this->terrain.setShader(this->geometryShader);															//Set the shader for the terrain
 
-	this->base = new Entity({ 0.0f, 5.0f, -5.0f }, {0.0f, 0.0f, 0.0f});
 
-	this->m2 = new Mesh();
-	loader.load(this->m2, "Cube/Cube.obj", USE_NORMAL_MAP);
-	this->m2->material->glowColor = glm::vec3(1.0f, 0.0f, 1.0f);
 
+	// --------------------- Multi-use mesh -----------------------
+	this->m2 = new Mesh();																					//Create a mesh object
+	loader.load(this->m2, "Cube/Cube.obj", USE_NORMAL_MAP);													//Load a mesh to the object
+	this->m2->material->glowColor = glm::vec3(1.0f, 0.0f, 1.0f);											//Set a glowColor for the material
+
+
+	// --------------------- Load the meshes ----------------------
 	loader.load(this->cubeMeshes, "Cube2/Cube2.obj", USE_NORMAL_MAP);
 	loader.load(this->armyPilotMeshes, "ArmyPilot/ArmyPilot.obj", FLIP_UV_Y);
 	loader.load(this->swordMeshes, "Sword2a/sword2a.obj");
 
+	// Base node for the node system. Every node is being moved with reference to this. Every entity is a node
+	this->base = new Entity({ 0.0f, 5.0f, -5.0f }, {0.0f, 0.0f, 0.0f});
+
 	// --------------------------- Player ---------------------------
 	this->e2 = new Entity({ 0.0f, 3.0f, 10.0f }, { 0.0f, 0.0f, 0.0f }, false);
-	this->e2->addComponent(this->camera);
-	this->e2->addComponent(new Movement(&this->terrain, 10, GLFW_KEY_W, GLFW_KEY_A, GLFW_KEY_S, GLFW_KEY_D));
-	base->addChild(e2);
+	this->e2->addComponent(this->camera);																	 //Adding the camera to the player entity
+	this->e2->addComponent(new Movement(&this->terrain, 10, GLFW_KEY_W, GLFW_KEY_A, GLFW_KEY_S, GLFW_KEY_D));//Player entity can now move with WASD
+	base->addChild(e2);																						 //Add the entity to the base node
 
-	this->directionalLight = new Entity({ 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f });
-	this->directionalLight->addComponent(this->shadowCamera);
+	this->directionalLight = new Entity({ 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f });						 //Create the directional light
+	this->directionalLight->addComponent(this->shadowCamera);												 //shadowCamera is a component and is added to directionalLight
 	
-	//this->shadowCamera->setDirection(lightDir);
-	//this->shadowCamera->rotate(Tools::getYaw(lightDir)+ 3.1415f / 2.0f, Tools::getPitch(lightDir), 0.0f);
-	this->directionalLight->addComponent(new DirectionalLight(lightDir, 2.0f, glm::vec3(1.0f), this->deferredRenderer->getPhongShader()));
+	this->directionalLight->addComponent(new DirectionalLight(lightDir, 2.0f, glm::vec3(1.0f), this->deferredRenderer->getPhongShader())); //Add the light to the entity
 	this->e2->addChild(this->directionalLight);
 
 
@@ -114,9 +120,8 @@ EngineCore::EngineCore()
 	this->lightBase->addChild(temp);
 
 	this->base->update(0.16f);
-	this->base->init();
-	this->frustum->init();
-	//this->shadowCamera->setDirection(lightDir);
+	this->base->init();		//init all the nodes
+	this->frustum->init();	//Init the frustum
 }
 
 EngineCore::~EngineCore()
@@ -160,9 +165,9 @@ void EngineCore::init()
 #endif
 		// ------------------------------- GUI TEST ---------------------------------
 #ifdef RENDER_GUI
-		renderGui();
+		renderGui();							//If the gui is selected to show
 #else
-		timePassed += dt;
+		timePassed += dt;						//If the gui isn't being renderd, show FPS in console
 		if (timePassed > 1.0f)
 		{
 			printf("FPS: %f\n", 1.0f / dt);
@@ -185,18 +190,17 @@ void EngineCore::init()
 
 void EngineCore::update(const float & dt)
 {
-	this->frustum->update(this->camera->getPosition());
+	this->frustum->update(this->camera->getPosition());									//Update frustum with new position
 
-	/*Transform& tb = this->base->getWorldTransform();
-	tb.setRotation(tb.getRotation() + glm::vec3{ 0.0f, -dt, 0.0f });
+	//Transform& tb = this->base->getWorldTransform();									//Rotates the box arm in the middle of the scene
+	//tb.setRotation(tb.getRotation() + glm::vec3{ 0.0f, -dt, 0.0f });
 	
 	Transform& a1 = this->arm[1]->getWorldTransform();
 	a1.setRotation(a1.getRotation() + glm::vec3{ dt, 0.0f, dt });
 	Transform& a2 = this->arm[2]->getLocalTransform();
 	a2.setRotation(a2.getRotation() + glm::vec3{ -dt, 0.0f, dt });
-	*/
 
-	Transform& lightT = this->lightBase->getWorldTransform();
+	Transform& lightT = this->lightBase->getWorldTransform();							//Rotate the three disco-lights in a circle
 	lightT.setRotation(lightT.getRotation() + glm::vec3{ 0.0f, -dt, 0.0f });
 	/*
 	DirectionalLight* dirLight = dynamic_cast<DirectionalLight*>(this->directionalLight->getComponent(1));
@@ -227,9 +231,9 @@ void EngineCore::render()
 
 void EngineCore::input(Display* display)
 {
+	// --------------------- Toggle for F -----------------------------
 	static bool isFClicked = 0;
 	static bool isFPressed = false;
-
 	if (glfwGetKey(display->getWindowPtr(), GLFW_KEY_F) != GLFW_PRESS)
 	{
 		if (isFPressed)
@@ -241,6 +245,7 @@ void EngineCore::input(Display* display)
 	}
 	else isFPressed = true;
 
+	// -------------------- Toggle for V -----------------------------
 	static bool isVClicked = 0;
 	static bool isVPressed = false;
 	if (glfwGetKey(display->getWindowPtr(), GLFW_KEY_V) != GLFW_PRESS)
