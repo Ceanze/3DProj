@@ -80,7 +80,7 @@ GLuint Texture::getTexture(unsigned int index) const
 	return this->textures[index];
 }
 
-GLuint * Texture::getTextures() const
+GLuint* Texture::getTextures() const
 {
 	return this->textures;
 }

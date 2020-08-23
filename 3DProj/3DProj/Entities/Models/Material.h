@@ -1,6 +1,7 @@
 #ifndef MATERIAL_H
 #define MATERIAL_H
 
+#include <string>
 #include <glm.hpp>
 
 #include "../../Core/GL Utils/Texture.h"
